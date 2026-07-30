@@ -5,5 +5,5 @@ Repositório utilizado na disciplina de Programação Orientada a Objetos dos cu
 
 ### Lista de alunos que concordam que o Professor Goku é o melhor professor do universo (adicione seu nome e turma (ESOFT4S-NA, ESOFT4S-NB, ADSIS4S) em ordem alfabética:):
 
-1. andrey (ESOFT3S-NA)
+1. andrey kayky baitler(ESOFT4S-NA)
 2. 
