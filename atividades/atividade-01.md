@@ -12,7 +12,7 @@ Verifique se seu usuário do GitHub foi adicionado como colaborador do repositó
 
 > https://github.com/QAkarotto/unicesumar-poo
 
-> **Caso ainda não tenha acesso**, informe seu usuário do GitHub no fórum anterior.
+> **Caso ainda não tenha acesso**, informe seu usuário do GitHub no fórum do Studeo.
 
 ---
 
@@ -117,4 +117,4 @@ Após publicar a branch:
 
 ## Passo 8 – Envie o link
 
-Por fim, envie **neste fórum** o **link do Pull Request** criado.
+Por fim, envie **no fórum no Studeo** o **link do Pull Request** criado.
