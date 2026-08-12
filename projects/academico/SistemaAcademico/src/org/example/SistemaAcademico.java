@@ -1,11 +1,8 @@
 package org.example;
 
 public class SistemaAcademico {
-
-    // Método principal: O botão de "ligar" do nosso sistema
     public static void main(String[] args) {
         System.out.println("=== AULA: INTRODUÇÃO AO JAVA MODERNO ===");
-
         // Pegando a nossa caixa de ferramentas
         var sistema = new SistemaAcademico();
 
@@ -92,10 +89,12 @@ public class SistemaAcademico {
      */
     public double calcularMedia(double nota1, double nota2, double nota3) {
         // TODO 1: Crie uma variável (use 'var') que guarde a soma das três notas.
+        var soma = nota1 + nota2 + nota3;
         // TODO 2: Crie outra variável que divida a soma por 3 para obter a média.
+        var media = soma / 3;
         // TODO 3: Retorne a variável da média final.
 
-        return 0; // Apague o 0 e coloque sua variável
+        return media; // Apague o 0 e coloque sua variável
     }
 
     /*
@@ -107,10 +106,18 @@ public class SistemaAcademico {
      */
     public String verificarStatus(double media, int faltas) {
         // TODO 1: Crie a estrutura if / else if / else baseada nas regras acima.
+        var status = "";
+        if (faltas > 20) {
+            status = "REPROVADO_POR_FALTA";
+        } else if (media >= 6) {
+            status = "APROVADO";
+        } else {
+            status = "EXAME";
+        }
         // DICA: Lembre-se que este método deve retornar (return) um texto (String),
         // e não apenas imprimir na tela.
 
-        return "Status Desconhecido";
+        return status;
     }
 
     /*
@@ -119,14 +126,19 @@ public class SistemaAcademico {
      */
     public String gerarOrientacao(String status) {
         // TODO 1: Use o 'switch' moderno (com as setinhas ->) para analisar o 'status'.
+        var instrucao = switch (status) {
+            case "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido.";
+            case "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!";
+            case "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
+            default -> "Procure a coordenação do curso.";
+        };
         // Regras de retorno:
         // "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!"
         // "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva."
         // "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido."
         // default -> "Procure a coordenação do curso."
-
         // DICA: var instrucao = switch (status) { ... };
 
-        return "Sem orientação";
+        return instrucao;
     }
 }
