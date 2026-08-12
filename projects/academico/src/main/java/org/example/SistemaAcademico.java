@@ -106,7 +106,6 @@ public class SistemaAcademico {
      * - Caso contrário (média menor que 6.0 e faltas OK) -> Retorna "EXAME"
      */
     public String verificarStatus(double media, int faltas) {
-        // TODO 1: Crie a estrutura if / else if / else baseada nas regras acima.
         if (faltas > 20) {
             return "REPROVADO_POR_FALTA";
         } else if (media >= 6.0) {
