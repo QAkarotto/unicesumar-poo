@@ -74,7 +74,7 @@ public class SistemaAcademico {
         // O switch moderno usa a setinha (->) e não precisa da palavra "break"
         var feedbackExemplo = switch (conceito) {
             case "A" -> "Excelente desempenho!";
-            case "B", "C" -> "Bom trabalho, continue assim."; // Agrupando casos
+            case "B", "C" -> "Bom trabalho, continue assim.";
             case "D", "F" -> "Precisa revisar o conteúdo.";
             default -> "Conceito inválido."; // O default salva se nenhuma opção bater
         };
@@ -92,10 +92,13 @@ public class SistemaAcademico {
      */
     public double calcularMedia(double nota1, double nota2, double nota3) {
         // TODO 1: Crie uma variável (use 'var') que guarde a soma das três notas.
-        // TODO 2: Crie outra variável que divida a soma por 3 para obter a média.
-        // TODO 3: Retorne a variável da média final.
+        var soma = nota1 + nota2 + nota3;
 
-        return 0; // Apague o 0 e coloque sua variável
+        // TODO 2: Crie outra variável que divida a soma por 3 para obter a média.
+        var media = soma / 3;
+
+        // TODO 3: Retorne a variável da média final.
+        return media;
     }
 
     /*
@@ -107,10 +110,16 @@ public class SistemaAcademico {
      */
     public String verificarStatus(double media, int faltas) {
         // TODO 1: Crie a estrutura if / else if / else baseada nas regras acima.
+        if (faltas > 20) {
+            return "REPROVADO_POR_FALTA";
+        } else if (media >= 6.0) {
+            return "APROVADO";
+        } else {
+            return "EXAME";
+        }
+
         // DICA: Lembre-se que este método deve retornar (return) um texto (String),
         // e não apenas imprimir na tela.
-
-        return "Status Desconhecido";
     }
 
     /*
@@ -119,14 +128,22 @@ public class SistemaAcademico {
      */
     public String gerarOrientacao(String status) {
         // TODO 1: Use o 'switch' moderno (com as setinhas ->) para analisar o 'status'.
-        // Regras de retorno:
-        // "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!"
-        // "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva."
-        // "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido."
-        // default -> "Procure a coordenação do curso."
+        var instrucao = switch (status) {
+            // Regras de retorno:
+            // "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!"
+            case "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!";
+
+            // "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva."
+            case "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
+
+            // "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido."
+            case "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido.";
+
+            // default -> "Procure a coordenação do curso."
+            default -> "Procure a coordenação do curso.";
+        };
 
         // DICA: var instrucao = switch (status) { ... };
-
-        return "Sem orientação";
+        return instrucao;
     }
 }
