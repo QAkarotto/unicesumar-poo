@@ -90,12 +90,13 @@ public class SistemaAcademico {
      * EXERCÍCIO 1: Tipos Primitivos, var e Operadores
      * Regra: A média é a soma das três notas dividida por 3.
      */
-    public double calcularMedia(double nota1, double nota2, double nota3) {
+    public double calcularMedia(    double nota1, double nota2, double nota3) {
         // TODO 1: Crie uma variável (use 'var') que guarde a soma das três notas.
+        var soma = nota1 + nota2 + nota3;
         // TODO 2: Crie outra variável que divida a soma por 3 para obter a média.
+        var media = soma / 3;
         // TODO 3: Retorne a variável da média final.
-
-        return 0; // Apague o 0 e coloque sua variável
+        return media;
     }
 
     /*
@@ -107,10 +108,17 @@ public class SistemaAcademico {
      */
     public String verificarStatus(double media, int faltas) {
         // TODO 1: Crie a estrutura if / else if / else baseada nas regras acima.
+            if (faltas > 20) {
+                return "REPROVADO_POR_FALTA";
+            } else if (media >= 6.0) {
+                return "APROVADO";
+            } else {
+                return "EXAME";
+            }
         // DICA: Lembre-se que este método deve retornar (return) um texto (String),
         // e não apenas imprimir na tela.
 
-        return "Status Desconhecido";
+
     }
 
     /*
@@ -126,7 +134,12 @@ public class SistemaAcademico {
         // default -> "Procure a coordenação do curso."
 
         // DICA: var instrucao = switch (status) { ... };
-
-        return "Sem orientação";
+            var instrucao = switch (status) {
+                case "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!";
+                case "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
+                case "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido.";
+                default -> "Procure a coordenação do curso.";
+            };
+            return instrucao;
     }
 }
