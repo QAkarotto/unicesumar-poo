@@ -91,42 +91,30 @@ public class SistemaAcademico {
      * Regra: A média é a soma das três notas dividida por 3.
      */
     public double calcularMedia(double nota1, double nota2, double nota3) {
-        // TODO 1: Crie uma variável (use 'var') que guarde a soma das três notas.
-        // TODO 2: Crie outra variável que divida a soma por 3 para obter a média.
-        // TODO 3: Retorne a variável da média final.
+    var soma = nota1 + nota2 + nota3;
+    var media = soma / 3;
 
-        return 0; // Apague o 0 e coloque sua variável
+    return media;
     }
 
-    /*
-     * EXERCÍCIO 2: Controle de Fluxo Clássico (if / else)
-     * Regras:
-     * - Se faltas for MAIOR que 20 -> Retorna "REPROVADO_POR_FALTA"
-     * - Senão, se a média for MAIOR OU IGUAL a 6.0 -> Retorna "APROVADO"
-     * - Caso contrário (média menor que 6.0 e faltas OK) -> Retorna "EXAME"
-     */
     public String verificarStatus(double media, int faltas) {
-        // TODO 1: Crie a estrutura if / else if / else baseada nas regras acima.
-        // DICA: Lembre-se que este método deve retornar (return) um texto (String),
-        // e não apenas imprimir na tela.
-
-        return "Status Desconhecido";
+        if (faltas > 20) {
+            return "REPROVADO_POR_FALTA";
+        } else if (media >= 6.0) {
+            return "APROVADO";
+        } else {
+            return "EXAME";
+        }
     }
 
-    /*
-     * EXERCÍCIO 3: Controle de Fluxo Moderno (Switch Expressions)
-     * Regra: Retornar uma mensagem de instrução baseada no status.
-     */
     public String gerarOrientacao(String status) {
-        // TODO 1: Use o 'switch' moderno (com as setinhas ->) para analisar o 'status'.
-        // Regras de retorno:
-        // "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!"
-        // "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva."
-        // "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido."
-        // default -> "Procure a coordenação do curso."
+        var instrucao = switch (status) {
+            case "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!";
+            case "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
+            case "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido.";
+            default -> "Procure a coordenação do curso.";
+        };
 
-        // DICA: var instrucao = switch (status) { ... };
-
-        return "Sem orientação";
+        return instrucao;
     }
 }
