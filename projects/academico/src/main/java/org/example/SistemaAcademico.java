@@ -76,9 +76,8 @@ public class SistemaAcademico {
 
     public double calcularMedia(double nota1, double nota2, double nota3) {
         var somaNotas = nota1 + nota2 + nota3;
-        var media = somaNotas / 3;
 
-        return media;
+        return somaNotas / 3;
     }
 
     public String verificarStatus(double media, int faltas) {
@@ -92,16 +91,11 @@ public class SistemaAcademico {
     }
 
     public String gerarOrientacao(String status) {
-        var instrucao = switch (status) {
+        return switch (status) {
             case "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!";
             case "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
             case "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido.";
             default -> "Procure a coordenação do curso.";
         };
-
-        return instrucao;
     }
 }
-
-
-
