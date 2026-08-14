@@ -20,7 +20,7 @@ public class SistemaAcademico {
     public static String gerarOrientacao(String status) {
         return switch (status) {
             case "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!";
-            case "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
+            case "EXAME" -> "Atenção:  Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
             case "REPROVADO_POR_FALTA" -> "Reprovação automática.  Frequência abaixo do mínimo exigido.";
             default -> "Procure a coordenação do curso.";
         };
