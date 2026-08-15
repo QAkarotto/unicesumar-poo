@@ -1,4 +1,4 @@
-package org.example;
+package org.qakarotto;
 
 public class SistemaAcademico {
 
