@@ -12,7 +12,7 @@ Este projeto é o ponto de partida da Atividade 04. Apenas `SistemaAcademico` é
 - `Disciplina`: representa um componente curricular e sua carga horária.
 - `Turma`: representa a oferta de uma disciplina em um período letivo.
 - `Matricula`: representa a relação entre um aluno e uma turma.
-- `PeriodoLetivo`: representa um ano e um semestre letivo.
+- `Periodoletivo`: representa um ano e um semestre letivo.
 - `Semestre`: `enum` que representa os semestres aceitos pelo sistema.
 
 Esses tipos ainda não estão implementados. Consulte o enunciado em `atividades/atividade-04.md`.

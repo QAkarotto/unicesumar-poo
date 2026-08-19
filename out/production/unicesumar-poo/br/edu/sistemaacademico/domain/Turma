@@ -1,0 +1,75 @@
+package br.edu.sistemaacademico.domain;
+
+// Classe responsável por representar uma turma no sistema acadêmico.
+public class Turma {
+
+    // Código que identifica a turma.
+    // O "final" significa que o valor não pode ser alterado depois de definido.
+    private final String codigo;
+
+    // Disciplina relacionada à turma.
+    private final Disciplina disciplina;
+
+    // Período letivo em que a turma será realizada.
+    private final PeriodoLetivo periodoLetivo;
+
+    // Construtor da classe Turma.
+    // Recebe o código, a disciplina e o período letivo da turma.
+    public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
+
+        // Verifica se o código não foi informado ou se está vazio.
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Código é obrigatório.");
+        }
+
+        // Verifica se uma disciplina foi informada.
+        if (disciplina == null) {
+            throw new IllegalArgumentException("Disciplina é obrigatória.");
+        }
+
+        // Verifica se um período letivo foi informado.
+        if (periodoLetivo == null) {
+            throw new IllegalArgumentException("Período letivo é obrigatório.");
+        }
+
+        // Atribui os valores recebidos aos atributos da turma.
+        this.codigo = codigo;
+        this.disciplina = disciplina;
+        this.periodoLetivo = periodoLetivo;
+    }
+
+    // Retorna o código da turma.
+    public String getCodigo() {
+        return codigo;
+    }
+
+    // Retorna a disciplina relacionada à turma.
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+
+    // Retorna o período letivo da turma.
+    public PeriodoLetivo getPeriodoLetivo() {
+        return periodoLetivo;
+    }
+
+    // Sobrescreve o método toString().
+    // É utilizado para representar a turma em formato de texto,
+    // facilitando a visualização dos seus dados.
+    @Override
+    public String toString() {
+        return "Turma{" +
+                "codigo='" + codigo + '\'' +
+                ", disciplina=" + disciplina +
+                ", periodoLetivo=" + periodoLetivo +
+                '}';
+    }
+}
+    public String toString() {
+        return "Turma{" +
+                "codigo='" + codigo + '\'' +
+                ", disciplina=" + disciplina +
+                ", periodoLetivo=" + periodoLetivo +
+                '}';
+    }
+}
