@@ -1,6 +1,4 @@
 package br.edu.sistemaacademico.domain;
-
-
 public class Aluno {
 
     private final String identificadorAcademico;
