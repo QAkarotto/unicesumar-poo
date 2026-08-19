@@ -22,7 +22,6 @@ public class SistemaAcademico {
                 80
         );
 
-        var periodoLetivo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
         var turma = new Turma("POO-NA", disciplina, periodoLetivo);
         var matricula = new Matricula("MAT-001", aluno, turma);
 
@@ -35,5 +34,5 @@ public class SistemaAcademico {
 
         aluno.setEmail("paola.oliveira@universidade.edu.br");
         System.out.println("E-mail atualizado: " + aluno.getEmail());
-    }
+    } // João Pedro Hulchak Kazmierzak RA: 25141620-2 e Hiuri Luciano dos Santos RA: 25208360-2
 }
