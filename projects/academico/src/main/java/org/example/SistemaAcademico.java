@@ -1,48 +1,39 @@
 package org.example;
 
+import org.example.PeriodoLetivo.Semestre;
+
 public class SistemaAcademico {
 
     public static void main(String[] args) {
-        SistemaAcademico sistema = new SistemaAcademico();
+        System.out.println("--- INICIALIZANDO SISTEMA ACADÊMICO ---\n");
 
-        var notaProva = 5.6;
-        var notaProjeto = 8.0;
-        var notaLista = 6.7;
-        var faltas = 13;
 
-        var mediaFinal = sistema.calcularMedia(notaProva, notaProjeto, notaLista);
-        var status = sistema.verificarStatus(mediaFinal, faltas);
-        var orientacao = sistema.gerarOrientacao(status);
+        try {
+            Aluno aluno = new Aluno("RA123456", "Elisson Silva", "elisson@unicesumar.edu.br");
+            
+            
+            Disciplina disciplina = new Disciplina("POO-01", "Programação Orientada a Objetos", 80);
+            
+            PeriodoLetivo periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
+            
+            Turma turma = new Turma("TURMA-A", disciplina, periodo);
+            
+            Matricula matricula = new Matricula("MAT-2026-001", aluno, turma);
 
-        System.out.println("Média Final: " + mediaFinal);
-        System.out.println("Status: " + status);
-        System.out.println("Orientação: " + orientacao);
-    }
+            System.out.println("Matricula criada com sucesso!");
+            System.out.println(matricula);
 
-    public double calcularMedia(double prova, double projeto, double lista) {
-        var media = (prova + projeto + lista) / 3.0;
-        return media;
-    }
+            System.out.println("\n---------------------------------------");
+            System.out.println(" Testando Proteção de Estado (Tentativa Inválida):");
+           
+            aluno.alterarDados("", "email@invalido.com");
 
-  
-    public String verificarStatus(double mediaFinal, int totalFaltas) {
-        if (totalFaltas > 20) { 
-            return "REPROVADO_POR_FALTA"; 
-        } else if (mediaFinal >= 6.0) {
-            return "APROVADO";
-        } else {
-            return "EXAME";
+        } catch (IllegalArgumentException e) {
+            System.out.println(" Erro capturado com sucesso: " + e.getMessage());
+            System.out.println("  O estado do objeto permaneceu protegido e consistente.");
+            
         }
     }
-
-
-    public String gerarOrientacao(String status) {
-        return switch (status) {
-            case "APROVADO" -> "Parabéns! Boas férias!";
-            case "EXAME" -> "Atenção: Estude para a prova substitutiva.";
-            case "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido.";
-            default -> "Procure a coordenação do curso.";
-        };
-    }
 }
+
 

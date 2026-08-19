@@ -1,0 +1,7 @@
+org\example\Aluno.class
+org\example\Matricula.class
+org\example\PeriodoLetivo.class
+org\example\PeriodoLetivo$Semestre.class
+org\example\Turma.class
+org\example\SistemaAcademico.class
+org\example\Disciplina.class
