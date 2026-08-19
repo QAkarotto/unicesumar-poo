@@ -11,9 +11,9 @@ public class SistemaAcademico {
 
     public static void main(String[] args) {
         var aluno = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola.oliveira@email.com"
+                "RA6700067",
+                "Manoel Gomes",
+                "manoelgomes@gmail.com"
         );
 
         var disciplina = new Disciplina(
@@ -33,7 +33,29 @@ public class SistemaAcademico {
         System.out.println("Turma: " + turma);
         System.out.println("Matrícula: " + matricula);
 
-        aluno.setEmail("paola.oliveira@universidade.edu.br");
+        aluno.setEmail("manoelgomes@universidade.edu.br");
         System.out.println("E-mail atualizado: " + aluno.getEmail());
+
+        System.out.println();
+        System.out.println("=== Tentativas com dados inválidos ===");
+
+        try {
+            aluno.setEmail("email-invalido");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Recusado: " + e.getMessage());
+            System.out.println("E-mail continua: " + aluno.getEmail());
+        }
+
+        try {
+            new Disciplina("ED", "Estrutura de Dados", 0);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Recusado: " + e.getMessage());
+        }
+
+        try {
+            new Turma("POO-NB", null, periodoLetivo);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Recusado: " + e.getMessage());
+        }
     }
 }
