@@ -3,9 +3,9 @@ package br.edu.sistemaacademico;
 import br.edu.sistemaacademico.domain.Aluno;
 import br.edu.sistemaacademico.domain.Disciplina;
 import br.edu.sistemaacademico.domain.Matricula;
-import br.edu.sistemaacademico.domain.PeriodoLetivo;
+import br.edu.sistemaacademico.domain.periodoLetivo;
 import br.edu.sistemaacademico.domain.Semestre;
-import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.domain.turma;
 
 public class SistemaAcademico {
 
@@ -22,8 +22,8 @@ public class SistemaAcademico {
                 80
         );
 
-        var periodoLetivo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
-        var turma = new Turma("POO-NA", disciplina, periodoLetivo);
+        var periodoLetivo = new periodoLetivo(2026, Semestre.SEGUNDO);
+        var turma = new Matricula("POO-NA", disciplina, periodoLetivo);
         var matricula = new Matricula("MAT-001", aluno, turma);
 
         System.out.println("=== Sistema Acadêmico ===");
