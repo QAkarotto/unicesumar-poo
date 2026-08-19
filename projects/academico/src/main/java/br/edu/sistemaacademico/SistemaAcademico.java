@@ -35,6 +35,5 @@ public class SistemaAcademico {
 
         aluno.setEmail("paola.oliveira@universidade.edu.br");
         System.out.println("E-mail atualizado: " + aluno.getEmail());
-
     }
 }
