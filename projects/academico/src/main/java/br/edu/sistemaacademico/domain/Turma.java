@@ -1,13 +1,6 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa a oferta de uma {@link Disciplina} em um {@link PeriodoLetivo}.
- *
- * <p>Código, disciplina e período letivo definem qual oferta a turma
- * representa; trocar qualquer um deles depois de criada a turma
- * transformaria o objeto em outra oferta. Por isso a classe é imutável e
- * apenas expõe métodos de acesso.</p>
- */
+
 public class Turma {
 
     private final String codigo;

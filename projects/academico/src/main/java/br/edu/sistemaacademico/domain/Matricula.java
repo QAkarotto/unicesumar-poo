@@ -1,12 +1,6 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa o vínculo entre um {@link Aluno} e uma {@link Turma}.
- *
- * <p>Uma matrícula liga um aluno específico a uma turma específica: ela não
- * "troca de aluno" ou "troca de turma" ao longo do tempo, então todos os
- * seus atributos são definidos na criação e permanecem imutáveis.</p>
- */
+
 public class Matricula {
 
     private final String codigo;

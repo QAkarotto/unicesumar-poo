@@ -1,14 +1,6 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa um componente curricular do sistema acadêmico.
- *
- * <p>Código, nome e carga horária descrevem a disciplina em si (o que ela
- * é), não o estado de uma oferta específica. Por isso, todos os atributos
- * são definidos na criação e permanecem imutáveis durante a vida do
- * objeto: alterar qualquer um deles representaria, na prática, outra
- * disciplina.</p>
- */
+
 public class Disciplina {
 
     private final String codigo;

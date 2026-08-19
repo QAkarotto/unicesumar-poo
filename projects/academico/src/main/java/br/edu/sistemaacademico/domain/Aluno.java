@@ -2,15 +2,7 @@ package br.edu.sistemaacademico.domain;
 
 import java.util.regex.Pattern;
 
-/**
- * Representa um aluno do sistema acadêmico.
- *
- * <p>O identificador acadêmico (RA) e o nome são definidos na criação do
- * aluno e não mudam depois, pois identificam a pessoa e não fazem sentido
- * como uma alteração trivial neste modelo. Já o e-mail pode ser corrigido
- * ou atualizado ao longo do tempo, então ele possui um método de alteração
- * próprio que reaplica as mesmas validações usadas na criação do objeto.</p>
- */
+
 public class Aluno {
 
     private static final Pattern EMAIL_VALIDO =
@@ -45,14 +37,7 @@ public class Aluno {
         return email;
     }
 
-    /**
-     * Atualiza o e-mail do aluno.
-     *
-     * <p>O e-mail é validado antes de qualquer alteração de estado: se o
-     * valor informado for nulo, vazio ou não tiver um formato minimamente
-     * válido, uma exceção é lançada e o e-mail atual do aluno permanece
-     * inalterado.</p>
-     */
+ 
     public void setEmail(String novoEmail) {
         this.email = validarEmail(novoEmail);
     }
