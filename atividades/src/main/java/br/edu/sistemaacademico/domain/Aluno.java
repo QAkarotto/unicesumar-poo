@@ -1,7 +1,4 @@
 package br.edu.sistemaacademico.domain;
-
-// Assim como os guerreiros Z controlam seu próprio poder,
-// o objeto Aluno controla seus próprios dados.
 public class Aluno {
 
     private final String identificadorAcademico;

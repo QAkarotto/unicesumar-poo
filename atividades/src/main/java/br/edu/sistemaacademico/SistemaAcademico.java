@@ -20,7 +20,7 @@ public class SistemaAcademico {
                 "POO",
                 "Programação Orientada a Objetos",
                 80
-        );
+        );//a
 
         var periodoLetivo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
         var turma = new Turma("POO-NA", disciplina, periodoLetivo);

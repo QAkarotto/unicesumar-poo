@@ -10,7 +10,7 @@ public class Turma {
             String codigo,
             Disciplina disciplina,
             PeriodoLetivo periodoLetivo) {
-
+//a
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException(
                     "O código da turma é obrigatório."
