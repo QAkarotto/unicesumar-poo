@@ -1,39 +1,32 @@
 package br.edu.sistemaacademico;
 
-import br.edu.sistemaacademico.domain.Aluno;
-import br.edu.sistemaacademico.domain.Disciplina;
-import br.edu.sistemaacademico.domain.Matricula;
-import br.edu.sistemaacademico.domain.PeriodoLetivo;
-import br.edu.sistemaacademico.domain.Semestre;
-import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.domain.*;
 
 public class SistemaAcademico {
-
     public static void main(String[] args) {
-        var aluno = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola.oliveira@email.com"
-        );
+        System.out.println(" SISTEMA ACADÊMICO - TESTE ");
 
-        var disciplina = new Disciplina(
-                "POO",
-                "Programação Orientada a Objetos",
-                80
-        );
+        // 1. Criando Aluno
+        Aluno aluno = new Aluno("20261001", "Ketely", "ketely@email.com");
+        System.out.println(aluno);
 
-        var periodoLetivo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
-        var turma = new Turma("POO-NA", disciplina, periodoLetivo);
-        var matricula = new Matricula("MAT-001", aluno, turma);
+        // 2. Criando Disciplina
+        Disciplina disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
+        System.out.println(disciplina);
 
-        System.out.println("=== Sistema Acadêmico ===");
-        System.out.println("Aluno: " + aluno);
-        System.out.println("Disciplina: " + disciplina);
-        System.out.println("Período: " + periodoLetivo);
-        System.out.println("Turma: " + turma);
-        System.out.println("Matrícula: " + matricula);
+        // 3. Criando Período Letivo
+        PeriodoLetivo periodo = new PeriodoLetivo(2026, Semestre.PRIMEIRO);
+        System.out.println("Período: " + periodo);
 
-        aluno.setEmail("paola.oliveira@universidade.edu.br");
-        System.out.println("E-mail atualizado: " + aluno.getEmail());
+        // 4. Criando Turma
+        Turma turma = new Turma("T01", disciplina, periodo);
+        System.out.println(turma);
+
+        // 5. Criando Matrícula
+        Matricula matricula = new Matricula("M202601", aluno, turma);
+        System.out.println(matricula);
+
+        System.out.println("=================================");
+        System.out.println("Todos os objetos foram criados com sucesso!");
     }
 }
