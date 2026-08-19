@@ -1,10 +1,12 @@
 package br.edu.sistemaacademico.domain;
 
+ // Assim como uma saga de Dragon Ball possui seu período e personagens, a turma possui seus vínculos.
+
 public class Turma {
 
-    private String codigo;
-    private Disciplina disciplina;
-    private PeriodoLetivo periodoLetivo;
+    private final String codigo;
+    private final Disciplina disciplina;
+    private final PeriodoLetivo periodoLetivo;
 
     public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
 
@@ -23,6 +25,18 @@ public class Turma {
         this.codigo = codigo;
         this.disciplina = disciplina;
         this.periodoLetivo = periodoLetivo;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+
+    public PeriodoLetivo getPeriodoLetivo() {
+        return periodoLetivo;
     }
 
     @Override

@@ -2,8 +2,10 @@ package br.edu.sistemaacademico.domain;
 
 public class PeriodoLetivo {
 
-    private int ano;
-    private Semestre semestre;
+// O calendário do torneio precisa de um período válido, assim como o período letivo.
+
+    private final int ano;
+    private final Semestre semestre;
 
     public PeriodoLetivo(int ano, Semestre semestre) {
 
@@ -17,6 +19,14 @@ public class PeriodoLetivo {
 
         this.ano = ano;
         this.semestre = semestre;
+    }
+
+    public int getAno() {
+        return ano;
+    }
+
+    public Semestre getSemestre() {
+        return semestre;
     }
 
     @Override
