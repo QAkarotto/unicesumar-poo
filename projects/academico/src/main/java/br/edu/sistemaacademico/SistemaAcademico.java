@@ -37,3 +37,4 @@ public class SistemaAcademico {
         System.out.println("E-mail atualizado: " + aluno.getEmail());
     }
 }
+//Deu certo
