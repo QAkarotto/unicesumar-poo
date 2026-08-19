@@ -1,21 +1,15 @@
 package br.edu.sistemaacademico.domain;
 
 public class PeriodoLetivo {
-
     private final int ano;
     private final Semestre semestre;
 
     public PeriodoLetivo(int ano, Semestre semestre) {
-        if (ano <= 0) {
-            throw new IllegalArgumentException(
-                    "O ano deve ser maior que zero."
-            );
-        }
-
         if (semestre == null) {
-            throw new IllegalArgumentException(
-                    "O semestre não pode ser nulo."
-            );
+            throw new IllegalArgumentException("Semestre não pode ser nulo.");
+        }
+        if (ano < 2000 || ano > 2100) {
+            throw new IllegalArgumentException("Ano inválido.");
         }
 
         this.ano = ano;
@@ -32,9 +26,6 @@ public class PeriodoLetivo {
 
     @Override
     public String toString() {
-        return "PeriodoLetivo{" +
-                "ano=" + ano +
-                ", semestre=" + semestre +
-                '}';
+        return "Período: " + ano + " - " + semestre;
     }
 }

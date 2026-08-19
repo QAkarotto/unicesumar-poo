@@ -28,12 +28,18 @@ public class Aluno {
         return email.contains("@") && email.contains(".");
     }
 
-    // Getters
-    public String getIdentificadorAcademico() { return identificadorAcademico; }
-    public String getNome() { return nome; }
-    public String getEmail() { return email; }
+    public String getIdentificadorAcademico() {
+        return identificadorAcademico;
+    }
 
-    // Setters com validação
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     public void setNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) {
             throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");

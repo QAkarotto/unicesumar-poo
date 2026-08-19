@@ -1,29 +1,19 @@
 package br.edu.sistemaacademico.domain;
 
 public class Matricula {
-
     private final String codigo;
     private final Aluno aluno;
     private final Turma turma;
 
     public Matricula(String codigo, Aluno aluno, Turma turma) {
-
-        if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException(
-                    "O código da matrícula não pode ser vazio."
-            );
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Código da matrícula não pode ser nulo ou vazio.");
         }
-
         if (aluno == null) {
-            throw new IllegalArgumentException(
-                    "O aluno não pode ser nulo."
-            );
+            throw new IllegalArgumentException("Aluno não pode ser nulo.");
         }
-
         if (turma == null) {
-            throw new IllegalArgumentException(
-                    "A turma não pode ser nula."
-            );
+            throw new IllegalArgumentException("Turma não pode ser nula.");
         }
 
         this.codigo = codigo;
@@ -45,10 +35,6 @@ public class Matricula {
 
     @Override
     public String toString() {
-        return "Matricula{" +
-                "codigo='" + codigo + '\'' +
-                ", aluno=" + aluno +
-                ", turma=" + turma +
-                '}';
+        return "Matrícula: " + codigo + " - " + aluno.getNome() + " → " + turma.getCodigo();
     }
 }

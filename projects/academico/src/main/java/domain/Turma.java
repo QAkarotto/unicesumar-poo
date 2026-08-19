@@ -1,29 +1,19 @@
 package br.edu.sistemaacademico.domain;
 
 public class Turma {
-
     private final String codigo;
     private final Disciplina disciplina;
     private final PeriodoLetivo periodoLetivo;
 
     public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
-
-        if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException(
-                    "O código da turma não pode ser vazio."
-            );
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Código da turma não pode ser nulo ou vazio.");
         }
-
         if (disciplina == null) {
-            throw new IllegalArgumentException(
-                    "A disciplina não pode ser nula."
-            );
+            throw new IllegalArgumentException("Disciplina não pode ser nula.");
         }
-
         if (periodoLetivo == null) {
-            throw new IllegalArgumentException(
-                    "O período letivo não pode ser nulo."
-            );
+            throw new IllegalArgumentException("Período letivo não pode ser nulo.");
         }
 
         this.codigo = codigo;
@@ -45,10 +35,6 @@ public class Turma {
 
     @Override
     public String toString() {
-        return "Turma{" +
-                "codigo='" + codigo + '\'' +
-                ", disciplina=" + disciplina +
-                ", periodoLetivo=" + periodoLetivo +
-                '}';
+        return "Turma: " + codigo + " - " + disciplina.getNome() + " (" + periodoLetivo + ")";
     }
 }
