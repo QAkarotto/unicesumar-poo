@@ -24,6 +24,12 @@ hs_err_pid*
 replay_pid*
 *.idea/
 
+# Ignore all .gitignore files anywhere in the project
+**/.gitignore
+
+# Exception: Do not ignore the root .gitignore file
+!/.gitignore
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
