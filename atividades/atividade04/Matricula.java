@@ -1,12 +1,5 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa a matrícula de um aluno em uma turma.
- *
- * Código, aluno e turma são definidos na criação e permanecem
- * imutáveis: uma matrícula "trocar de aluno" ou "trocar de turma"
- * não faz sentido, seria uma matrícula diferente.
- */
 public class Matricula {
 
     private final String codigo;

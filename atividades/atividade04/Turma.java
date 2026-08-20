@@ -1,12 +1,5 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa uma turma: a oferta de uma disciplina em um período letivo.
- *
- * Código, disciplina e período letivo são definidos na criação e
- * permanecem imutáveis: mudar a disciplina ou o período de uma turma
- * já criada não faz sentido de negócio, seria outra turma.
- */
 public class Turma {
 
     private final String codigo;

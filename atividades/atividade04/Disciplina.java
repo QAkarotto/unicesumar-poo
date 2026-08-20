@@ -1,12 +1,5 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa uma disciplina do catálogo acadêmico.
- *
- * Todos os atributos são definidos na criação e permanecem imutáveis:
- * não faz sentido "renomear" ou mudar a carga horária de uma disciplina
- * já existente sem que isso vire, na prática, outra disciplina.
- */
 public class Disciplina {
 
     private final String codigo;

@@ -1,12 +1,5 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa um período letivo (ano + semestre).
- *
- * É um objeto de valor: ano e semestre são definidos na criação
- * e não mudam depois, pois um período letivo diferente é,
- * conceitualmente, outro período.
- */
 public class PeriodoLetivo {
 
     private final int ano;

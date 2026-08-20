@@ -1,13 +1,5 @@
 package br.edu.sistemaacademico.domain;
 
-/**
- * Representa um aluno do sistema acadêmico.
- *
- * Identificador acadêmico e nome são definidos na criação e não mudam
- * durante a vida do objeto (não fazem sentido mudar sem virar "outro aluno").
- * O e-mail é a única informação que pode ser alterada, mas sempre passando
- * pela mesma validação usada na criação.
- */
 public class Aluno {
 
     private final String identificadorAcademico;
@@ -41,10 +33,7 @@ public class Aluno {
         return email;
     }
 
-    /**
-     * Altera o e-mail do aluno. Se o valor informado for inválido,
-     * o e-mail atual é mantido (o objeto nunca fica inconsistente).
-     */
+
     public void setEmail(String novoEmail) {
         if (!isEmailValido(novoEmail)) {
             throw new IllegalArgumentException("E-mail inválido: " + novoEmail);
