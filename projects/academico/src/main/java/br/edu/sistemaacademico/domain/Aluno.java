@@ -6,7 +6,6 @@ public class Aluno {
     private String nome;
     private String email;
 
-// Assim como Goku protege seu poder, o objeto protege seu estado.
 
     public Aluno(String identificadorAcademico, String nome, String email) {
 
