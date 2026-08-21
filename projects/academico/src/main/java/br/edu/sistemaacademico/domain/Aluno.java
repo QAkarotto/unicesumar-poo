@@ -37,7 +37,7 @@ public class Aluno {
     }
 
     public void setEmail(String email) {
-        // Nem mesmo o Shenlong deve permitir um e-mail inválido.
+        
         this.email = validarEmail(email);
     }
 
