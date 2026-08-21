@@ -56,6 +56,19 @@ public class Disciplina {
         return cargaHoraria;
     }
 
+    // O catálogo não tem dois códigos iguais, então é o código que diz se
+    // duas disciplinas são a mesma.
+    @Override
+    public boolean equals(Object objeto) {
+        return objeto instanceof Disciplina outra
+                && codigo.equals(outra.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return codigo.hashCode();
+    }
+
     @Override
     public String toString() {
         return codigo + " - " + nome + " (" + cargaHoraria + "h)";

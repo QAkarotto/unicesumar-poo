@@ -1,17 +1,21 @@
 package br.edu.sistemaacademico.domain;
 
-// A matrícula registra o vínculo entre um aluno e uma turma.
-// Mudar qualquer um dos dois seria outra matrícula, por isso tudo é final.
+// A matrícula liga o aluno a uma disciplina ofertada. Trocar um dos dois seria
+// outra matrícula, então só o resultado muda depois que ela é criada.
 public class Matricula {
 
     private final String codigo;
     private final Aluno aluno;
-    private final Turma turma;
+    private final OfertaDisciplina oferta;
 
-    public Matricula(String codigo, Aluno aluno, Turma turma) {
+    // Enquanto o resultado é nulo a matrícula está em curso.
+    private ResultadoAcademico resultado;
+
+    // Quem cria é a oferta, que já validou a matrícula antes de chegar aqui.
+    Matricula(String codigo, Aluno aluno, OfertaDisciplina oferta) {
         this.codigo = validarCodigo(codigo);
         this.aluno = validarAluno(aluno);
-        this.turma = validarTurma(turma);
+        this.oferta = validarOferta(oferta);
     }
 
     public String getCodigo() {
@@ -22,8 +26,47 @@ public class Matricula {
         return aluno;
     }
 
-    public Turma getTurma() {
-        return turma;
+    public OfertaDisciplina getOferta() {
+        return oferta;
+    }
+
+    public Disciplina getDisciplina() {
+        return oferta.getDisciplina();
+    }
+
+    public ResultadoAcademico getResultado() {
+        return resultado;
+    }
+
+    public SituacaoMatricula getSituacao() {
+        return resultado == null
+                ? SituacaoMatricula.EM_CURSO
+                : SituacaoMatricula.CONCLUIDA;
+    }
+
+    public boolean estaEmCurso() {
+        return resultado == null;
+    }
+
+    // O resultado é registrado uma vez só: a matrícula protege o próprio estado.
+    public void concluir(ResultadoAcademico resultado) {
+        if (resultado == null) {
+            throw new IllegalArgumentException("O resultado acadêmico é obrigatório para concluir a matrícula.");
+        }
+
+        if (!estaEmCurso()) {
+            throw new IllegalStateException("A matrícula " + codigo
+                    + " já foi concluída com o resultado " + this.resultado + ".");
+        }
+
+        this.resultado = resultado;
+    }
+
+    // Quem sabe dizer se esta matrícula encerrou a disciplina é ela mesma,
+    // porque conhece o resultado e a oferta em que foi feita.
+    public boolean aprovouEm(Disciplina disciplina) {
+        return resultado == ResultadoAcademico.APROVADO
+                && getDisciplina().equals(disciplina);
     }
 
     private static String validarCodigo(String codigo) {
@@ -40,17 +83,18 @@ public class Matricula {
         return aluno;
     }
 
-    private static Turma validarTurma(Turma turma) {
-        if (turma == null) {
-            throw new IllegalArgumentException("A matrícula precisa de uma turma.");
+    private static OfertaDisciplina validarOferta(OfertaDisciplina oferta) {
+        if (oferta == null) {
+            throw new IllegalArgumentException("A matrícula precisa de uma disciplina ofertada.");
         }
-        return turma;
+        return oferta;
     }
 
     @Override
     public String toString() {
-        return codigo + " | Aluno: " + aluno.getNome()
-                + " (" + aluno.getIdentificadorAcademico() + ")"
-                + " | Turma: " + turma.getCodigo();
+        if (estaEmCurso()) {
+            return codigo + " | " + aluno.getNome() + " | " + getSituacao();
+        }
+        return codigo + " | " + aluno.getNome() + " | " + resultado;
     }
 }
