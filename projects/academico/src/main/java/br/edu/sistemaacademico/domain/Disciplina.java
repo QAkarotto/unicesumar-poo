@@ -29,7 +29,7 @@ public class Disciplina {
     }
 
     public void setCargaHoraria(int cargaHoraria) {
-        // Até o Vegeta precisa respeitar uma carga horária positiva.
+       
         this.cargaHoraria = validarCargaHoraria(cargaHoraria);
     }
 
