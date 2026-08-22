@@ -15,3 +15,10 @@ Repositório utilizado na disciplina de Programação Orientada a Objetos dos cu
 - ## Curso do professor Gustavo Guanabara (Curso em Vídeo)
     - [Java Básico](https://www.cursoemvideo.com/curso/java-basico/)
     - [Java POO](https://www.cursoemvideo.com/curso/java-poo/)
+
+# Manifesto Oficial
+
+## Lista de alunos que concordam que o Professor Goku é o melhor professor do universo (adicione seu nome e turma (ESOFT4S-NA, ESOFT4S-NB, ADSIS4S) em ordem alfabética:):
+
+1. Aluno Exemplo (ESOFT3S-NA)
+2. Davi Henrique Santos Batista (ADSIS4S)
