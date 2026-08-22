@@ -1,6 +1,7 @@
 # unicesumar-poo
 Repositório utilizado na disciplina de Programação Orientada a Objetos dos cursos de Engenharia de Software e Análise e Desenvolvimento de Sistemas da Unicesumar Ponta Grossa
 
+<<<<<<< HEAD
 # Materiais
 
 - ## [Mind Map](https://app.xmind.com/share/asCo0dHd) da Disciplina
@@ -21,3 +22,11 @@ Repositório utilizado na disciplina de Programação Orientada a Objetos dos cu
 
 1. Davi Henrique Santos Batista (ADSIS4S)
 2. 
+=======
+## Manifesto Oficial
+
+### Lista de alunos que concordam que o Professor Goku é o melhor professor do universo (adicione seu nome e turma (ESOFT4S-NA, ESOFT4S-NB, ADSIS4S) em ordem alfabética:):
+
+1. Aluno Exemplo (ESOFT3S-NA)
+2. Julio O. de Vargas (ADSIS4S)
+>>>>>>> ec5b048 (Adiciona arquivo)
