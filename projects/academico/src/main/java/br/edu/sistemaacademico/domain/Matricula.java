@@ -4,9 +4,14 @@ public class Matricula {
 
     private final String codigo;
     private final Aluno aluno;
-    private final Turma turma;
+    private final OfertaDisciplina ofertaDisciplina;
+    private ResultadoAcademico resultado;
 
-    public Matricula(String codigo, Aluno aluno, Turma turma) {
+    public Matricula(
+            String codigo,
+            Aluno aluno,
+            OfertaDisciplina ofertaDisciplina
+    ) {
 
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException(
@@ -20,15 +25,15 @@ public class Matricula {
             );
         }
 
-        if (turma == null) {
+        if (ofertaDisciplina == null) {
             throw new IllegalArgumentException(
-                    "Turma é obrigatória."
+                    "Oferta da disciplina é obrigatória."
             );
         }
 
         this.codigo = codigo.trim();
         this.aluno = aluno;
-        this.turma = turma;
+        this.ofertaDisciplina = ofertaDisciplina;
     }
 
     public String getCodigo() {
@@ -39,8 +44,29 @@ public class Matricula {
         return aluno;
     }
 
-    public Turma getTurma() {
-        return turma;
+    public OfertaDisciplina getOfertaDisciplina() {
+        return ofertaDisciplina;
+    }
+
+    public ResultadoAcademico getResultado() {
+        return resultado;
+    }
+
+    public void concluir(ResultadoAcademico resultado) {
+
+        if (this.resultado != null) {
+            throw new IllegalStateException(
+                    "Matrícula já foi concluída."
+            );
+        }
+
+        if (resultado == null) {
+            throw new IllegalArgumentException(
+                    "Resultado acadêmico é obrigatório."
+            );
+        }
+
+        this.resultado = resultado;
     }
 
     @Override
@@ -48,7 +74,8 @@ public class Matricula {
         return "Matricula{" +
                 "codigo='" + codigo + '\'' +
                 ", aluno=" + aluno +
-                ", turma=" + turma +
+                ", ofertaDisciplina=" + ofertaDisciplina +
+                ", resultado=" + resultado +
                 '}';
     }
 }

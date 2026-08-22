@@ -1,12 +1,22 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Aluno {
 
     private final String identificador;
     private String nome;
     private String email;
 
-    public Aluno(String identificador, String nome, String email) {
+    private final List<Matricula> matriculas = new ArrayList<>();
+
+    public Aluno(
+            String identificador,
+            String nome,
+            String email
+    ) {
         this.identificador = validarObrigatorio(
                 identificador,
                 "Identificador acadêmico"
@@ -29,7 +39,10 @@ public class Aluno {
     }
 
     public void setNome(String nome) {
-        this.nome = validarObrigatorio(nome, "Nome");
+        this.nome = validarObrigatorio(
+                nome,
+                "Nome"
+        );
     }
 
     public String getEmail() {
@@ -40,7 +53,55 @@ public class Aluno {
         this.email = validarEmail(email);
     }
 
-    private static String validarObrigatorio(String valor, String campo) {
+    public List<Matricula> getMatriculas() {
+        return Collections.unmodifiableList(matriculas);
+    }
+
+    public void adicionarMatricula(Matricula matricula) {
+
+        if (matricula == null) {
+            throw new IllegalArgumentException(
+                    "Matrícula é obrigatória."
+            );
+        }
+
+        if (matriculas.contains(matricula)) {
+            throw new IllegalStateException(
+                    "Matrícula já registrada no histórico."
+            );
+        }
+
+        matriculas.add(matricula);
+    }
+
+    public boolean jaFoiAprovado(Disciplina disciplina) {
+
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "Disciplina é obrigatória."
+            );
+        }
+
+        for (Matricula matricula : matriculas) {
+
+            if (matricula.getOfertaDisciplina()
+                    .getDisciplina()
+                    .getCodigo()
+                    .equals(disciplina.getCodigo())
+                    && matricula.getResultado()
+                    == ResultadoAcademico.APROVADO) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static String validarObrigatorio(
+            String valor,
+            String campo
+    ) {
         if (valor == null || valor.isBlank()) {
             throw new IllegalArgumentException(
                     campo + " é obrigatório."
@@ -51,6 +112,7 @@ public class Aluno {
     }
 
     private static String validarEmail(String email) {
+
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(
                     "E-mail é obrigatório."
