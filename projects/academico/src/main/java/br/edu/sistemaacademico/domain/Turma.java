@@ -3,14 +3,7 @@ package br.edu.sistemaacademico.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa uma turma: um grupo acadêmico associado a um período letivo,
- * que pode ter várias disciplinas ofertadas nesse período.
- *
- * <p>A turma é quem sabe quais disciplinas ela oferece — por isso é ela
- * quem cria e guarda as {@link OfertaDisciplina}, e quem garante que a
- * mesma disciplina não seja ofertada duas vezes nela mesma.</p>
- */
+
 public class Turma {
 
     private final String codigo;
@@ -37,12 +30,6 @@ public class Turma {
         return periodoLetivo;
     }
 
-    /**
-     * Oferece uma disciplina nesta turma, criando a oferta correspondente.
-     *
-     * @throws IllegalArgumentException se a disciplina for nula
-     * @throws IllegalStateException    se a disciplina já estiver ofertada nesta turma
-     */
     public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
         if (disciplina == null) {
             throw new IllegalArgumentException("Disciplina a ser ofertada é obrigatória.");
@@ -57,9 +44,7 @@ public class Turma {
         return oferta;
     }
 
-    /**
-     * Retorna as disciplinas ofertadas nesta turma (cópia somente leitura).
-     */
+   
     public List<OfertaDisciplina> getOfertas() {
         return List.copyOf(ofertas);
     }
