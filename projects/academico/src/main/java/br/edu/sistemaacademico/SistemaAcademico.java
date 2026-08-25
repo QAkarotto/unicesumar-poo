@@ -13,10 +13,10 @@ public class SistemaAcademico {
 
     public static void main(String[] args) {
 
-        var paola = new Aluno(
+        var Goku = new Aluno(
                 "RA2026001",
-                "Paola Oliveira",
-                "paola.oliveira@email.com"
+                "Joao vitor dos santos",
+                "joaozinhogameplayshotvideos@gmail.com"
         );
 
         var bruno = new Aluno(
@@ -96,7 +96,7 @@ public class SistemaAcademico {
         System.out.println();
         System.out.println("=== PRIMEIRA MATRÍCULA ===");
 
-        var primeiraMatricula = poo2025.matricular(paola);
+        var primeiraMatricula = poo2025.matricular(Goku);
 
         primeiraMatricula.concluir(
                 ResultadoAcademico.REPROVADO
@@ -110,7 +110,7 @@ public class SistemaAcademico {
         System.out.println();
         System.out.println("=== NOVA MATRÍCULA APÓS REPROVAÇÃO ===");
 
-        var segundaMatricula = poo2026A.matricular(paola);
+        var segundaMatricula = poo2026A.matricular(Goku);
 
         System.out.println(
                 "Nova matrícula realizada: "
@@ -118,7 +118,7 @@ public class SistemaAcademico {
         );
 
         validar(
-                paola.getMatriculas().size() == 2,
+                Goku.getMatriculas().size() == 2,
                 "O aluno deve manter seu histórico de matrículas."
         );
 
@@ -136,7 +136,7 @@ public class SistemaAcademico {
 
         esperarFalha(
                 "Aluno aprovado não pode cursar novamente a mesma disciplina.",
-                () -> poo2026B.matricular(paola)
+                () -> poo2026B.matricular(Goku)
         );
 
         System.out.println();
@@ -154,7 +154,7 @@ public class SistemaAcademico {
 
         System.out.println(
                 "Matrículas de Paola: "
-                        + paola.getMatriculas()
+                        + Goku.getMatriculas()
         );
 
         System.out.println(
