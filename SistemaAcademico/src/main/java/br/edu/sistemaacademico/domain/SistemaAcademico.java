@@ -1,13 +1,4 @@
-package org.alexandreg;
-
-import org.alexandreg.Aluno;
-import org.alexandreg.Disciplina;
-import org.alexandreg.Matricula;
-import org.alexandreg.OfertaDisciplina;
-import org.alexandreg.PeriodoLetivo;
-import org.alexandreg.ResultadoAcademico;
-import org.alexandreg.Semestre;
-import org.alexandreg.Turma;
+package br.edu.sistemaacademico.domain;
 
 public class SistemaAcademico {
 

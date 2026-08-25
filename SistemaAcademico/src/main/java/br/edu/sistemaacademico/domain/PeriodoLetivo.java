@@ -1,4 +1,4 @@
-package org.alexandreg;
+package br.edu.sistemaacademico.domain;
 import java.util.Objects;
 
 public class PeriodoLetivo {
