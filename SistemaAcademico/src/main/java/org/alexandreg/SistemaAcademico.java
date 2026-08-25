@@ -1,129 +1,203 @@
 package org.alexandreg;
 
+import org.alexandreg.Aluno;
+import org.alexandreg.Disciplina;
+import org.alexandreg.Matricula;
+import org.alexandreg.OfertaDisciplina;
+import org.alexandreg.PeriodoLetivo;
+import org.alexandreg.ResultadoAcademico;
+import org.alexandreg.Semestre;
+import org.alexandreg.Turma;
+
 public class SistemaAcademico {
 
-    // Método principal: O botão de "ligar" do nosso sistema
     public static void main(String[] args) {
-        System.out.println("=== AULA: INTRODUÇÃO AO JAVA MODERNO ===");
 
-        // Pegando a nossa caixa de ferramentas
-        var sistema = new SistemaAcademico();
+        var paola = new Aluno(
+                "RA2026001",
+                "Paola Oliveira",
+                "paola.oliveira@email.com"
+        );
 
-        // ----------------------------------------------------
-        // EXECUTANDO OS EXEMPLOS VISTOS NA TEORIA
-        // ----------------------------------------------------
-        sistema.mostrarExemplosDaAula();
+        var bruno = new Aluno(
+                "RA2026002",
+                "Bruno Santos",
+                "bruno.santos@email.com"
+        );
 
+        var poo = new Disciplina(
+                "POO",
+                "Programação Orientada a Objetos",
+                80
+        );
 
-        System.out.println("\n=================================================");
-        System.out.println("=== INÍCIO DO TRABALHO PRÁTICO (SEUS TESTES) ===");
-        System.out.println("=================================================");
+        var bancoDados = new Disciplina(
+                "BD",
+                "Banco de Dados",
+                80
+        );
 
-        // DADOS DO ALUNO PARA OS TESTES (Sinta-se livre para alterar e testar)
-        var notaProva = 5.5;
-        var notaProjeto = 7.0;
-        var notaLista = 6.5;
-        var totalFaltas = 15;
+        var periodo2025_2 = new PeriodoLetivo(
+                2025,
+                Semestre.SEGUNDO
+        );
 
-        // TESTE DO EXERCÍCIO 1: Cálculo de Média
-        System.out.println("\n--- Teste 1: Cálculo de Média ---");
-        var mediaFinal = sistema.calcularMedia(notaProva, notaProjeto, notaLista);
-        System.out.println("Média em POO: " + mediaFinal);
+        var periodo2026_1 = new PeriodoLetivo(
+                2026,
+                Semestre.PRIMEIRO
+        );
 
-        // TESTE DO EXERCÍCIO 2: Verificação de Status
-        System.out.println("\n--- Teste 2: Verificação de Status ---");
-        var status = sistema.verificarStatus(mediaFinal, totalFaltas);
-        System.out.println("Status do aluno: " + status);
+        var periodo2026_2 = new PeriodoLetivo(
+                2026,
+                Semestre.SEGUNDO
+        );
 
-        // TESTE DO EXERCÍCIO 3: Orientação do Sistema
-        System.out.println("\n--- Teste 3: Orientação Final ---");
-        var orientacao = sistema.gerarOrientacao(status);
-        System.out.println("Orientação: " + orientacao);
+        var turma2025 = new Turma(
+                "ESOFT4S-NA",
+                periodo2025_2
+        );
+
+        var turma2026A = new Turma(
+                "ESOFT4S-NB",
+                periodo2026_1
+        );
+
+        var turma2026B = new Turma(
+                "ADSIS4S",
+                periodo2026_2
+        );
+
+        System.out.println("=== OFERTA DE DISCIPLINAS ===");
+
+        var poo2025 = turma2025.ofertarDisciplina(poo);
+
+        var poo2026A = turma2026A.ofertarDisciplina(poo);
+        var bancoDados2026A = turma2026A.ofertarDisciplina(bancoDados);
+
+        var poo2026B = turma2026B.ofertarDisciplina(poo);
+
+        System.out.println("Disciplinas da turma "
+                + turma2026A.getCodigo() + ": "
+                + turma2026A.getOfertas());
+
+        validar(
+                turma2026A.getOfertas().size() == 2,
+                "A turma deve permitir várias disciplinas ofertadas."
+        );
+
+        System.out.println();
+        System.out.println("=== DISCIPLINA DUPLICADA ===");
+
+        esperarFalha(
+                "A mesma disciplina não pode ser ofertada duas vezes na mesma turma.",
+                () -> turma2026A.ofertarDisciplina(poo)
+        );
+
+        System.out.println();
+        System.out.println("=== PRIMEIRA MATRÍCULA ===");
+
+        var primeiraMatricula = poo2025.matricular(paola);
+
+        primeiraMatricula.concluir(
+                ResultadoAcademico.REPROVADO
+        );
+
+        System.out.println(
+                "Paola concluiu POO em 2025/2 com resultado: "
+                        + primeiraMatricula.getResultado()
+        );
+
+        System.out.println();
+        System.out.println("=== NOVA MATRÍCULA APÓS REPROVAÇÃO ===");
+
+        var segundaMatricula = poo2026A.matricular(paola);
+
+        System.out.println(
+                "Nova matrícula realizada: "
+                        + segundaMatricula
+        );
+
+        validar(
+                paola.getMatriculas().size() == 2,
+                "O aluno deve manter seu histórico de matrículas."
+        );
+
+        segundaMatricula.concluir(
+                ResultadoAcademico.APROVADO
+        );
+
+        System.out.println(
+                "Paola concluiu novamente POO com resultado: "
+                        + segundaMatricula.getResultado()
+        );
+
+        System.out.println();
+        System.out.println("=== MATRÍCULA APÓS APROVAÇÃO ===");
+
+        esperarFalha(
+                "Aluno aprovado não pode cursar novamente a mesma disciplina.",
+                () -> poo2026B.matricular(paola)
+        );
+
+        System.out.println();
+        System.out.println("=== MATRÍCULA DUPLICADA ===");
+
+        var matriculaBruno = poo2026A.matricular(bruno);
+
+        esperarFalha(
+                "Aluno não pode possuir duas matrículas na mesma oferta.",
+                () -> poo2026A.matricular(bruno)
+        );
+
+        System.out.println();
+        System.out.println("=== CONSULTAS ===");
+
+        System.out.println(
+                "Matrículas de Paola: "
+                        + paola.getMatriculas()
+        );
+
+        System.out.println(
+                "Matrículas de POO - ESOFT4S-NB: "
+                        + poo2026A.getMatriculas()
+        );
+
+        System.out.println(
+                "Matrículas de Banco de Dados - ESOFT4S-NB: "
+                        + bancoDados2026A.getMatriculas()
+        );
+
+        System.out.println();
+        System.out.println("=== VALIDAÇÃO CONCLUÍDA ===");
     }
 
-    // ========================================================================
-    // SEÇÃO DE EXEMPLOS (Use como referência/cola para fazer os exercícios)
-    // ========================================================================
-    public void mostrarExemplosDaAula() {
-        System.out.println("\n--- Exemplo 1: Tipos Clássicos vs var ---");
-
-        // Jeito clássico (tipagem explícita)
-        double notaAntiga = 8.5;
-        String disciplina = "Estrutura de Dados";
-
-        // Jeito moderno (inferência com var - o Java adivinha o tipo pelo valor)
-        var notaNova = 9.0;
-        var sigla = "ED";
-        System.out.println("Variáveis criadas: " + sigla + " e nota " + notaNova);
-
-
-        System.out.println("\n--- Exemplo 2: Controle de Fluxo (if / else) ---");
-        var mediaExemplo = 7.5;
-
-        // O if verifica se a condição dentro dos parênteses é verdadeira
-        if (mediaExemplo >= 7.0) {
-            System.out.println("A condição é VERDADEIRA: Aluno aprovado direto!");
-        } else {
-            System.out.println("A condição é FALSA: Aluno em exame.");
+    private static void validar(
+            boolean condicao,
+            String mensagem
+    ) {
+        if (!condicao) {
+            throw new AssertionError(mensagem);
         }
 
-
-        System.out.println("\n--- Exemplo 3: O Switch Moderno (Java 14+) ---");
-        var conceito = "B";
-
-        // O switch moderno usa a setinha (->) e não precisa da palavra "break"
-        var feedbackExemplo = switch (conceito) {
-            case "A" -> "Excelente desempenho!";
-            case "B", "C" -> "Bom trabalho, continue assim."; // Agrupando casos
-            case "D", "F" -> "Precisa revisar o conteúdo.";
-            default -> "Conceito inválido."; // O default salva se nenhuma opção bater
-        };
-        System.out.println("Conceito " + conceito + " significa: " + feedbackExemplo);
+        System.out.println("[OK] " + mensagem);
     }
 
-
-    // ========================================================================
-    // SEÇÃO DOS EXERCÍCIOS (Preencha os blocos com TODO)
-    // ========================================================================
-
-    /*
-     * EXERCÍCIO 1: Tipos Primitivos, var e Operadores
-     * Regra: A média é a soma das três notas dividida por 3.
-     */
-    public double calcularMedia(double nota1, double nota2, double nota3) {
-        var soma = nota1 + nota2 + nota3;
-        var media = soma / 3;
-        return media;
-    }
-
-    /*
-     * EXERCÍCIO 2: Controle de Fluxo Clássico (if / else)
-     * Regras:
-     * - Se faltas for MAIOR que 20 -> Retorna "REPROVADO_POR_FALTA"
-     * - Senão, se a média for MAIOR OU IGUAL a 6.0 -> Retorna "APROVADO"
-     * - Caso contrário (média menor que 6.0 e faltas OK) -> Retorna "EXAME"
-     */
-    public String verificarStatus(double media, int faltas) {
-        if (faltas > 20) {
-            return "REPROVADO_POR_FALTA";
-        } else if (media >= 6.0) {
-            return "APROVADO";
-        } else {
-            return "EXAME";
+    private static void esperarFalha(
+            String mensagem,
+            Runnable operacao
+    ) {
+        try {
+            operacao.run();
+            throw new AssertionError(
+                    "A operação deveria ter sido impedida: " + mensagem
+            );
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println(
+                    "[OK] " + mensagem
+            );
+            System.out.println(
+                    "     Motivo: " + e.getMessage()
+            );
         }
-    }
-
-    /*
-     * EXERCÍCIO 3: Controle de Fluxo Moderno (Switch Expressions)
-     * Regra: Retornar uma mensagem de instrução baseada no status.
-     */
-    public String gerarOrientacao(String status) {
-        var instrucao = switch (status) {
-            case "APROVADO" -> "Parabéns! Você dominou Classes e Objetos. Boas férias!";
-            case "EXAME" -> "Atenção: Estude os conceitos de Herança e Polimorfismo para a prova substitutiva.";
-            case "REPROVADO_POR_FALTA" -> "Reprovação automática. Frequência abaixo do mínimo exigido.";
-            default -> "Procure a coordenação do curso.";
-        };
-        return instrucao;
     }
 }
