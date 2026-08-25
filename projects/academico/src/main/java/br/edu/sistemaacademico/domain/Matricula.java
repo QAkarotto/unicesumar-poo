@@ -1,29 +1,68 @@
 package br.edu.sistemaacademico.domain;
 
 public class Matricula {
-    private String codigo;
+
     private Aluno aluno;
-    private Turma turma;
+    private OfertaDisciplina oferta;
+    private ResultadoAcademico resultado;
 
-    public Matricula(String codigo, Aluno aluno, Turma turma) {
+    public Matricula(Aluno aluno, OfertaDisciplina oferta) {
 
-        if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException("Código da matrícula é obrigatório.");
-        }
         if (aluno == null) {
             throw new IllegalArgumentException("Aluno é obrigatório.");
         }
-        if (turma == null) {
-            throw new IllegalArgumentException("Turma é obrigatório.");
+
+        if (oferta == null) {
+            throw new IllegalArgumentException(
+                    "Oferta de disciplina é obrigatória."
+            );
         }
 
-        this.codigo = codigo;
         this.aluno = aluno;
-        this.turma = turma;
+        this.oferta = oferta;
+        this.resultado = null;
+    }
+
+    public Aluno getAluno() {
+        return aluno;
+    }
+
+    public OfertaDisciplina getOferta() {
+        return oferta;
+    }
+
+    public ResultadoAcademico getResultado() {
+        return resultado;
+    }
+
+    public void concluir(ResultadoAcademico resultado) {
+
+        if (resultado == null) {
+            throw new IllegalArgumentException(
+                    "Resultado acadêmico é obrigatório."
+            );
+        }
+
+        if (this.resultado != null) {
+            throw new IllegalStateException(
+                    "A matrícula já foi concluída."
+            );
+        }
+
+        this.resultado = resultado;
     }
 
     @Override
     public String toString() {
-    return codigo + " - " + aluno + " - " + turma;
+
+        String situacao =
+                resultado == null
+                        ? "EM ANDAMENTO"
+                        : resultado.toString();
+
+        return aluno + " - "
+                + oferta.getDisciplina()
+                + " - "
+                + situacao;
     }
 }
