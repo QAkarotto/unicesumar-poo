@@ -13,7 +13,7 @@ Esta atividade prática tem como objetivo a aplicação das estruturas fundament
 O arquivo base para a realização desta atividade encontra-se no repositório oficial da disciplina:
 [https://github.com/QAkarotto/unicesumar-poo](https://github.com/QAkarotto/unicesumar-poo)
 
-Caminho do arquivo no projeto: `projects/academico/src/main/java/org/example/SistemaAcademico.java`
+Caminho do arquivo no projeto: `../projects/academico/src/main/java/br/edu/sistemaacademico/SistemaAcademico.java`
 
 Para o desenvolvimento e submissão do código, siga rigorosamente o fluxo de versionamento abaixo:
 
