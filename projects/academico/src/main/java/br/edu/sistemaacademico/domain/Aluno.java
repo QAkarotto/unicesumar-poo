@@ -1,10 +1,15 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Aluno {
 
     private final String identificadorAcademico;
     private String nome;
     private String email;
+    private final List<Matricula> matriculas = new ArrayList<>();
 
     public Aluno(String identificadorAcademico, String nome, String email) {
         validarTexto(identificadorAcademico, "Identificador acadêmico");
@@ -38,6 +43,23 @@ public class Aluno {
         this.email = email;
     }
 
+    public void adicionarMatricula(Matricula matricula) {
+        if (matricula != null && !this.matriculas.contains(matricula)) {
+            this.matriculas.add(matricula);
+        }
+    }
+
+    public List<Matricula> getMatriculas() {
+        return Collections.unmodifiableList(matriculas); // Protege o encapsulamento
+    }
+
+    // Verifica se o aluno já domina essa disciplina como o Goku domina o Instinto Superior.
+    public boolean isAprovadoNaDisciplina(Disciplina disciplina) {
+        return matriculas.stream()
+                .anyMatch(m -> m.getOferta().getDisciplina().getCodigo().equals(disciplina.getCodigo())
+                        && m.getResultado() == ResultadoAcademico.APROVADO);
+    }
+
     private void validarTexto(String valor, String campo) {
         if (valor == null || valor.isBlank()) {
             throw new IllegalArgumentException(campo + " não pode ser vazio");
@@ -59,10 +81,6 @@ public class Aluno {
 
     @Override
     public String toString() {
-        return "Aluno{" +
-                "identificadorAcademico='" + identificadorAcademico + '\'' +
-                ", nome='" + nome + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return nome + " (" + identificadorAcademico + ")";
     }
 }
