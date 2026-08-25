@@ -1,11 +1,16 @@
-
 package br.edu.sistemaacademico.domain;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Aluno {
 
     private final String identificadorAcademico;
     private String nome;
     private String email;
+
+    private final List<Matricula> historico = new ArrayList<>();
 
     public Aluno(String identificadorAcademico, String nome, String email) {
         validarTexto(identificadorAcademico, "Identificador acadêmico");
@@ -32,6 +37,36 @@ public class Aluno {
     public void setEmail(String email) {
         validarEmail(email);
         this.email = email;
+    }
+
+    void adicionarMatriculaAoHistorico(Matricula matricula) {
+        if (matricula == null) {
+            throw new IllegalArgumentException(
+                    "Matrícula não pode ser nula."
+            );
+        }
+
+        historico.add(matricula);
+    }
+
+    public List<Matricula> getHistorico() {
+        return Collections.unmodifiableList(historico);
+    }
+
+    public boolean jaFoiAprovadoEm(Disciplina disciplina) {
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "Disciplina não pode ser nula."
+            );
+        }
+
+        return historico.stream()
+                .anyMatch(matricula ->
+                        matricula.getOfertaDisciplina()
+                                .getDisciplina()
+                                .equals(disciplina)
+                                && matricula.getResultado() == Resultado.APROVADO
+                );
     }
 
     private static void validarTexto(String valor, String campo) {

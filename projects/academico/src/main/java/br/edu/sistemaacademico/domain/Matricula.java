@@ -2,46 +2,67 @@ package br.edu.sistemaacademico.domain;
 
 public class Matricula {
 
-    private final String codigo;
     private final Aluno aluno;
-    private final Turma turma;
+    private final OfertaDisciplina ofertaDisciplina;
+    private Resultado resultado;
 
-    public Matricula(String codigo, Aluno aluno, Turma turma) {
-        if (codigo == null || codigo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Código não pode ser vazio.");
-        }
-
+    public Matricula(Aluno aluno, OfertaDisciplina ofertaDisciplina) {
         if (aluno == null) {
-            throw new IllegalArgumentException("Aluno não pode ser nulo.");
+            throw new IllegalArgumentException(
+                    "O aluno é obrigatório."
+            );
         }
 
-        if (turma == null) {
-            throw new IllegalArgumentException("Turma não pode ser nula.");
+        if (ofertaDisciplina == null) {
+            throw new IllegalArgumentException(
+                    "A oferta de disciplina é obrigatória."
+            );
         }
 
-        this.codigo = codigo;
         this.aluno = aluno;
-        this.turma = turma;
-    }
-
-    public String getCodigo() {
-        return codigo;
+        this.ofertaDisciplina = ofertaDisciplina;
+        this.resultado = null;
     }
 
     public Aluno getAluno() {
         return aluno;
     }
 
-    public Turma getTurma() {
-        return turma;
+    public OfertaDisciplina getOfertaDisciplina() {
+        return ofertaDisciplina;
+    }
+
+    public Resultado getResultado() {
+        return resultado;
+    }
+
+    public void aprovar() {
+        if (resultado == Resultado.APROVADO) {
+            throw new IllegalStateException(
+                    "A matrícula já está aprovada."
+            );
+        }
+
+        resultado = Resultado.APROVADO;
+    }
+
+    public void reprovar() {
+        if (resultado == Resultado.APROVADO) {
+            throw new IllegalStateException(
+                    "Uma matrícula aprovada não pode ser alterada."
+            );
+        }
+
+        resultado = Resultado.REPROVADO;
     }
 
     @Override
     public String toString() {
         return "Matricula{" +
-                "codigo='" + codigo + '\'' +
-                ", aluno=" + aluno +
-                ", turma=" + turma +
+                "aluno=" + aluno.getNome() +
+                ", disciplina=" +
+                ofertaDisciplina.getDisciplina() +
+                ", resultado=" + resultado +
                 '}';
     }
 }

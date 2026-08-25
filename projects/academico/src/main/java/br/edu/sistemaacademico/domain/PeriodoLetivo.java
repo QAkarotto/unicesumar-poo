@@ -9,7 +9,7 @@ public class PeriodoLetivo {
     private final Semestre semestre;
 
     public PeriodoLetivo(int ano, Semestre semestre) {
-        if (ano < 1900) { // Limite razoável para o ano
+        if (ano < 1900) {
             throw new IllegalArgumentException("Ano letivo inválido.");
         }
         if (semestre == null) {

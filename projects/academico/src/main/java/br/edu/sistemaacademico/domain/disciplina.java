@@ -4,23 +4,22 @@ public class Disciplina {
 
     private final String codigo;
     private final String nome;
-    private final int cargaHoraria;
 
-    public Disciplina(String codigo, String nome, int cargaHoraria) {
+    public Disciplina(String codigo, String nome) {
         if (codigo == null || codigo.trim().isEmpty()) {
-            throw new IllegalArgumentException("O código da disciplina é obrigatório.");
+            throw new IllegalArgumentException(
+                    "O código da disciplina é obrigatório."
+            );
         }
-        if (nome == null || nome.trim().isEmpty()) {
-            throw new IllegalArgumentException("O nome da disciplina é obrigatório.");
-        }
-        if (cargaHoraria <= 0) {
 
-            throw new IllegalArgumentException("A carga horária deve ser positiva.");
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "O nome da disciplina é obrigatório."
+            );
         }
 
         this.codigo = codigo.trim();
         this.nome = nome.trim();
-        this.cargaHoraria = cargaHoraria;
     }
 
     public String getCodigo() {
@@ -31,8 +30,24 @@ public class Disciplina {
         return nome;
     }
 
-    public int getCargaHoraria() {
-        return cargaHoraria;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Disciplina)) {
+            return false;
+        }
+
+        Disciplina outra = (Disciplina) o;
+
+        return codigo.equals(outra.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return codigo.hashCode();
     }
 
     @Override
@@ -40,7 +55,6 @@ public class Disciplina {
         return "Disciplina{" +
                 "codigo='" + codigo + '\'' +
                 ", nome='" + nome + '\'' +
-                ", cargaHoraria=" + cargaHoraria +
                 '}';
     }
 }
