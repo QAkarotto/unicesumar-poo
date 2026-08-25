@@ -1,25 +1,23 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Turma {
 
     private final String codigo;
-    private final Disciplina disciplina;
     private final PeriodoLetivo periodoLetivo;
+
+    private final List<OfertaDisciplina> ofertas = new ArrayList<>();
 
     public Turma(
             String codigo,
-            Disciplina disciplina,
             PeriodoLetivo periodoLetivo) {
 
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException(
                     "O código da turma é obrigatório."
-            );
-        }
-
-        if (disciplina == null) {
-            throw new IllegalArgumentException(
-                    "A disciplina é obrigatória."
             );
         }
 
@@ -30,7 +28,6 @@ public class Turma {
         }
 
         this.codigo = codigo;
-        this.disciplina = disciplina;
         this.periodoLetivo = periodoLetivo;
     }
 
@@ -38,20 +35,45 @@ public class Turma {
         return codigo;
     }
 
-    public Disciplina getDisciplina() {
-        return disciplina;
-    }
-
     public PeriodoLetivo getPeriodoLetivo() {
         return periodoLetivo;
+    }
+
+    public List<OfertaDisciplina> getOfertas() {
+        return Collections.unmodifiableList(ofertas);
+    }
+
+    public OfertaDisciplina ofertarDisciplina(
+            Disciplina disciplina) {
+
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "A disciplina é obrigatória."
+            );
+        }
+
+        for (OfertaDisciplina oferta : ofertas) {
+            if (oferta.getDisciplina().equals(disciplina)) {
+                throw new IllegalArgumentException(
+                        "A disciplina já foi ofertada nesta turma."
+                );
+            }
+        }
+
+        OfertaDisciplina novaOferta =
+                new OfertaDisciplina(disciplina, this);
+
+        ofertas.add(novaOferta);
+
+        return novaOferta;
     }
 
     @Override
     public String toString() {
         return "Turma{" +
                 "codigo='" + codigo + '\'' +
-                ", disciplina=" + disciplina +
                 ", periodoLetivo=" + periodoLetivo +
+                ", ofertas=" + ofertas +
                 '}';
     }
 }

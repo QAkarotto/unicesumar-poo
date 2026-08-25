@@ -33,9 +33,7 @@ public class PeriodoLetivo {
 
     @Override
     public String toString() {
-        return "PeriodoLetivo{" +
-                "ano=" + ano +
-                ", semestre=" + semestre +
-                '}';
+        return ano + "/" +
+                (semestre == Semestre.PRIMEIRO ? "1" : "2");
     }
 }

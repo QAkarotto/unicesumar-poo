@@ -1,14 +1,24 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Aluno {
 
     private final String identificadorAcademico;
     private final String nome;
     private String email;
 
-    public Aluno(String identificadorAcademico, String nome, String email) {
+    private final List<Matricula> matriculas = new ArrayList<>();
 
-        if (identificadorAcademico == null || identificadorAcademico.isBlank()) {
+    public Aluno(
+            String identificadorAcademico,
+            String nome,
+            String email) {
+
+        if (identificadorAcademico == null ||
+                identificadorAcademico.isBlank()) {
             throw new IllegalArgumentException(
                     "O identificador acadêmico é obrigatório."
             );
@@ -55,10 +65,28 @@ public class Aluno {
         this.email = email;
     }
 
+    public List<Matricula> getMatriculas() {
+        return Collections.unmodifiableList(matriculas);
+    }
+
+    public void adicionarMatricula(Matricula matricula) {
+
+        if (matricula == null) {
+            throw new IllegalArgumentException(
+                    "A matrícula não pode ser nula."
+            );
+        }
+
+        if (!matriculas.contains(matricula)) {
+            matriculas.add(matricula);
+        }
+    }
+
     @Override
     public String toString() {
         return "Aluno{" +
-                "identificadorAcademico='" + identificadorAcademico + '\'' +
+                "identificadorAcademico='" +
+                identificadorAcademico + '\'' +
                 ", nome='" + nome + '\'' +
                 ", email='" + email + '\'' +
                 '}';

@@ -6,7 +6,10 @@ public class Disciplina {
     private final String nome;
     private final int cargaHoraria;
 
-    public Disciplina(String codigo, String nome, int cargaHoraria) {
+    public Disciplina(
+            String codigo,
+            String nome,
+            int cargaHoraria) {
 
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException(

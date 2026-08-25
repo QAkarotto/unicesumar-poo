@@ -2,20 +2,14 @@ package br.edu.sistemaacademico.domain;
 
 public class Matricula {
 
-    private final String codigo;
     private final Aluno aluno;
-    private final Turma turma;
+    private final OfertaDisciplina ofertaDisciplina;
+
+    private ResultadoAcademico resultado;
 
     public Matricula(
-            String codigo,
             Aluno aluno,
-            Turma turma) {
-
-        if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException(
-                    "O código da matrícula é obrigatório."
-            );
-        }
+            OfertaDisciplina ofertaDisciplina) {
 
         if (aluno == null) {
             throw new IllegalArgumentException(
@@ -23,35 +17,54 @@ public class Matricula {
             );
         }
 
-        if (turma == null) {
+        if (ofertaDisciplina == null) {
             throw new IllegalArgumentException(
-                    "A turma é obrigatória."
+                    "A oferta da disciplina é obrigatória."
             );
         }
 
-        this.codigo = codigo;
         this.aluno = aluno;
-        this.turma = turma;
-    }
-
-    public String getCodigo() {
-        return codigo;
+        this.ofertaDisciplina = ofertaDisciplina;
     }
 
     public Aluno getAluno() {
         return aluno;
     }
 
-    public Turma getTurma() {
-        return turma;
+    public OfertaDisciplina getOfertaDisciplina() {
+        return ofertaDisciplina;
+    }
+
+    public ResultadoAcademico getResultado() {
+        return resultado;
+    }
+
+    public void concluir(ResultadoAcademico resultado) {
+
+        if (resultado == null) {
+            throw new IllegalArgumentException(
+                    "O resultado acadêmico é obrigatório."
+            );
+        }
+
+        if (this.resultado != null) {
+            throw new IllegalStateException(
+                    "A matrícula já foi concluída."
+            );
+        }
+
+        this.resultado = resultado;
     }
 
     @Override
     public String toString() {
         return "Matricula{" +
-                "codigo='" + codigo + '\'' +
-                ", aluno=" + aluno +
-                ", turma=" + turma +
+                "aluno=" + aluno.getNome() +
+                ", disciplina=" +
+                ofertaDisciplina.getDisciplina().getNome() +
+                ", turma=" +
+                ofertaDisciplina.getTurma().getCodigo() +
+                ", resultado=" + resultado +
                 '}';
     }
 }
