@@ -1,5 +1,7 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.Objects;
+
 public class Disciplina {
 
     private final String codigo;   // identidade da disciplina: não muda
@@ -50,6 +52,29 @@ public class Disciplina {
             throw new IllegalArgumentException("Carga horária deve ser positiva. Valor recebido: " + cargaHoraria);
         }
         return cargaHoraria;
+    }
+
+    // ---------- Identidade ----------
+
+    /*
+     * Duas disciplinas são a mesma quando têm o mesmo código.
+     * É isso que sustenta a regra "não pode cursar de novo o que já foi aprovado",
+     * mesmo que a oferta seja de outra turma ou período.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Disciplina outra)) {
+            return false;
+        }
+        return codigo.equalsIgnoreCase(outra.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo.toLowerCase());
     }
 
     @Override

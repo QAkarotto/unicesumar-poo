@@ -1,5 +1,8 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Aluno {
 
     // final = definido uma única vez, no construtor, e nunca mais muda.
@@ -8,6 +11,9 @@ public class Aluno {
     // Sem final: podem mudar, mas SEMPRE passando pelas regras da classe.
     private String nome;
     private String email;
+
+    // O aluno é o dono do próprio histórico acadêmico.
+    private final List<Matricula> matriculas = new ArrayList<>();
 
     public Aluno(String identificadorAcademico, String nome, String email) {
         this.identificadorAcademico = validarTexto(identificadorAcademico, "Identificador acadêmico");
@@ -29,6 +35,13 @@ public class Aluno {
         return email;
     }
 
+    /*
+     * Cópia protegida: quem consulta o histórico não consegue alterá-lo por fora.
+     */
+    public List<Matricula> getMatriculas() {
+        return List.copyOf(matriculas);
+    }
+
     // ---------- Métodos de alteração ----------
 
     public void setNome(String nome) {
@@ -38,6 +51,37 @@ public class Aluno {
 
     public void setEmail(String email) {
         this.email = validarEmail(email);
+    }
+
+    // ---------- Colaboração com a oferta ----------
+
+    /*
+     * Visibilidade de pacote: só as classes do domínio registram matrícula no aluno.
+     * A matrícula sempre nasce a partir de uma OfertaDisciplina.
+     */
+    void registrarMatricula(Matricula matricula) {
+        if (matricula == null) {
+            throw new IllegalArgumentException("Matrícula é obrigatória.");
+        }
+        if (matricula.getAluno() != this) {
+            throw new IllegalArgumentException("A matrícula pertence a outro aluno.");
+        }
+        if (matriculas.contains(matricula)) {
+            throw new IllegalStateException("Matrícula já registrada no histórico do aluno.");
+        }
+        matriculas.add(matricula);
+    }
+
+    /*
+     * O aluno é quem sabe responder se já foi aprovado em uma disciplina,
+     * porque é ele quem guarda o histórico.
+     */
+    public boolean foiAprovadoEm(Disciplina disciplina) {
+        if (disciplina == null) {
+            return false;
+        }
+        return matriculas.stream()
+                .anyMatch(matricula -> matricula.foiAprovadaEm(disciplina));
     }
 
     // ---------- Regras privadas ----------
