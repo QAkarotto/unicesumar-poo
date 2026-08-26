@@ -1,5 +1,4 @@
-package org.example;
-
+package br.edu.sistemaacademico.domain;
 
     public class PeriodoLetivo {
     private final int ano;
@@ -27,6 +26,5 @@ package org.example;
     
     public enum Semestre {
     PRIMEIRO, SEGUNDO;
+} 
 }
-}
-
