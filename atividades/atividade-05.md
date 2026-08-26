@@ -11,7 +11,7 @@ O foco da atividade é distribuir adequadamente as responsabilidades entre os ob
 Mantenha as classes de domínio no pacote:
 
 ```text
-br.edu.sistemaacademico.domain
+br.edu.sistemaacademico.br.edu.sistemaacademico.domain
 ```
 
 Não crie nesta atividade pacotes como `service`, `repository` ou `controller`.
