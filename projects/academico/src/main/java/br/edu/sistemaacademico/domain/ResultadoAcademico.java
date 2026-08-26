@@ -1,4 +1,6 @@
 package br.edu.sistemaacademico.domain;
 
-public class ResultadoAcademico {
+public enum ResultadoAcademico {
+    APROVADO,
+    REPROVADO;
 }
