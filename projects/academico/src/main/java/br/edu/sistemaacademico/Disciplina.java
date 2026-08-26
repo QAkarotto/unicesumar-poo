@@ -1,26 +1,25 @@
 package br.edu.sistemaacademico.domain;
 
-public class Disciplina {
+import java.util.Objects;
 
-    private String codigo;
-    private String nome;
-    private int cargaHoraria;
+public class Disciplina {
+    private final String codigo;
+    private final String nome;
+    private final int cargaHoraria;
 
     public Disciplina(String codigo, String nome, int cargaHoraria) {
-        if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException("Código é obrigatório.");
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("O código não pode ser nulo ou vazio.");
         }
-
-        if (nome == null || nome.isBlank()) {
-            throw new IllegalArgumentException("Nome é obrigatório.");
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
         }
-
         if (cargaHoraria <= 0) {
-            throw new IllegalArgumentException("Carga horária deve ser positiva.");
+            throw new IllegalArgumentException("A carga horária deve ser positiva.");
         }
 
-        this.codigo = codigo.trim();
-        this.nome = nome.trim();
+        this.codigo = codigo;
+        this.nome = nome;
         this.cargaHoraria = cargaHoraria;
     }
 
@@ -32,12 +31,21 @@ public class Disciplina {
         return nome;
     }
 
-    public int getCargaHoraria() {
-        return cargaHoraria;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Disciplina that = (Disciplina) o;
+        return Objects.equals(codigo, that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return "Disciplina: " + codigo + " | " + nome + " | Carga horária: " + cargaHoraria + "h";
+        return String.format("%s (%s)", nome, codigo);
     } // João Pedro Hulchak Kazmierzak RA: 25141620-2 e Hiuri Luciano dos Santos RA: 25208360-2
 }
