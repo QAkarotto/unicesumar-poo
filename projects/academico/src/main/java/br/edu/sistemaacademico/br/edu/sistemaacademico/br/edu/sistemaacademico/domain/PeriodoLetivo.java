@@ -27,7 +27,7 @@ public class PeriodoLetivo {
 
     @Override
     public String toString() {
-        return "Ano: " + ano +
-                "\nSemestre: " + semestre;
+        return "Ano: " + getAno() +
+                "\nSemestre: " + getSemestre();
     }
 }

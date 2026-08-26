@@ -1,11 +1,13 @@
 package br.edu.sistemaacademico.domain;
 
 public class Matricula {
+
     private final String codigo;
     private final Aluno aluno;
-    private final Turma turma;
+    private final OfertaDisciplina oferta;
+    private ResultadoAcademico resultado;
 
-    public Matricula(String codigo, Aluno aluno, Turma turma) {
+    Matricula(String codigo, Aluno aluno, OfertaDisciplina oferta) {
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException("O código da matrícula é obrigatório.");
         }
@@ -14,13 +16,13 @@ public class Matricula {
             throw new IllegalArgumentException("O aluno é obrigatório.");
         }
 
-        if (turma == null) {
-            throw new IllegalArgumentException("A turma é obrigatória.");
+        if (oferta == null) {
+            throw new IllegalArgumentException("A oferta de disciplina é obrigatória.");
         }
 
         this.codigo = codigo;
         this.aluno = aluno;
-        this.turma = turma;
+        this.oferta = oferta;
     }
 
     public String getCodigo() {
@@ -31,14 +33,38 @@ public class Matricula {
         return aluno;
     }
 
-    public Turma getTurma() {
-        return turma;
+    public OfertaDisciplina getOferta() {
+        return oferta;
+    }
+
+    public ResultadoAcademico getResultado() {
+        return resultado;
+    }
+
+    //A matrícula é quem controla o seu próprio estado de conclusão, impedindo alterações inválidas.
+
+
+    public void concluir(ResultadoAcademico resultado) {
+        if (resultado == null) {
+            throw new IllegalArgumentException("O resultado é obrigatório.");
+        }
+
+        if (this.resultado != null) {
+            throw new IllegalStateException(
+                    "A matrícula " + codigo + " já foi concluída anteriormente."
+            );
+        }
+
+        this.resultado = resultado;
     }
 
     @Override
     public String toString() {
-        return "Código: " + codigo +
+        return "Código: " + getCodigo() +
                 "\nAluno: " + aluno.getNome() +
-                "\nTurma: " + turma.getCodigo();
+                "\nDisciplina: " + oferta.getDisciplina().getNome() +
+                "\nTurma: " + oferta.getTurma().getCodigo() +
+                //operador ternário
+                "\nResultado: " + (resultado != null ? resultado : "Em andamento");
     }
 }

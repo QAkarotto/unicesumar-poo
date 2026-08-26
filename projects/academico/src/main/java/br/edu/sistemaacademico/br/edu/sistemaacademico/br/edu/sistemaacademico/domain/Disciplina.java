@@ -38,8 +38,8 @@ public class Disciplina {
 
     @Override
     public String toString() {
-        return "Código: " + codigo +
-                "\nNome: " + nome +
-                "\nCarga horária: " + cargaHoraria + " horas";
+        return "Código: " + getCodigo() +
+                "\nNome: " + getNome() +
+                "\nCarga horária: " + getCargaHoraria() + " horas";
     }
 }
