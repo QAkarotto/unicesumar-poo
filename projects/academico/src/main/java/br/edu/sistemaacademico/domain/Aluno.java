@@ -53,7 +53,6 @@ public class Aluno {
         return Collections.unmodifiableList(matriculas); // Protege o encapsulamento
     }
 
-    // Verifica se o aluno já domina essa disciplina como o Goku domina o Instinto Superior.
     public boolean isAprovadoNaDisciplina(Disciplina disciplina) {
         return matriculas.stream()
                 .anyMatch(m -> m.getOferta().getDisciplina().getCodigo().equals(disciplina.getCodigo())
