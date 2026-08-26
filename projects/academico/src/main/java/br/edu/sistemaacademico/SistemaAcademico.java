@@ -6,81 +6,103 @@ public class SistemaAcademico {
 
     public static void main(String[] args) {
 
-        System.out.println("=== SISTEMA ACADÊMICO ===\n");
+        // ── Disciplinas ──────────────────────────────────────────────────────
+        Disciplina poo   = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        Disciplina bd    = new Disciplina("BD001",  "Banco de Dados", 80);
+        Disciplina so    = new Disciplina("SO001",  "Sistemas Operacionais", 60);
+        Disciplina er    = new Disciplina("ER001",  "Engenharia de Requisitos", 60);
 
-        Aluno aluno1 = new Aluno("2024001", "Ana Lima", "ana.lima@email.com");
-        Aluno aluno2 = new Aluno("2024002", "Bruno Souza", "bruno.souza@email.com");
 
-        System.out.println("Alunos criados:");
-        System.out.println("  " + aluno1);
-        System.out.println("  " + aluno2);
+        Turma turma2026_2 = new Turma("ESOFT4S-NA", "2026/2");
+        Turma turma2027_1 = new Turma("ESOFT4S-NA", "2027/1");
 
-        Disciplina disciplina = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
-        System.out.println("\nDisciplina criada:");
-        System.out.println("  " + disciplina);
 
-        PeriodoLetivo periodo = new PeriodoLetivo(2024, Semestre.PRIMEIRO);
-        System.out.println("\nPeríodo letivo criado:");
-        System.out.println("  " + periodo);
+        System.out.println("=== Ofertando disciplinas ===");
+        OfertaDisciplina ofertaPoo  = turma2026_2.oferecer(poo);
+        OfertaDisciplina ofertaBd   = turma2026_2.oferecer(bd);
+        OfertaDisciplina ofertaSo   = turma2026_2.oferecer(so);
+        OfertaDisciplina ofertaEr   = turma2026_2.oferecer(er);
 
-        Turma turma = new Turma("T01", disciplina, periodo);
-        System.out.println("\nTurma criada:");
-        System.out.println("  " + turma);
+        turma2026_2.getOfertas().forEach(o ->
+            System.out.println("  - " + o.getDisciplina().getNome())
+        );
 
-        Matricula matricula1 = new Matricula("MAT001", aluno1, turma);
-        Matricula matricula2 = new Matricula("MAT002", aluno2, turma);
-        System.out.println("\nMatrículas realizadas:");
-        System.out.println("  " + matricula1);
-        System.out.println("  " + matricula2);
 
-        System.out.println("\n--- Atualização de e-mail ---");
-        System.out.println("E-mail atual de Ana: " + aluno1.getEmail());
-        aluno1.setEmail("ana.lima.novo@univ.edu.br");
-        System.out.println("E-mail atualizado:   " + aluno1.getEmail());
-
-        System.out.println("\n--- Tentativas inválidas (devem ser rejeitadas) ---");
-
-        tentativa("Aluno sem nome", () ->
-                new Aluno("2024003", "", "valido@email.com"));
-
-        tentativa("Aluno com e-mail vazio", () ->
-                new Aluno("2024004", "Carlos", ""));
-
-        tentativa("Aluno com e-mail sem @", () ->
-                new Aluno("2024005", "Diana", "emailsemarroba.com"));
-
-        tentativa("Atualizar e-mail de Bruno com valor inválido", () ->
-                aluno2.setEmail("nao-e-email"));
-
-        System.out.println("E-mail de Bruno permanece: " + aluno2.getEmail());
-
-        tentativa("Disciplina com carga horária zero", () ->
-                new Disciplina("XXX", "Inválida", 0));
-
-        tentativa("Disciplina com carga horária negativa", () ->
-                new Disciplina("XXX", "Inválida", -10));
-
-        tentativa("Período letivo com semestre nulo", () ->
-                new PeriodoLetivo(2024, null));
-
-        tentativa("Turma sem disciplina", () ->
-                new Turma("T99", null, periodo));
-
-        tentativa("Matrícula sem aluno", () ->
-                new Matricula("MAT999", null, turma));
-
-        tentativa("Matrícula sem código", () ->
-                new Matricula("", aluno1, turma));
-
-        System.out.println("\n=== FIM DO CENÁRIO ===");
-    }
-
-    private static void tentativa(String descricao, Runnable acao) {
+        System.out.println("\n=== Tentativa de oferta duplicada ===");
         try {
-            acao.run();
-            System.out.println("  [FALHA] \"" + descricao + "\" deveria ter lançado exceção!");
+            turma2026_2.oferecer(poo);
         } catch (IllegalArgumentException e) {
-            System.out.println("  [OK] " + descricao + " → " + e.getMessage());
+            System.out.println("Bloqueado: " + e.getMessage());
         }
+
+
+        Aluno goku  = new Aluno("RA001", "Goku");
+        Aluno vegeta = new Aluno("RA002", "Vegeta");
+
+
+        System.out.println("\n=== Matrículas ===");
+        Matricula mGokuPoo = ofertaPoo.matricular(goku);
+        Matricula mGokuBd  = ofertaBd.matricular(goku);
+        Matricula mVegetaPoo = ofertaPoo.matricular(vegeta);
+        System.out.println("Matriculado: " + mGokuPoo);
+        System.out.println("Matriculado: " + mGokuBd);
+        System.out.println("Matriculado: " + mVegetaPoo);
+
+
+        System.out.println("\n=== Tentativa de matrícula duplicada ===");
+        try {
+            ofertaPoo.matricular(goku);
+        } catch (IllegalStateException e) {
+            System.out.println("Bloqueado: " + e.getMessage());
+        }
+
+
+        System.out.println("\n=== Registrando resultados ===");
+        mGokuPoo.registrarResultado(ResultadoAcademico.APROVADO);
+        mGokuBd.registrarResultado(ResultadoAcademico.REPROVADO);
+        mVegetaPoo.registrarResultado(ResultadoAcademico.REPROVADO);
+        System.out.println("Resultado Goku em POO: " + mGokuPoo.getResultado());
+        System.out.println("Resultado Goku em BD:  " + mGokuBd.getResultado());
+
+
+        System.out.println("\n=== Tentativa de alterar resultado já registrado ===");
+        try {
+            mGokuPoo.registrarResultado(ResultadoAcademico.REPROVADO);
+        } catch (IllegalStateException e) {
+            System.out.println("Bloqueado: " + e.getMessage());
+        }
+
+        System.out.println("\n=== 2027/1 — nova oferta das mesmas disciplinas ===");
+        OfertaDisciplina ofertaPoo271  = turma2027_1.oferecer(poo);
+        OfertaDisciplina ofertaBd271   = turma2027_1.oferecer(bd);
+
+
+        System.out.println("\n=== Tentativa de nova matrícula após aprovação ===");
+        try {
+            ofertaPoo271.matricular(goku);
+        } catch (IllegalStateException e) {
+            System.out.println("Bloqueado: " + e.getMessage());
+        }
+
+
+        System.out.println("\n=== Nova matrícula após reprovação (BD) ===");
+        Matricula mGokuBd271 = ofertaBd271.matricular(goku);
+        System.out.println("Matriculado: " + mGokuBd271);
+
+
+        Matricula mVegetaPoo271 = ofertaPoo271.matricular(vegeta);
+        System.out.println("Matriculado: " + mVegetaPoo271);
+
+
+        System.out.println("\n=== Histórico de Goku ===");
+        goku.getHistorico().forEach(m -> System.out.println("  " + m));
+
+        System.out.println("\n=== Histórico de Vegeta ===");
+        vegeta.getHistorico().forEach(m -> System.out.println("  " + m));
+
+        System.out.println("\n=== Matrículas em POO (2026/2) ===");
+        ofertaPoo.getMatriculas().forEach(m ->
+            System.out.println("  " + m.getAluno().getNome() + " — " + m.getResultado())
+        );
     }
 }
