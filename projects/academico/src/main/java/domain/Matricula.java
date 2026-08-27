@@ -11,13 +11,6 @@ public class Matricula {
     private final OfertaDisciplina ofertaDisciplina;
     private ResultadoAcademico resultado;
 
-    /**
-     * Construtor de pacote: uma Matrícula só pode ser criada pela
-     * OfertaDisciplina à qual pertence, pois é ela quem valida as
-     * regras de matrícula (duplicidade na oferta, etc). Isso evita que
-     * matrículas "soltas", fora de controle, sejam criadas por
-     * qualquer outra classe.
-     */
     Matricula(OfertaDisciplina ofertaDisciplina, Aluno aluno) {
         if (ofertaDisciplina == null) {
             throw new IllegalArgumentException("A oferta de disciplina não pode ser nula.");
@@ -46,12 +39,6 @@ public class Matricula {
         return resultado;
     }
 
-    /**
-     * Registra o resultado acadêmico da matrícula, concluindo-a.
-     * Uma matrícula só pode ser concluída uma única vez: alterar o
-     * resultado de uma matrícula já concluída é uma alteração de
-     * estado inválida.
-     */
     public void concluir(ResultadoAcademico resultado) {
         if (resultado == null) {
             throw new IllegalArgumentException("O resultado não pode ser nulo.");

@@ -41,12 +41,6 @@ public class Disciplina {
         return cargaHoraria;
     }
 
-    /**
-     * Duas disciplinas são consideradas a mesma disciplina quando possuem
-     * o mesmo código. Isso é usado por Turma para impedir a oferta
-     * duplicada e por Aluno para verificar aprovação prévia em uma
-     * disciplina, independentemente da instância utilizada.
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

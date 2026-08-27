@@ -4,13 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Representa um grupo acadêmico (ex.: "ESOFT4S-NA") em um período
- * letivo, que pode ofertar várias disciplinas distintas.
- * <p>
- * É a Turma quem conhece as disciplinas ofertadas por ela e quem
- * impede que a mesma disciplina seja ofertada mais de uma vez.
- */
 public class Turma {
 
     private final String codigo;
@@ -40,18 +33,10 @@ public class Turma {
         return periodoLetivo;
     }
 
-    /**
-     * Disciplinas ofertadas nesta turma (somente leitura).
-     */
     public List<OfertaDisciplina> getOfertas() {
         return Collections.unmodifiableList(ofertas);
     }
 
-    /**
-     * Oferta uma disciplina para esta turma, criando a
-     * OfertaDisciplina correspondente. A mesma disciplina não pode
-     * ser ofertada duas vezes na mesma turma.
-     */
     public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
         if (disciplina == null) {
             throw new IllegalArgumentException("A disciplina não pode ser nula.");

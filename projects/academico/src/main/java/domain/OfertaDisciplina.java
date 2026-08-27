@@ -4,26 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Representa uma Disciplina sendo ofertada por uma Turma em um
- * determinado período letivo.
- *
- * É a OfertaDisciplina quem mantém as matrículas realizadas nela e
- * quem coordena a criação de uma nova matrícula, colaborando com o
- * Aluno (que sabe informar se já foi aprovado na disciplina) para
- * decidir se a matrícula é permitida.
- */
 public class OfertaDisciplina {
 
     private final Turma turma;
     private final Disciplina disciplina;
     private final List<Matricula> matriculas = new ArrayList<>();
 
-    /**
-     * Construtor de pacote: uma oferta só é criada por uma Turma,
-     * através de ofertarDisciplina(), que já garante a ausência de
-     * duplicidade antes de instanciar a oferta.
-     */
     OfertaDisciplina(Turma turma, Disciplina disciplina) {
         if (turma == null) {
             throw new IllegalArgumentException("A turma não pode ser nula.");
@@ -47,16 +33,6 @@ public class OfertaDisciplina {
         return Collections.unmodifiableList(matriculas);
     }
 
-    /**
-     * Matricula um aluno nesta oferta de disciplina.
-     * <p>
-     * Regras aplicadas, em colaboração com o Aluno:
-     * - o aluno não pode já ter sido aprovado nesta disciplina
-     * (em qualquer turma/período — quem responde isso é o próprio
-     * Aluno, consultando seu histórico);
-     * - o aluno não pode ter mais de uma matrícula ativa nesta
-     * mesma oferta.
-     */
     public Matricula matricular(Aluno aluno) {
         if (aluno == null) {
             throw new IllegalArgumentException("O aluno não pode ser nulo.");
