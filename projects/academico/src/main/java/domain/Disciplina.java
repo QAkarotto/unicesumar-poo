@@ -1,22 +1,29 @@
-
 package br.edu.sistemaacademico.domain;
 
+import java.util.Objects;
+
 public class Disciplina {
+
     private final String codigo;
     private final String nome;
     private final int cargaHoraria;
 
     public Disciplina(String codigo, String nome, int cargaHoraria) {
-        if (codigo == null || codigo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Código da disciplina não pode ser nulo ou vazio.");
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException(
+                    "O código da disciplina não pode ser vazio."
+            );
         }
-        if (nome == null || nome.trim().isEmpty()) {
-            throw new IllegalArgumentException("Nome da disciplina não pode ser nulo ou vazio.");
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException(
+                    "O nome da disciplina não pode ser vazio."
+            );
         }
         if (cargaHoraria <= 0) {
-            throw new IllegalArgumentException("Carga horária deve ser positiva.");
+            throw new IllegalArgumentException(
+                    "A carga horária deve ser maior que zero."
+            );
         }
-
         this.codigo = codigo;
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
@@ -34,8 +41,30 @@ public class Disciplina {
         return cargaHoraria;
     }
 
+    /**
+     * Duas disciplinas são consideradas a mesma disciplina quando possuem
+     * o mesmo código. Isso é usado por Turma para impedir a oferta
+     * duplicada e por Aluno para verificar aprovação prévia em uma
+     * disciplina, independentemente da instância utilizada.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Disciplina that)) return false;
+        return codigo.equals(that.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
+    }
+
     @Override
     public String toString() {
-        return "Disciplina: " + codigo + " - " + nome + " (" + cargaHoraria + "h)";
+        return "Disciplina{" +
+                "codigo='" + codigo + '\'' +
+                ", nome='" + nome + '\'' +
+                ", cargaHoraria=" + cargaHoraria +
+                '}';
     }
 }

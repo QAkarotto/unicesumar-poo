@@ -1,98 +1,203 @@
 package br.edu.sistemaacademico;
 
-import br.edu.sistemaacademico.domain.*;
+import br.edu.sistemaacademico.domain.Aluno;
+import br.edu.sistemaacademico.domain.Disciplina;
+import br.edu.sistemaacademico.domain.Matricula;
+import br.edu.sistemaacademico.domain.OfertaDisciplina;
+import br.edu.sistemaacademico.domain.PeriodoLetivo;
+import br.edu.sistemaacademico.domain.ResultadoAcademico;
+import br.edu.sistemaacademico.domain.Semestre;
+import br.edu.sistemaacademico.domain.Turma;
 
 public class SistemaAcademico {
+
     public static void main(String[] args) {
-        try {
-            // Criando objetos válidos
-            Aluno aluno1 = new Aluno("A001", "João Silva", "joao@email.com");
-            Aluno aluno2 = new Aluno("A002", "Maria Santos", "maria@email.com");
 
-            Disciplina disciplina1 = new Disciplina("D001", "Programação Java", 80);
-            Disciplina disciplina2 = new Disciplina("D002", "Banco de Dados", 60);
+        var paola = new Aluno(
+                "RA2026001",
+                "Paola Oliveira",
+                "paola.oliveira@email.com"
+        );
 
-            PeriodoLetivo periodo = new PeriodoLetivo(2026, Semestre.PRIMEIRO);
+        var bruno = new Aluno(
+                "RA2026002",
+                "Bruno Santos",
+                "bruno.santos@email.com"
+        );
 
-            Turma turma1 = new Turma("T001", disciplina1, periodo);
-            Turma turma2 = new Turma("T002", disciplina2, periodo);
+        var poo = new Disciplina(
+                "POO",
+                "Programação Orientada a Objetos",
+                80
+        );
 
-            Matricula matricula1 = new Matricula("M001", aluno1, turma1);
-            Matricula matricula2 = new Matricula("M002", aluno2, turma1);
-            Matricula matricula3 = new Matricula("M003", aluno1, turma2);
+        var bancoDados = new Disciplina(
+                "BD",
+                "Banco de Dados",
+                80
+        );
 
-            // Apresentando os resultados
-            System.out.println("=== SISTEMA ACADÊMICO ===");
-            System.out.println("\n--- Alunos ---");
-            System.out.println(aluno1);
-            System.out.println(aluno2);
+        var periodo2025_2 = new PeriodoLetivo(
+                2025,
+                Semestre.SEGUNDO
+        );
 
-            System.out.println("\n--- Disciplinas ---");
-            System.out.println(disciplina1);
-            System.out.println(disciplina2);
+        var periodo2026_1 = new PeriodoLetivo(
+                2026,
+                Semestre.PRIMEIRO
+        );
 
-            System.out.println("\n--- Período Letivo ---");
-            System.out.println(periodo);
+        var periodo2026_2 = new PeriodoLetivo(
+                2026,
+                Semestre.SEGUNDO
+        );
 
-            System.out.println("\n--- Turmas ---");
-            System.out.println(turma1);
-            System.out.println(turma2);
+        var turma2025 = new Turma(
+                "ESOFT4S-NA",
+                periodo2025_2
+        );
 
-            System.out.println("\n--- Matrículas ---");
-            System.out.println(matricula1);
-            System.out.println(matricula2);
-            System.out.println(matricula3);
+        var turma2026A = new Turma(
+                "ESOFT4S-NB",
+                periodo2026_1
+        );
 
-            // TESTANDO OS SETTERS (para eliminar o aviso "no usages")
-            System.out.println("\n--- Testando Alterações com Setters ---");
-            System.out.println("Antes: " + aluno1);
-            aluno1.setNome("João Carlos Silva");
-            aluno1.setEmail("joao.carlos@email.com");
-            System.out.println("Depois: " + aluno1);
+        var turma2026B = new Turma(
+                "ADSIS4S",
+                periodo2026_2
+        );
 
-            System.out.println("\n--- Testando Validações ---");
-            testarValidacoes();
+        System.out.println("=== OFERTA DE DISCIPLINAS ===");
 
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro: " + e.getMessage());
-        }
+        var poo2025 = turma2025.ofertarDisciplina(poo);
+
+        var poo2026A = turma2026A.ofertarDisciplina(poo);
+        var bancoDados2026A = turma2026A.ofertarDisciplina(bancoDados);
+
+        var poo2026B = turma2026B.ofertarDisciplina(poo);
+
+        System.out.println("Disciplinas da turma "
+                + turma2026A.getCodigo() + ": "
+                + turma2026A.getOfertas());
+
+        validar(
+                turma2026A.getOfertas().size() == 2,
+                "A turma deve permitir várias disciplinas ofertadas."
+        );
+
+        System.out.println();
+        System.out.println("=== DISCIPLINA DUPLICADA ===");
+
+        esperarFalha(
+                "A mesma disciplina não pode ser ofertada duas vezes na mesma turma.",
+                () -> turma2026A.ofertarDisciplina(poo)
+        );
+
+        System.out.println();
+        System.out.println("=== PRIMEIRA MATRÍCULA ===");
+
+        var primeiraMatricula = poo2025.matricular(paola);
+
+        primeiraMatricula.concluir(
+                ResultadoAcademico.REPROVADO
+        );
+
+        System.out.println(
+                "Paola concluiu POO em 2025/2 com resultado: "
+                        + primeiraMatricula.getResultado()
+        );
+
+        System.out.println();
+        System.out.println("=== NOVA MATRÍCULA APÓS REPROVAÇÃO ===");
+
+        var segundaMatricula = poo2026A.matricular(paola);
+
+        System.out.println(
+                "Nova matrícula realizada: "
+                        + segundaMatricula
+        );
+
+        validar(
+                paola.getMatriculas().size() == 2,
+                "O aluno deve manter seu histórico de matrículas."
+        );
+
+        segundaMatricula.concluir(
+                ResultadoAcademico.APROVADO
+        );
+
+        System.out.println(
+                "Paola concluiu novamente POO com resultado: "
+                        + segundaMatricula.getResultado()
+        );
+
+        System.out.println();
+        System.out.println("=== MATRÍCULA APÓS APROVAÇÃO ===");
+
+        esperarFalha(
+                "Aluno aprovado não pode cursar novamente a mesma disciplina.",
+                () -> poo2026B.matricular(paola)
+        );
+
+        System.out.println();
+        System.out.println("=== MATRÍCULA DUPLICADA ===");
+
+        var matriculaBruno = poo2026A.matricular(bruno);
+
+        esperarFalha(
+                "Aluno não pode possuir duas matrículas na mesma oferta.",
+                () -> poo2026A.matricular(bruno)
+        );
+
+        System.out.println();
+        System.out.println("=== CONSULTAS ===");
+
+        System.out.println(
+                "Matrículas de Paola: "
+                        + paola.getMatriculas()
+        );
+
+        System.out.println(
+                "Matrículas de POO - ESOFT4S-NB: "
+                        + poo2026A.getMatriculas()
+        );
+
+        System.out.println(
+                "Matrículas de Banco de Dados - ESOFT4S-NB: "
+                        + bancoDados2026A.getMatriculas()
+        );
+
+        System.out.println();
+        System.out.println("=== VALIDAÇÃO CONCLUÍDA ===");
     }
 
-    private static void testarValidacoes() {
-        try {
-            // Teste 1: Email inválido
-            new Aluno("A003", "Teste", "email-invalido");
-        } catch (IllegalArgumentException e) {
-            System.out.println("✓ Validação de email funcionou: " + e.getMessage());
+    private static void validar(
+            boolean condicao,
+            String mensagem
+    ) {
+        if (!condicao) {
+            throw new AssertionError(mensagem);
         }
 
-        try {
-            // Teste 2: Nome vazio
-            new Aluno("A004", "", "teste@email.com");
-        } catch (IllegalArgumentException e) {
-            System.out.println("✓ Validação de nome funcionou: " + e.getMessage());
-        }
+        System.out.println("[OK] " + mensagem);
+    }
 
+    private static void esperarFalha(
+            String mensagem,
+            Runnable operacao
+    ) {
         try {
-            // Teste 3: Carga horária negativa
-            new Disciplina("D003", "Teste", -10);
-        } catch (IllegalArgumentException e) {
-            System.out.println("✓ Validação de carga horária funcionou: " + e.getMessage());
-        }
-
-        try {
-            // Teste 4: Turma nula
-            new Matricula("M004", new Aluno("A005", "Teste", "teste@email.com"), null);
-        } catch (IllegalArgumentException e) {
-            System.out.println("✓ Validação de turma nula funcionou: " + e.getMessage());
-        }
-
-        try {
-            // Teste 5: Alterar email para inválido
-            Aluno aluno = new Aluno("A006", "Teste", "teste@email.com");
-            aluno.setEmail("email-invalido");
-        } catch (IllegalArgumentException e) {
-            System.out.println("✓ Validação de alteração de email funcionou: " + e.getMessage());
+            operacao.run();
+            throw new AssertionError(
+                    "A operação deveria ter sido impedida: " + mensagem
+            );
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println(
+                    "[OK] " + mensagem
+            );
+            System.out.println(
+                    "     Motivo: " + e.getMessage()
+            );
         }
     }
 }
