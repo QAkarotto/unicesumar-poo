@@ -1,8 +1,17 @@
 package br.edu.sistemaacademico.domain;
 
-// Assim como em Dragon Ball existem transformações específicas,
-// o sistema permite apenas dois semestres.
 public enum Semestre {
-    PRIMEIRO,
-    SEGUNDO
+
+    PRIMEIRO(1),
+    SEGUNDO(2);
+
+    private final int numero;
+
+    Semestre(int numero) {
+        this.numero = numero;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
 }

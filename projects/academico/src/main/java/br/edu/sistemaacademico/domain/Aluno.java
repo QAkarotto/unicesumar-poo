@@ -1,41 +1,61 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Aluno {
-    private final String identificadorAcademico;
-    private String nome;
+
+    private final String ra;
+    private final String nome;
     private String email;
 
-    public Aluno(String identificadorAcademico, String nome, String email) {
+    private final List<Matricula> matriculas = new ArrayList<>();
 
-        if (identificadorAcademico == null || identificadorAcademico.isBlank()) {
-            throw new IllegalArgumentException("Identificador acadêmico é obrigatório.");
-        }
-
-        if (nome == null || nome.isBlank()) {
-            throw new IllegalArgumentException("Nome é obrigatório.");
-        }
-
-        if (email == null || email.isBlank() || !email.contains("@")) {
-            throw new IllegalArgumentException("E-mail inválido.");
-        }
-
-        this.identificadorAcademico = identificadorAcademico;
+    public Aluno(String ra, String nome, String email) {
+        this.ra = ra;
         this.nome = nome;
         this.email = email;
     }
+
+    public String getRa() {
+        return ra;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
-
-        if (email == null || email.isBlank() || !email.contains("@")) {
+        if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("E-mail inválido.");
         }
+
         this.email = email;
     }
+
+    public List<Matricula> getMatriculas() {
+        return List.copyOf(matriculas);
+    }
+
+    void registrarMatricula(Matricula matricula) {
+        matriculas.add(matricula);
+    }
+
+    boolean jaFoiAprovado(Disciplina disciplina) {
+        return matriculas.stream()
+                .anyMatch(matricula ->
+                        matricula.getDisciplina().equals(disciplina)
+                                && matricula.getResultado()
+                                == ResultadoAcademico.APROVADO
+                );
+    }
+
     @Override
     public String toString() {
-        return  identificadorAcademico + " " + nome + " " + email;
+        return ra + " - " + nome;
     }
 }
