@@ -22,6 +22,11 @@ public class OfertaDisciplina {
         if (aluno == null) {
             throw new IllegalArgumentException("O aluno é obrigatório.");
         }
+        if (aluno.jaFoiAprovadoEm(this.disciplina)) {
+            throw new IllegalStateException(
+                    "Aluno aprovado não pode cursar novamente a mesma disciplina."
+            );
+        }
         for (Matricula matricula : this.matriculas) {
             if (matricula.getAluno().getRa().equals(aluno.getRa())) {
                 throw new IllegalStateException(

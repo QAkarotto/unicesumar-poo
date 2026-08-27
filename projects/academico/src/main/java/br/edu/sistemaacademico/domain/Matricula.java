@@ -48,6 +48,7 @@ public class Matricula {
 
     @Override
     public String toString() {
-        return "Matrícula " + this.codigo + " | Aluno: " + this.aluno.getNome() + " | " + this.oferta + (this.resultado != null ? "EM CURSO" + this.resultado : "");
+        String situacao = this.resultado == null ? "Em curso" : this.resultado.toString();
+        return "Matrícula " + this.codigo + " | Aluno: " + this.aluno.getNome() + " | " +situacao;
     }
 }
