@@ -28,6 +28,12 @@ public class OfertaDisciplina {
     }
 
     public Matricula matricular(Aluno aluno) {
+        if (aluno.possuiAprovacaoNaDisciplina(disciplina)) {
+            throw new IllegalStateException(
+                    "O aluno jรก foi aprovado nesta disciplina."
+            );
+        }
+
         for (Matricula matricula : matriculas) {
             if (matricula.getAluno().getIdentificadorAcademico()
         .equals(aluno.getIdentificadorAcademico())) {
