@@ -25,7 +25,7 @@ public class Turma {
 
     public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
         for (OfertaDisciplina oferta : ofertas) {
-            if (oferta.getDisciplina().equals(disciplina)) {
+            if (oferta.getDisciplina().getCodigo().equals(disciplina.getCodigo())) {
                 throw new IllegalStateException(
                         "A disciplina já foi ofertada nesta turma."
                 );

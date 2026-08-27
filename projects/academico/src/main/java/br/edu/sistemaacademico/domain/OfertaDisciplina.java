@@ -29,7 +29,8 @@ public class OfertaDisciplina {
 
     public Matricula matricular(Aluno aluno) {
         for (Matricula matricula : matriculas) {
-            if (matricula.getAluno().equals(aluno)) {
+            if (matricula.getAluno().getIdentificadorAcademico()
+        .equals(aluno.getIdentificadorAcademico())) {
                 throw new IllegalStateException(
                         "O aluno já está matriculado nesta oferta."
                 );
