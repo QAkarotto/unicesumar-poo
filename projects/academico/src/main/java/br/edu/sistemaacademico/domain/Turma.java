@@ -1,26 +1,17 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Turma {
 
     private final String codigo;
-    private final Disciplina disciplina;
     private final PeriodoLetivo periodoLetivo;
+    private final List<OfertaDisciplina> ofertas = new ArrayList<>();
 
-    public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
-        if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException("O código da turma é obrigatório.");
-        }
-
-        if (disciplina == null) {
-            throw new IllegalArgumentException("A disciplina é obrigatória.");
-        }
-
-        if (periodoLetivo == null) {
-            throw new IllegalArgumentException("O período letivo é obrigatório.");
-        }
-
+    public Turma(String codigo, PeriodoLetivo periodoLetivo) {
         this.codigo = codigo;
-        this.disciplina = disciplina;
         this.periodoLetivo = periodoLetivo;
     }
 
@@ -28,20 +19,35 @@ public class Turma {
         return codigo;
     }
 
-    public Disciplina getDisciplina() {
-        return disciplina;
-    }
-
     public PeriodoLetivo getPeriodoLetivo() {
         return periodoLetivo;
+    }
+
+    public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
+        for (OfertaDisciplina oferta : ofertas) {
+            if (oferta.getDisciplina().equals(disciplina)) {
+                throw new IllegalStateException(
+                        "A disciplina já foi ofertada nesta turma."
+                );
+            }
+        }
+
+        OfertaDisciplina oferta = new OfertaDisciplina(this, disciplina);
+        ofertas.add(oferta);
+
+        return oferta;
+    }
+
+    public List<OfertaDisciplina> getOfertas() {
+        return Collections.unmodifiableList(ofertas);
     }
 
     @Override
     public String toString() {
         return "Turma{" +
                 "codigo='" + codigo + '\'' +
-                ", disciplina=" + disciplina +
                 ", periodoLetivo=" + periodoLetivo +
+                ", ofertas=" + ofertas +
                 '}';
     }
 }
