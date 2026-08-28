@@ -2,8 +2,6 @@ package br.edu.sistemaacademico.domain;
 
 public class PeriodoLetivo {
 
-// O calendário do torneio precisa de um período válido, assim como o período letivo.
-
     private final int ano;
     private final Semestre semestre;
 
