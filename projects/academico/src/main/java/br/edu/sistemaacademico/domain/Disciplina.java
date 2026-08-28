@@ -5,8 +5,6 @@ public class Disciplina {
     private final String codigo;
     private String nome;
     private int cargaHoraria;
-
-    // Até o Vegeta precisa respeitar seus limites: a carga horária deve ser positiva.
     
     public Disciplina(String codigo, String nome, int cargaHoraria) {
 
