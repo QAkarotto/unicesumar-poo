@@ -6,8 +6,6 @@ public class Matricula {
     private final Aluno aluno;
     private final Turma turma;
 
- // Como uma equipe Z, a matrícula mantém aluno e turma relacionados.
-
     public Matricula(String codigo, Aluno aluno, Turma turma) {
 
         if (codigo == null || codigo.isBlank()) {
