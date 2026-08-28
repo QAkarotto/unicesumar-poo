@@ -1,7 +1,5 @@
 package br.edu.sistemaacademico.domain;
 
- // Assim como uma saga de Dragon Ball possui seu período e personagens, a turma possui seus vínculos.
-
 public class Turma {
 
     private final String codigo;
