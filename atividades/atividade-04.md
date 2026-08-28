@@ -22,11 +22,11 @@ Atributos: identificador acadêmico, nome e e-mail.
 
 Atributos: código, nome e carga horária.
 
-### `PeriodoLetivo`
+### `periodoLetivo`
 
 Atributos: ano e semestre.
 
-### `Turma`
+### `Matricula`
 
 Atributos: código, disciplina e período letivo.
 
@@ -36,7 +36,7 @@ Atributos: código, aluno e turma.
 
 ## Enum do domínio
 
-Crie o enum `Semestre` com os valores `PRIMEIRO` e `SEGUNDO`. Utilize esse enum em `PeriodoLetivo` para representar as únicas opções de semestre aceitas pelo sistema.
+Crie o enum `Semestre` com os valores `PRIMEIRO` e `SEGUNDO`. Utilize esse enum em `periodoLetivo` para representar as únicas opções de semestre aceitas pelo sistema.
 
 ## Encapsulamento e proteção do estado
 
