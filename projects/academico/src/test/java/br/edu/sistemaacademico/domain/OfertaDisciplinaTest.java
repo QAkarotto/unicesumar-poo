@@ -36,19 +36,19 @@ class OfertaDisciplinaTest {
     @Test
     @DisplayName("Deve impedir matrícula duplicada na mesma oferta")
     void deveImpedirMatriculaDuplicada() {
-        var aluno = new Aluno("RA001", "Ana Souza", "ana@email.com");
+        var aluno = new Aluno("RA002", "Alexandre Gaia", "alexandre@email.com");
         var turma = new Turma(
                 "ESOFT4S-NA",
                 new PeriodoLetivo(2026, Semestre.SEGUNDO)
         );
         var oferta = turma.ofertarDisciplina(
-                new Disciplina("POO", "Programação Orientada a Objetos", 80)
+                new Disciplina("POO", "Programação Orientada a Objetos", 40)
         );
-        oferta.matricular("MAT-001", aluno);
+        oferta.matricular("MATRICULA-001", aluno);
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> oferta.matricular("MAT-002", aluno)
+                () -> oferta.matricular("MATRICULA-002", aluno)
         );
         assertEquals(1, oferta.getMatriculas().size());
         assertEquals(1, aluno.getMatriculas().size());
