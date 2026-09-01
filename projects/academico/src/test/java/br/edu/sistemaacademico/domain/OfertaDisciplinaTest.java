@@ -23,7 +23,7 @@ class OfertaDisciplinaTest {
         );
 
         // Act
-        var matricula = oferta.matricular("MAT-001", aluno);
+        var matricula = oferta.matricular(aluno);
 
         // Assert
         assertEquals(1, oferta.getMatriculas().size());
