@@ -1,4 +1,4 @@
-package br.edu.sistemaacademico.domain;
+package br.edu.sistemaacademico;
 
 public class PeriodoLetivo {
     private final int ano;
