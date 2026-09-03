@@ -28,13 +28,14 @@ Para executar apenas os testes de matrícula:
 mvn -Dtest=MatriculaTest test
 ```
 
+Para executar os testes e verificar a cobertura de código:
+
+```bash
+mvn verify
+```
+
+O JaCoCo exige no mínimo 80% de cobertura de linhas das classes de domínio. O relatório HTML é gerado em `target/site/jacoco/index.html`. A classe `SistemaAcademico` não entra nessa métrica porque representa o fluxo de demonstração da aplicação.
+
 Os testes ficam em `src/test/java` e cobrem oferta de disciplinas, proteção das coleções, matrículas, mudanças de estado e as regras de aprovação e reprovação do histórico acadêmico.
 
-Sugestão de demonstração em aula:
-
-1. Execute `mvn test` e observe todos os testes passando.
-2. Remova temporariamente a validação de matrícula duplicada em `OfertaDisciplina`.
-3. Execute `mvn test` novamente e observe a falha.
-4. Restaure a validação e confirme que os testes voltam a passar.
-
-O workflow **Java Tests** do GitHub Actions executa os mesmos testes a cada `push` e `pull_request`.
+O workflow **Java Tests** do GitHub Actions executa os testes e verifica a cobertura a cada `push` e `pull_request`.

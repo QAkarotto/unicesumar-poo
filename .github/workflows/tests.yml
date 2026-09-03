@@ -23,5 +23,5 @@ jobs:
           cache: maven
           cache-dependency-path: projects/academico/pom.xml
 
-      - name: Run tests
-        run: mvn --batch-mode clean test
+      - name: Run tests and coverage check
+        run: mvn --batch-mode clean verify
