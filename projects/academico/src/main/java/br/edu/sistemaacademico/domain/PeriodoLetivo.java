@@ -1,19 +1,18 @@
 package br.edu.sistemaacademico.domain;
-
 import java.util.Objects;
 
-public final class PeriodoLetivo {
+public class PeriodoLetivo {
+
     private final int ano;
     private final Semestre semestre;
 
     public PeriodoLetivo(int ano, Semestre semestre) {
-        if (ano <= 0) {
-            throw new IllegalArgumentException("O ano deve ser positivo.");
+        if (ano < 1900) {
+            throw new IllegalArgumentException("O ano do período letivo é inválido: " + ano + ".");
         }
         if (semestre == null) {
             throw new IllegalArgumentException("O semestre é obrigatório.");
         }
-
         this.ano = ano;
         this.semestre = semestre;
     }
@@ -27,14 +26,15 @@ public final class PeriodoLetivo {
     }
 
     @Override
-    public boolean equals(Object outro) {
-        if (this == outro) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (!(outro instanceof PeriodoLetivo periodo)) {
+        if (!(obj instanceof PeriodoLetivo)) {
             return false;
         }
-        return ano == periodo.ano && semestre == periodo.semestre;
+        PeriodoLetivo outro = (PeriodoLetivo) obj;
+        return ano == outro.ano && semestre == outro.semestre;
     }
 
     @Override
