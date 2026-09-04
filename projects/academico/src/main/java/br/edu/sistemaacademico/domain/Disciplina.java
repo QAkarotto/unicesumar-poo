@@ -1,5 +1,7 @@
 package br.edu.sistemaacademico.domain;
 
+import java.util.Objects;
+
 public class Disciplina {
     private String codigo;
     private String nome;
@@ -32,5 +34,22 @@ public class Disciplina {
     @Override
     public String toString() {
         return "[" + this.codigo + "] " + this.nome + " (" + this.cargaHoraria + "h)";
+    }
+
+    @Override
+    public boolean equals(Object outro) {
+        if (this == outro) {
+            return true;
+        }
+        if (!(outro instanceof Disciplina)) {
+            return false;
+        }
+        Disciplina disciplina = (Disciplina) outro;
+        return this.codigo.equals(disciplina.codigo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.codigo);
     }
 }
