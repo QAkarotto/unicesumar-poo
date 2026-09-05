@@ -10,10 +10,8 @@ class DisciplinaTest {
 
     @Test
     void deveCriarDisciplinaComDadosValidos() {
-        // Arrange & Act
         var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
 
-        // Assert
         assertEquals("POO01", disciplina.getCodigo());
         assertEquals("Programação Orientada a Objetos", disciplina.getNome());
         assertEquals(80, disciplina.getCargaHoraria());
@@ -57,13 +55,10 @@ class DisciplinaTest {
 
     @Test
     void toStringDeveConterNomeCodigoECargaHoraria() {
-        // Arrange
         var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
 
-        // Act
         var texto = disciplina.toString();
 
-        // Assert
         assertTrue(texto.contains("Programação Orientada a Objetos"));
         assertTrue(texto.contains("POO01"));
         assertTrue(texto.contains("80"));

@@ -9,10 +9,8 @@ class PeriodoLetivoTest {
 
     @Test
     void deveCriarPeriodoLetivoComDadosValidos() {
-        // Arrange & Act
         var periodo = new PeriodoLetivo(2026, Semestre.PRIMEIRO);
 
-        // Assert
         assertEquals(2026, periodo.getAno());
         assertEquals(Semestre.PRIMEIRO, periodo.getSemestre());
     }
@@ -37,19 +35,15 @@ class PeriodoLetivoTest {
 
     @Test
     void toStringDeveRepresentarPrimeiroSemestreComoBarraUm() {
-        // Arrange
         var periodo = new PeriodoLetivo(2026, Semestre.PRIMEIRO);
 
-        // Act & Assert
         assertEquals("2026/1", periodo.toString());
     }
 
     @Test
     void toStringDeveRepresentarSegundoSemestreComoBarraDois() {
-        // Arrange
         var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
 
-        // Act & Assert
         assertEquals("2026/2", periodo.toString());
     }
 }

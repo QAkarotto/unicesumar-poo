@@ -12,10 +12,8 @@ class TurmaTest {
 
     @Test
     void deveCriarTurmaComDadosValidos() {
-        // Arrange & Act
         var turma = new Turma("T1", periodo);
 
-        // Assert
         assertEquals("T1", turma.getCodigo());
         assertEquals(periodo, turma.getPeriodoLetivo());
     }
@@ -40,14 +38,11 @@ class TurmaTest {
 
     @Test
     void deveOfertarDisciplinaNaTurma() {
-        // Arrange
         var turma = new Turma("T1", periodo);
         var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
 
-        // Act
         var oferta = turma.ofertarDisciplina(disciplina);
 
-        // Assert
         assertEquals(disciplina, oferta.getDisciplina());
         assertEquals(turma, oferta.getTurma());
         assertTrue(turma.getOfertas().contains(oferta));
@@ -55,62 +50,49 @@ class TurmaTest {
 
     @Test
     void naoDeveOfertarDisciplinaNula() {
-        // Arrange
         var turma = new Turma("T1", periodo);
 
-        // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> turma.ofertarDisciplina(null));
     }
 
     @Test
     void naoDevePermitirOfertarMesmaDisciplinaDuasVezesNaMesmaTurma() {
-        // Arrange
         var turma = new Turma("T1", periodo);
         var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
         turma.ofertarDisciplina(disciplina);
 
-        // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> turma.ofertarDisciplina(disciplina));
     }
 
     @Test
     void devePermitirOfertarDisciplinasDiferentesNaMesmaTurma() {
-        // Arrange
         var turma = new Turma("T1", periodo);
         var poo = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
         var bd = new Disciplina("BD01", "Banco de Dados", 60);
 
-        // Act
         turma.ofertarDisciplina(poo);
         turma.ofertarDisciplina(bd);
 
-        // Assert
         assertEquals(2, turma.getOfertas().size());
     }
 
     @Test
     void getOfertasNaoDeveExporColecaoInternaParaModificacao() {
-        // Arrange
         var turma = new Turma("T1", periodo);
         var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
         var oferta = turma.ofertarDisciplina(disciplina);
 
-        // Act
         var ofertas = turma.getOfertas();
 
-        // Assert
         assertThrows(UnsupportedOperationException.class, () -> ofertas.add(oferta));
     }
 
     @Test
     void toStringDeveConterCodigoEPeriodoLetivo() {
-        // Arrange
         var turma = new Turma("T1", periodo);
 
-        // Act
         var texto = turma.toString();
 
-        // Assert
         assertTrue(texto.contains("T1"));
         assertTrue(texto.contains("2026/1"));
     }
