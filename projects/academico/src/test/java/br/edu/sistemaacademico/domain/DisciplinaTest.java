@@ -2,45 +2,70 @@ package br.edu.sistemaacademico.domain;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DisciplinaTest {
 
     @Test
-    void deveCriarDisciplinaValida() {
-        var disciplina = new Disciplina("POO", "Programação Orientada a Objetos", 80);
+    void deveCriarDisciplinaComDadosValidos() {
+        // Arrange & Act
+        var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
 
-        assertEquals("POO", disciplina.getCodigo());
+        // Assert
+        assertEquals("POO01", disciplina.getCodigo());
         assertEquals("Programação Orientada a Objetos", disciplina.getNome());
         assertEquals(80, disciplina.getCargaHoraria());
     }
 
     @Test
-    void deveLancarExcecaoQuandoCodigoForNuloOuVazio() {
-        assertThrows(IllegalArgumentException.class, () -> new Disciplina(null, "Nome", 80));
-        assertThrows(IllegalArgumentException.class, () -> new Disciplina("  ", "Nome", 80));
+    void naoDeveCriarDisciplinaComCodigoNulo() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina(null, "Programação Orientada a Objetos", 80));
     }
 
     @Test
-    void deveLancarExcecaoQuandoNomeForNuloOuVazio() {
-        assertThrows(IllegalArgumentException.class, () -> new Disciplina("COD", null, 80));
-        assertThrows(IllegalArgumentException.class, () -> new Disciplina("COD", "  ", 80));
+    void naoDeveCriarDisciplinaComCodigoVazio() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina("   ", "Programação Orientada a Objetos", 80));
     }
 
     @Test
-    void deveLancarExcecaoQuandoCargaHorariaNaoForPositiva() {
-        assertThrows(IllegalArgumentException.class, () -> new Disciplina("COD", "Nome", 0));
-        assertThrows(IllegalArgumentException.class, () -> new Disciplina("COD", "Nome", -10));
+    void naoDeveCriarDisciplinaComNomeNulo() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina("POO01", null, 80));
+    }
+
+    @Test
+    void naoDeveCriarDisciplinaComNomeVazio() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina("POO01", "  ", 80));
+    }
+
+    @Test
+    void naoDeveCriarDisciplinaComCargaHorariaZero() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina("POO01", "Programação Orientada a Objetos", 0));
+    }
+
+    @Test
+    void naoDeveCriarDisciplinaComCargaHorariaNegativa() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina("POO01", "Programação Orientada a Objetos", -10));
     }
 
     @Test
     void toStringDeveConterNomeCodigoECargaHoraria() {
-        var disciplina = new Disciplina("POO", "Programação Orientada a Objetos", 80);
+        // Arrange
+        var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
 
+        // Act
         var texto = disciplina.toString();
 
+        // Assert
         assertTrue(texto.contains("Programação Orientada a Objetos"));
-        assertTrue(texto.contains("POO"));
+        assertTrue(texto.contains("POO01"));
         assertTrue(texto.contains("80"));
     }
 }

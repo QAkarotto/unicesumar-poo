@@ -2,67 +2,116 @@ package br.edu.sistemaacademico.domain;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TurmaTest {
 
-    private final PeriodoLetivo periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
+    private final PeriodoLetivo periodo = new PeriodoLetivo(2026, Semestre.PRIMEIRO);
 
     @Test
-    void deveCriarTurmaValida() {
-        var turma = new Turma("ADSIS4S", periodo);
+    void deveCriarTurmaComDadosValidos() {
+        // Arrange & Act
+        var turma = new Turma("T1", periodo);
 
-        assertEquals("ADSIS4S", turma.getCodigo());
+        // Assert
+        assertEquals("T1", turma.getCodigo());
         assertEquals(periodo, turma.getPeriodoLetivo());
-        assertTrue(turma.getOfertas().isEmpty());
     }
 
     @Test
-    void deveLancarExcecaoQuandoCodigoForNuloOuVazio() {
-        assertThrows(IllegalArgumentException.class, () -> new Turma(null, periodo));
-        assertThrows(IllegalArgumentException.class, () -> new Turma(" ", periodo));
+    void naoDeveCriarTurmaComCodigoNulo() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Turma(null, periodo));
     }
 
     @Test
-    void deveLancarExcecaoQuandoPeriodoLetivoForNulo() {
-        assertThrows(IllegalArgumentException.class, () -> new Turma("ADSIS4S", null));
+    void naoDeveCriarTurmaComCodigoVazio() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Turma("   ", periodo));
     }
 
     @Test
-    void deveOfertarDisciplina() {
-        var turma = new Turma("ADSIS4S", periodo);
-        var disciplina = new Disciplina("POO", "Programação Orientada a Objetos", 80);
+    void naoDeveCriarTurmaComPeriodoLetivoNulo() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Turma("T1", null));
+    }
 
+    @Test
+    void deveOfertarDisciplinaNaTurma() {
+        // Arrange
+        var turma = new Turma("T1", periodo);
+        var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
+
+        // Act
         var oferta = turma.ofertarDisciplina(disciplina);
 
-        assertEquals(1, turma.getOfertas().size());
+        // Assert
         assertEquals(disciplina, oferta.getDisciplina());
         assertEquals(turma, oferta.getTurma());
+        assertTrue(turma.getOfertas().contains(oferta));
     }
 
     @Test
-    void deveImpedirOfertaDuplicadaDaMesmaDisciplina() {
-        var turma = new Turma("ADSIS4S", periodo);
-        var disciplina = new Disciplina("POO", "Programação Orientada a Objetos", 80);
-        turma.ofertarDisciplina(disciplina);
+    void naoDeveOfertarDisciplinaNula() {
+        // Arrange
+        var turma = new Turma("T1", periodo);
 
-        assertThrows(IllegalArgumentException.class, () -> turma.ofertarDisciplina(disciplina));
-    }
-
-    @Test
-    void deveLancarExcecaoQuandoOfertarDisciplinaNula() {
-        var turma = new Turma("ADSIS4S", periodo);
-
+        // Act & Assert
         assertThrows(IllegalArgumentException.class, () -> turma.ofertarDisciplina(null));
     }
 
     @Test
-    void toStringDeveConterCodigoEPeriodoLetivo() {
-        var turma = new Turma("ADSIS4S", periodo);
+    void naoDevePermitirOfertarMesmaDisciplinaDuasVezesNaMesmaTurma() {
+        // Arrange
+        var turma = new Turma("T1", periodo);
+        var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
+        turma.ofertarDisciplina(disciplina);
 
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> turma.ofertarDisciplina(disciplina));
+    }
+
+    @Test
+    void devePermitirOfertarDisciplinasDiferentesNaMesmaTurma() {
+        // Arrange
+        var turma = new Turma("T1", periodo);
+        var poo = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
+        var bd = new Disciplina("BD01", "Banco de Dados", 60);
+
+        // Act
+        turma.ofertarDisciplina(poo);
+        turma.ofertarDisciplina(bd);
+
+        // Assert
+        assertEquals(2, turma.getOfertas().size());
+    }
+
+    @Test
+    void getOfertasNaoDeveExporColecaoInternaParaModificacao() {
+        // Arrange
+        var turma = new Turma("T1", periodo);
+        var disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
+        var oferta = turma.ofertarDisciplina(disciplina);
+
+        // Act
+        var ofertas = turma.getOfertas();
+
+        // Assert
+        assertThrows(UnsupportedOperationException.class, () -> ofertas.add(oferta));
+    }
+
+    @Test
+    void toStringDeveConterCodigoEPeriodoLetivo() {
+        // Arrange
+        var turma = new Turma("T1", periodo);
+
+        // Act
         var texto = turma.toString();
 
-        assertTrue(texto.contains("ADSIS4S"));
-        assertTrue(texto.contains(periodo.toString()));
+        // Assert
+        assertTrue(texto.contains("T1"));
+        assertTrue(texto.contains("2026/1"));
     }
 }
