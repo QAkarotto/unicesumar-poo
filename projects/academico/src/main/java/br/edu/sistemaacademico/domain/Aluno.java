@@ -1,26 +1,30 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-public final class Aluno {
-    private final String registroAcademico;
+public class Aluno {
+
+    private final String ra;
     private final String nome;
     private String email;
-    private final List<Matricula> matriculas = new ArrayList<>();
 
-    public Aluno(String registroAcademico, String nome, String email) {
-        this.registroAcademico = validarTexto(
-                registroAcademico,
-                "O registro acadêmico é obrigatório."
-        );
-        this.nome = validarTexto(nome, "O nome do aluno é obrigatório.");
-        alterarEmail(email);
+    private final List<Matricula> matriculas;
+
+    public Aluno(String ra, String nome, String email) {
+        validarTexto(ra, "RA");
+        validarTexto(nome, "Nome");
+        validarTexto(email, "E-mail");
+
+        this.ra = ra;
+        this.nome = nome;
+        this.email = email;
+        this.matriculas = new ArrayList<>();
     }
 
-    public String getRegistroAcademico() {
-        return registroAcademico;
+    public String getRa() {
+        return ra;
     }
 
     public String getNome() {
@@ -32,60 +36,64 @@ public final class Aluno {
     }
 
     public void setEmail(String email) {
-        alterarEmail(email);
+        validarTexto(email, "E-mail");
+        this.email = email;
     }
 
     public List<Matricula> getMatriculas() {
-        return List.copyOf(matriculas);
+        return Collections.unmodifiableList(matriculas);
     }
 
-    void validarNovaMatricula(OfertaDisciplina oferta) {
-        boolean jaAprovado = matriculas.stream()
-                .anyMatch(matricula -> matricula.foiAprovadoEm(oferta.getDisciplina()));
+    public boolean possuiAprovacaoEm(Disciplina disciplina) {
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "A disciplina não pode ser nula."
+            );
+        }
 
-        if (jaAprovado) {
-            throw new IllegalStateException(
-                    "O aluno já foi aprovado nesta disciplina."
+        for (Matricula matricula : matriculas) {
+            if (matricula.getDisciplina().getCodigo()
+                    .equals(disciplina.getCodigo())
+                    && matricula.getResultado()
+                    == ResultadoAcademico.APROVADO) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void adicionarMatricula(Matricula matricula) {
+        if (matricula == null) {
+            throw new IllegalArgumentException(
+                    "A matrícula não pode ser nula."
+            );
+        }
+
+        if (matricula.getAluno() != this) {
+            throw new IllegalArgumentException(
+                    "A matrícula não pertence a este aluno."
+            );
+        }
+
+        matriculas.add(matricula);
+    }
+
+    private static void validarTexto(String valor, String campo) {
+        if (valor == null || valor.isBlank()) {
+            throw new IllegalArgumentException(
+                    campo + " não pode ser nulo ou vazio."
             );
         }
     }
 
-    void registrarMatricula(Matricula matricula) {
-        matriculas.add(matricula);
-    }
-
-    private void alterarEmail(String email) {
-        if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-            throw new IllegalArgumentException("O e-mail do aluno é inválido.");
-        }
-        this.email = email.trim();
-    }
-
-    private static String validarTexto(String valor, String mensagem) {
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(mensagem);
-        }
-        return valor.trim();
-    }
-
-    @Override
-    public boolean equals(Object outro) {
-        if (this == outro) {
-            return true;
-        }
-        if (!(outro instanceof Aluno aluno)) {
-            return false;
-        }
-        return registroAcademico.equals(aluno.registroAcademico);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(registroAcademico);
-    }
-
     @Override
     public String toString() {
-        return registroAcademico + " - " + nome;
+        return "Aluno{" +
+                "ra='" + ra + '\'' +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

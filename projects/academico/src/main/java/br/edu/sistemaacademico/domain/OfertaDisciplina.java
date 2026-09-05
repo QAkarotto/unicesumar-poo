@@ -1,56 +1,106 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public final class OfertaDisciplina {
-    private final Turma turma;
+public class OfertaDisciplina {
+
     private final Disciplina disciplina;
-    private final List<Matricula> matriculas = new ArrayList<>();
+    private final Turma turma;
 
-    OfertaDisciplina(Turma turma, Disciplina disciplina) {
-        this.turma = turma;
+    private final List<Matricula> matriculas;
+
+    public OfertaDisciplina(
+            Disciplina disciplina,
+            Turma turma
+    ) {
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "A disciplina não pode ser nula."
+            );
+        }
+
+        if (turma == null) {
+            throw new IllegalArgumentException(
+                    "A turma não pode ser nula."
+            );
+        }
+
         this.disciplina = disciplina;
-    }
-
-    public Matricula matricular(Aluno aluno) {
-        var codigo = "MAT-" + (matriculas.size() + 1);
-        return matricular(codigo, aluno);
-    }
-
-    public Matricula matricular(String codigo, Aluno aluno) {
-        return new Matricula(codigo, aluno, this);
-    }
-
-    public Turma getTurma() {
-        return turma;
+        this.turma = turma;
+        this.matriculas = new ArrayList<>();
     }
 
     public Disciplina getDisciplina() {
         return disciplina;
     }
 
-    public List<Matricula> getMatriculas() {
-        return List.copyOf(matriculas);
+    public Turma getTurma() {
+        return turma;
     }
 
-    void validarNovaMatricula(Aluno aluno) {
-        boolean alunoJaMatriculado = matriculas.stream()
-                .anyMatch(matricula -> matricula.getAluno().equals(aluno));
+    public List<Matricula> getMatriculas() {
+        return Collections.unmodifiableList(matriculas);
+    }
 
-        if (alunoJaMatriculado) {
+    public Matricula matricular(Aluno aluno) {
+        if (aluno == null) {
             throw new IllegalArgumentException(
-                    "O aluno já está matriculado nesta oferta."
+                    "O aluno não pode ser nulo."
             );
         }
+
+        if (aluno.possuiAprovacaoEm(disciplina)) {
+            throw new IllegalStateException(
+                    "O aluno já foi aprovado nesta disciplina."
+            );
+        }
+
+        if (possuiMatricula(aluno)) {
+            throw new IllegalStateException(
+                    "O aluno já possui matrícula nesta oferta."
+            );
+        }
+
+        String codigoMatricula = gerarCodigoMatricula(aluno);
+
+        Matricula matricula = new Matricula(
+                codigoMatricula,
+                aluno,
+                this
+        );
+
+        matriculas.add(matricula);
+        aluno.adicionarMatricula(matricula);
+
+        return matricula;
     }
 
-    void registrarMatricula(Matricula matricula) {
-        matriculas.add(matricula);
+    private boolean possuiMatricula(Aluno aluno) {
+        for (Matricula matricula : matriculas) {
+            if (matricula.getAluno() == aluno) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String gerarCodigoMatricula(Aluno aluno) {
+        return "MAT-" +
+                aluno.getRa() +
+                "-" +
+                disciplina.getCodigo() +
+                "-" +
+                turma.getCodigo();
     }
 
     @Override
     public String toString() {
-        return disciplina.getCodigo() + " - " + turma;
+        return "OfertaDisciplina{" +
+                "disciplina=" + disciplina +
+                ", turma=" + turma.getCodigo() +
+                '}';
     }
 }

@@ -1,36 +1,36 @@
 package br.edu.sistemaacademico.domain;
 
-public final class Matricula {
+public class Matricula {
+
     private final String codigo;
     private final Aluno aluno;
     private final OfertaDisciplina ofertaDisciplina;
-    private SituacaoMatricula situacao = SituacaoMatricula.ATIVA;
-    private ResultadoAcademico resultadoAcademico;
 
-    public Matricula(String codigo, Aluno aluno, Turma turma) {
-        this(codigo, aluno, obterOfertaDaTurma(turma));
-    }
+    private ResultadoAcademico resultado;
 
-    public Matricula(String codigo, Aluno aluno, OfertaDisciplina ofertaDisciplina) {
-        if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException("O código da matrícula é obrigatório.");
-        }
+    public Matricula(
+            String codigo,
+            Aluno aluno,
+            OfertaDisciplina ofertaDisciplina
+    ) {
+        validarTexto(codigo, "Código");
+
         if (aluno == null) {
-            throw new IllegalArgumentException("O aluno é obrigatório.");
+            throw new IllegalArgumentException(
+                    "O aluno não pode ser nulo."
+            );
         }
+
         if (ofertaDisciplina == null) {
-            throw new IllegalArgumentException("A oferta da disciplina é obrigatória.");
+            throw new IllegalArgumentException(
+                    "A oferta da disciplina não pode ser nula."
+            );
         }
 
-        ofertaDisciplina.validarNovaMatricula(aluno);
-        aluno.validarNovaMatricula(ofertaDisciplina);
-
-        this.codigo = codigo.trim();
+        this.codigo = codigo;
         this.aluno = aluno;
         this.ofertaDisciplina = ofertaDisciplina;
-
-        ofertaDisciplina.registrarMatricula(this);
-        aluno.registrarMatricula(this);
+        this.resultado = null;
     }
 
     public String getCodigo() {
@@ -45,62 +45,49 @@ public final class Matricula {
         return ofertaDisciplina;
     }
 
+    public Disciplina getDisciplina() {
+        return ofertaDisciplina.getDisciplina();
+    }
+
     public Turma getTurma() {
         return ofertaDisciplina.getTurma();
     }
 
-    public SituacaoMatricula getSituacao() {
-        return situacao;
-    }
-
     public ResultadoAcademico getResultado() {
-        return resultadoAcademico;
+        return resultado;
     }
 
-    public void concluir(ResultadoAcademico resultadoAcademico) {
-        exigirSituacaoAtiva("concluir");
-        if (resultadoAcademico == null) {
-            throw new IllegalArgumentException("O resultado acadêmico é obrigatório.");
+    public void concluir(ResultadoAcademico resultado) {
+        if (resultado == null) {
+            throw new IllegalArgumentException(
+                    "O resultado acadêmico não pode ser nulo."
+            );
         }
 
-        this.resultadoAcademico = resultadoAcademico;
-        this.situacao = SituacaoMatricula.CONCLUIDA;
-    }
-
-    public void trancar() {
-        exigirSituacaoAtiva("trancar");
-        situacao = SituacaoMatricula.TRANCADA;
-    }
-
-    public void cancelar() {
-        exigirSituacaoAtiva("cancelar");
-        situacao = SituacaoMatricula.CANCELADA;
-    }
-
-    boolean foiAprovadoEm(Disciplina disciplina) {
-        return resultadoAcademico == ResultadoAcademico.APROVADO
-                && ofertaDisciplina.getDisciplina().equals(disciplina);
-    }
-
-    private void exigirSituacaoAtiva(String operacao) {
-        if (situacao != SituacaoMatricula.ATIVA) {
+        if (this.resultado != null) {
             throw new IllegalStateException(
-                    "Não é possível " + operacao + " uma matrícula " + situacao + "."
+                    "A matrícula já foi concluída."
+            );
+        }
+
+        this.resultado = resultado;
+    }
+
+    private static void validarTexto(String valor, String campo) {
+        if (valor == null || valor.isBlank()) {
+            throw new IllegalArgumentException(
+                    campo + " não pode ser nulo ou vazio."
             );
         }
     }
 
-    private static OfertaDisciplina obterOfertaDaTurma(Turma turma) {
-        if (turma == null) {
-            throw new IllegalArgumentException("A turma é obrigatória.");
-        }
-        return turma.obterUnicaOferta();
-    }
-
     @Override
     public String toString() {
-        return codigo + " - " + aluno.getRegistroAcademico()
-                + " - " + ofertaDisciplina.getDisciplina().getCodigo()
-                + " - " + situacao;
+        return "Matricula{" +
+                "codigo='" + codigo + '\'' +
+                ", aluno=" + aluno +
+                ", ofertaDisciplina=" + ofertaDisciplina +
+                ", resultado=" + resultado +
+                '}';
     }
 }

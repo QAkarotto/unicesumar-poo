@@ -1,18 +1,23 @@
 package br.edu.sistemaacademico.domain;
 
-import java.util.Objects;
+public class Disciplina {
 
-public final class Disciplina {
     private final String codigo;
     private final String nome;
     private final int cargaHoraria;
 
     public Disciplina(String codigo, String nome, int cargaHoraria) {
-        this.codigo = validarTexto(codigo, "O código da disciplina é obrigatório.");
-        this.nome = validarTexto(nome, "O nome da disciplina é obrigatório.");
+        validarTexto(codigo, "Código");
+        validarTexto(nome, "Nome");
+
         if (cargaHoraria <= 0) {
-            throw new IllegalArgumentException("A carga horária deve ser positiva.");
+            throw new IllegalArgumentException(
+                    "A carga horária deve ser positiva."
+            );
         }
+
+        this.codigo = codigo;
+        this.nome = nome;
         this.cargaHoraria = cargaHoraria;
     }
 
@@ -28,31 +33,20 @@ public final class Disciplina {
         return cargaHoraria;
     }
 
-    private static String validarTexto(String valor, String mensagem) {
+    private static void validarTexto(String valor, String campo) {
         if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(mensagem);
+            throw new IllegalArgumentException(
+                    campo + " não pode ser nulo ou vazio."
+            );
         }
-        return valor.trim();
-    }
-
-    @Override
-    public boolean equals(Object outro) {
-        if (this == outro) {
-            return true;
-        }
-        if (!(outro instanceof Disciplina disciplina)) {
-            return false;
-        }
-        return codigo.equals(disciplina.codigo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(codigo);
     }
 
     @Override
     public String toString() {
-        return codigo + " - " + nome + " (" + cargaHoraria + "h)";
+        return "Disciplina{" +
+                "codigo='" + codigo + '\'' +
+                ", nome='" + nome + '\'' +
+                ", cargaHoraria=" + cargaHoraria +
+                '}';
     }
 }
