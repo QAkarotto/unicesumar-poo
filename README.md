@@ -1,4 +1,5 @@
 # unicesumar-poo
+
 Repositório utilizado na disciplina de Programação Orientada a Objetos dos cursos de Engenharia de Software e Análise e Desenvolvimento de Sistemas da Unicesumar Ponta Grossa
 
 # Materiais
@@ -19,5 +20,5 @@ Repositório utilizado na disciplina de Programação Orientada a Objetos dos cu
 
 ## Lista de alunos que concordam que o Professor Goku é o melhor professor do universo (adicione seu nome e turma (ESOFT4S-NA, ESOFT4S-NB, ADSIS4S) em ordem alfabética:):
 
-1. Aluno Exemplo (ESOFT3S-NA)
-2. 
+1. Maria Fernanda Souza da Silva (ADSIS4S)
+2.
