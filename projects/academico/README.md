@@ -1,28 +1,41 @@
 # Sistema Acadêmico
 
-Projeto didático em Java para a criação de uma pequena parte de um sistema acadêmico.
+Projeto didático em Java 26 para praticar orientação a objetos e testes unitários com JUnit 5.
 
-## Contexto
+O domínio representa alunos, turmas, ofertas de disciplinas e matrículas. As regras permanecem nos próprios objetos, sem frameworks ou camadas adicionais.
 
-Este projeto é o ponto de partida da Atividade 04. Apenas `SistemaAcademico` é fornecida; as classes de domínio devem ser criadas pelos alunos com foco em encapsulamento e proteção de estado.
+## Executando a aplicação
 
-## Modelo inicial
-
-- `Aluno`: representa um aluno com identificador acadêmico, nome e e-mail.
-- `Disciplina`: representa um componente curricular e sua carga horária.
-- `Turma`: representa a oferta de uma disciplina em um período letivo.
-- `Matricula`: representa a relação entre um aluno e uma turma.
-- `PeriodoLetivo`: representa um ano e um semestre letivo.
-- `Semestre`: `enum` que representa os semestres aceitos pelo sistema.
-
-Esses tipos ainda não estão implementados. Consulte o enunciado em `atividades/atividade-04.md`.
-
-## Executando
-
-O projeto requer o JDK 25. Depois de criar todas as classes solicitadas, compile no diretório `projects/academico` com:
+No diretório `projects/academico`, compile com:
 
 ```bash
 mvn compile
 ```
 
-Para executar pela IDE, abra a classe `SistemaAcademico` e utilize a opção de executar o método `main`.
+Depois, execute `br.edu.sistemaacademico.SistemaAcademico` pela IDE.
+
+## Testes unitários
+
+Para executar todos os testes:
+
+```bash
+mvn test
+```
+
+Para executar apenas os testes de matrícula:
+
+```bash
+mvn -Dtest=MatriculaTest test
+```
+
+Para executar os testes e verificar a cobertura de código:
+
+```bash
+mvn verify
+```
+
+O JaCoCo exige no mínimo 80% de cobertura de linhas das classes de domínio. O relatório HTML é gerado em `target/site/jacoco/index.html`. A classe `SistemaAcademico` não entra nessa métrica porque representa o fluxo de demonstração da aplicação.
+
+Os testes ficam em `src/test/java` e cobrem oferta de disciplinas, proteção das coleções, matrículas, mudanças de estado e as regras de aprovação e reprovação do histórico acadêmico.
+
+O workflow **Java Tests** do GitHub Actions executa os testes e verifica a cobertura a cada `push` e `pull_request`.
