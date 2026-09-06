@@ -28,7 +28,7 @@ A implementação deverá evoluir as classes de domínio para que essa classe co
 
 ## Evolução do Modelo
 
-Atualmente, uma `Turma` possui uma única `Disciplina`.
+Atualmente, uma `Turma` possui uma única `DisciplinaTest.java`.
 
 Refatore o modelo para que uma turma represente um grupo acadêmico e possa possuir **várias disciplinas ofertadas em determinado período letivo**.
 
@@ -51,7 +51,7 @@ Considere a criação da classe:
 OfertaDisciplina
 ```
 
-para representar uma `Disciplina` sendo ofertada para uma determinada `Turma`.
+para representar uma `DisciplinaTest.java` sendo ofertada para uma determinada `Turma`.
 
 ## Matrículas
 

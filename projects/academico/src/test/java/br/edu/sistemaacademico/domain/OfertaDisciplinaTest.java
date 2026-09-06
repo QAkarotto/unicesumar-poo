@@ -1,56 +1,240 @@
 package br.edu.sistemaacademico.domain;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class OfertaDisciplinaTest {
 
-    @Test
-    @DisplayName("Deve registrar a mesma matrícula no aluno e na oferta")
-    void deveRegistrarMatriculaNoAlunoENaOferta() {
-        // Arrange
-        var aluno = new Aluno("RA001", "Ana Souza", "ana@email.com");
-        var turma = new Turma(
-                "ESOFT4S-NA",
-                new PeriodoLetivo(2026, Semestre.SEGUNDO)
+    private Aluno criarAluno() {
+        return new Aluno(
+                "RA001",
+                "Paola Oliveira",
+                "paola@email.com"
         );
-        var oferta = turma.ofertarDisciplina(
-                new Disciplina("POO", "Programação Orientada a Objetos", 80)
+    }
+
+    private Disciplina criarDisciplina() {
+        return new Disciplina(
+                "POO",
+                "Programação Orientada a Objetos",
+                80
         );
+    }
 
-        // Act
-        var matricula = oferta.matricular(aluno);
-
-        // Assert
-        assertEquals(1, oferta.getMatriculas().size());
-        assertEquals(1, aluno.getMatriculas().size());
-        assertSame(matricula, oferta.getMatriculas().get(0));
-        assertSame(matricula, aluno.getMatriculas().get(0));
-        assertEquals(SituacaoMatricula.ATIVA, matricula.getSituacao());
+    private Turma criarTurma() {
+        return new Turma(
+                "TURMA-A",
+                new PeriodoLetivo(
+                        2026,
+                        Semestre.PRIMEIRO
+                )
+        );
     }
 
     @Test
-    @DisplayName("Deve impedir matrícula duplicada na mesma oferta")
-    void deveImpedirMatriculaDuplicada() {
-        var aluno = new Aluno("RA002", "Alexandre Gaia", "alexandre@email.com");
-        var turma = new Turma(
-                "ESOFT4S-NA",
-                new PeriodoLetivo(2026, Semestre.SEGUNDO)
+    void deveCriarOfertaDeDisciplina() {
+
+        Disciplina disciplina = criarDisciplina();
+        Turma turma = criarTurma();
+
+        OfertaDisciplina oferta =
+                new OfertaDisciplina(
+                        disciplina,
+                        turma
+                );
+
+        assertEquals(
+                disciplina,
+                oferta.getDisciplina()
         );
-        var oferta = turma.ofertarDisciplina(
-                new Disciplina("POO", "Programação Orientada a Objetos", 40)
+
+        assertEquals(
+                turma,
+                oferta.getTurma()
         );
-        oferta.matricular("MATRICULA-001", aluno);
+
+        assertTrue(
+                oferta.getMatriculas().isEmpty()
+        );
+    }
+
+    @Test
+    void naoDeveCriarOfertaSemDisciplina() {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> oferta.matricular("MATRICULA-002", aluno)
+                () -> new OfertaDisciplina(
+                        null,
+                        criarTurma()
+                )
         );
-        assertEquals(1, oferta.getMatriculas().size());
-        assertEquals(1, aluno.getMatriculas().size());
+    }
+
+    @Test
+    void naoDeveCriarOfertaSemTurma() {
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new OfertaDisciplina(
+                        criarDisciplina(),
+                        null
+                )
+        );
+    }
+
+    @Test
+    void devePermitirMatriculaDeAluno() {
+
+        Turma turma = criarTurma();
+        Disciplina disciplina = criarDisciplina();
+
+        OfertaDisciplina oferta =
+                turma.ofertarDisciplina(disciplina);
+
+        Aluno aluno = criarAluno();
+
+        Matricula matricula =
+                oferta.matricular(aluno);
+
+        assertEquals(
+                1,
+                oferta.getMatriculas().size()
+        );
+
+        assertEquals(
+                aluno,
+                matricula.getAluno()
+        );
+    }
+
+    @Test
+    void naoDevePermitirMatriculaDuplicadaNaMesmaOferta() {
+
+        Turma turma = criarTurma();
+        OfertaDisciplina oferta =
+                turma.ofertarDisciplina(
+                        criarDisciplina()
+                );
+
+        Aluno aluno = criarAluno();
+
+        oferta.matricular(aluno);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> oferta.matricular(aluno)
+        );
+    }
+
+    @Test
+    void naoDeveMatricularAlunoNulo() {
+
+        Turma turma = criarTurma();
+
+        OfertaDisciplina oferta =
+                turma.ofertarDisciplina(
+                        criarDisciplina()
+                );
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> oferta.matricular(null)
+        );
+    }
+
+    @Test
+    void devePermitirNovaMatriculaDepoisDeReprovacao() {
+
+        Aluno aluno = criarAluno();
+
+        Disciplina disciplina = criarDisciplina();
+
+        Turma turma1 =
+                criarTurma();
+
+        OfertaDisciplina oferta1 =
+                turma1.ofertarDisciplina(disciplina);
+
+        Matricula primeira =
+                oferta1.matricular(aluno);
+
+        primeira.concluir(
+                ResultadoAcademico.REPROVADO
+        );
+
+        Turma turma2 =
+                new Turma(
+                        "TURMA-B",
+                        new PeriodoLetivo(
+                                2026,
+                                Semestre.SEGUNDO
+                        )
+                );
+
+        OfertaDisciplina oferta2 =
+                turma2.ofertarDisciplina(disciplina);
+
+        Matricula segunda =
+                oferta2.matricular(aluno);
+
+        assertNotNull(segunda);
+        assertEquals(
+                2,
+                aluno.getMatriculas().size()
+        );
+    }
+
+    @Test
+    void naoDevePermitirNovaMatriculaDepoisDeAprovacao() {
+
+        Aluno aluno = criarAluno();
+
+        Disciplina disciplina = criarDisciplina();
+
+        Turma turma1 = criarTurma();
+
+        OfertaDisciplina oferta1 =
+                turma1.ofertarDisciplina(disciplina);
+
+        Matricula matricula =
+                oferta1.matricular(aluno);
+
+        matricula.concluir(
+                ResultadoAcademico.APROVADO
+        );
+
+        Turma turma2 =
+                new Turma(
+                        "TURMA-B",
+                        new PeriodoLetivo(
+                                2026,
+                                Semestre.SEGUNDO
+                        )
+                );
+
+        OfertaDisciplina oferta2 =
+                turma2.ofertarDisciplina(disciplina);
+
+        assertThrows(
+                IllegalStateException.class,
+                () -> oferta2.matricular(aluno)
+        );
+    }
+
+    @Test
+    void naoDevePermitirAlterarListaDeMatriculasDiretamente() {
+
+        Turma turma = criarTurma();
+
+        OfertaDisciplina oferta =
+                turma.ofertarDisciplina(
+                        criarDisciplina()
+                );
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> oferta.getMatriculas().clear()
+        );
     }
 }

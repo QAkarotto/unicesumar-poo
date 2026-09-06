@@ -18,7 +18,7 @@ Crie as classes no pacote `br.edu.sistemaacademico.domain`.
 
 Atributos: identificador acadêmico, nome e e-mail.
 
-### `Disciplina`
+### `DisciplinaTest.java`
 
 Atributos: código, nome e carga horária.
 
