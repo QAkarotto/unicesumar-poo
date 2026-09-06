@@ -86,7 +86,7 @@ public class SistemaAcademico {
         );
 
         System.out.println();
-        System.out.println("=== DISCIPLINA DUPLICADA ===");
+        System.out.println("==== DISCIPLINA DUPLICADA ===");
 
         esperarFalha(
                 "A mesma disciplina não pode ser ofertada duas vezes na mesma turma.",
