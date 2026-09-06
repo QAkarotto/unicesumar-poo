@@ -1,74 +1,73 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>br.edu.sistemaacademico</groupId>
-    <artifactId>sistema-academico</artifactId>
-    <version>1.0-SNAPSHOT</version>
-
     <properties>
-        <maven.compiler.release>26</maven.compiler.release>
+        <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.13.4</junit.version>
-        <jacoco.version>0.8.15</jacoco.version>
+
+        <junit.version>5.10.2</junit.version>
     </properties>
 
     <dependencies>
+
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.14.1</version>
-            </plugin>
+
+            <!-- Plugin para executar os testes JUnit -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.4</version>
+                <version>3.2.5</version>
             </plugin>
+
+            <!-- JaCoCo para verificar cobertura dos testes -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
+                <version>0.8.15</version>
+
                 <executions>
+
+                    <!-- Inicia a coleta da cobertura -->
                     <execution>
                         <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
+                    <!-- Gera o relatório de cobertura -->
                     <execution>
-                        <id>coverage-report</id>
-                        <phase>verify</phase>
+                        <id>report</id>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>br/edu/sistemaacademico/SistemaAcademico.class</exclude>
-                            </excludes>
-                        </configuration>
                     </execution>
+
+                    <!-- Exige pelo menos 80% de cobertura -->
                     <execution>
-                        <id>coverage-check</id>
+                        <id>check</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
+
                         <configuration>
-                            <includes>
-                                <include>br/edu/sistemaacademico/domain/*</include>
-                            </includes>
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>
@@ -82,9 +81,12 @@
                                 </rule>
                             </rules>
                         </configuration>
+
                     </execution>
+
                 </executions>
             </plugin>
+
         </plugins>
     </build>
 

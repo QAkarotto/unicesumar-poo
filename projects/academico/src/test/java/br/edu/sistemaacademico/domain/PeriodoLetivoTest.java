@@ -1,118 +1,37 @@
 package br.edu.sistemaacademico.domain;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class OfertaDisciplinaTest {
+public class PeriodoLetivoTest {
 
     @Test
-    void devePermitirMatricularAluno() {
-
+    @DisplayName("Deve criar período letivo válido")
+    void deveCriarPeriodoLetivoValido() {
         // Arrange
-        var periodo = new PeriodoLetivo(
-                2026,
-                Semestre.PRIMEIRO
-        );
-
-        var turma = new Turma(
-                "ESOFT4S-NB",
-                periodo
-        );
-
-        var poo = new Disciplina(
-                "POO",
-                "Programação Orientada a Objetos",
-                80
-        );
-
-        var oferta = turma.ofertarDisciplina(poo);
-
-        var aluno = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola@email.com"
-        );
+        var ano = 2026;
+        var semestre = Semestre.SEGUNDO;
 
         // Act
-        var matricula = oferta.matricular(aluno);
+        var periodo = new PeriodoLetivo(ano, semestre);
 
         // Assert
-        assertNotNull(matricula);
-        assertEquals(aluno, matricula.getAluno());
-        assertEquals(oferta, matricula.getOfertaDisciplina());
-        assertEquals(1, oferta.getMatriculas().size());
+        assertEquals(ano, periodo.getAno());
+        assertEquals(semestre, periodo.getSemestre());
     }
 
     @Test
-    void naoDevePermitirMatriculaDuplicadaNaMesmaOferta() {
-
+    @DisplayName("Deve considerar períodos diferentes quando possuem dados diferentes")
+    void deveConsiderarPeriodosDiferentes() {
         // Arrange
-        var periodo = new PeriodoLetivo(
-                2026,
-                Semestre.PRIMEIRO
-        );
-
-        var turma = new Turma(
-                "ESOFT4S-NB",
-                periodo
-        );
-
-        var poo = new Disciplina(
-                "POO",
-                "Programação Orientada a Objetos",
-                80
-        );
-
-        var oferta = turma.ofertarDisciplina(poo);
-
-        var aluno = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola@email.com"
-        );
-
-        oferta.matricular(aluno);
-
-        // Act + Assert
-        assertThrows(
-                IllegalStateException.class,
-                () -> oferta.matricular(aluno)
-        );
-    }
-
-    @Test
-    void deveRegistrarMatriculaNoHistoricoDoAluno() {
-
-        // Arrange
-        var periodo = new PeriodoLetivo(
-                2026,
-                Semestre.PRIMEIRO
-        );
-
-        var turma = new Turma(
-                "ESOFT4S-NB",
-                periodo
-        );
-
-        var poo = new Disciplina(
-                "POO",
-                "Programação Orientada a Objetos",
-                80
-        );
-
-        var oferta = turma.ofertarDisciplina(poo);
-
-        var aluno = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola@email.com"
-        );
+        var periodo1 = new PeriodoLetivo( 2026, Semestre.SEGUNDO );
+        var periodo2 = new PeriodoLetivo( 2026, Semestre.PRIMEIRO );
 
         // Act
-        oferta.matricular(aluno);
+        var diferentes = periodo1.equals(periodo2);
 
         // Assert
-        assertEquals(1, aluno.getMatriculas().size());
-    }
+        assertFalse(diferentes); }
 }
