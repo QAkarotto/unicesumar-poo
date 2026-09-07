@@ -1,29 +1,26 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-public class Aluno {
-
-    private final String identificadorAcademico;
-    private String nome;
+public final class Aluno {
+    private final String registroAcademico;
+    private final String nome;
     private String email;
+    private final List<Matricula> matriculas = new ArrayList<>();
 
-    private final List<Matricula> historico = new ArrayList<>();
-
-    public Aluno(String identificadorAcademico, String nome, String email) {
-        validarTexto(identificadorAcademico, "Identificador acadêmico");
-        validarTexto(nome, "Nome");
-        validarEmail(email);
-
-        this.identificadorAcademico = identificadorAcademico;
-        this.nome = nome;
-        this.email = email;
+    public Aluno(String registroAcademico, String nome, String email) {
+        this.registroAcademico = validarTexto(
+                registroAcademico,
+                "O registro acadêmico é obrigatório."
+        );
+        this.nome = validarTexto(nome, "O nome do aluno é obrigatório.");
+        alterarEmail(email);
     }
 
-    public String getIdentificadorAcademico() {
-        return identificadorAcademico;
+    public String getRegistroAcademico() {
+        return registroAcademico;
     }
 
     public String getNome() {
