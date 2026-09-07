@@ -32,60 +32,68 @@ public final class Aluno {
     }
 
     public void setEmail(String email) {
-        alterarEmail(email);
+        validarEmail(email);
+        this.email = email;
     }
 
-    public List<Matricula> getMatriculas() {
-        return List.copyOf(matriculas);
+    void adicionarMatriculaAoHistorico(Matricula matricula) {
+        if (matricula == null) {
+            throw new IllegalArgumentException(
+                    "Matrícula não pode ser nula."
+            );
+        }
+
+        historico.add(matricula);
     }
 
-    void validarNovaMatricula(OfertaDisciplina oferta) {
-        boolean jaAprovado = matriculas.stream()
-                .anyMatch(matricula -> matricula.foiAprovadoEm(oferta.getDisciplina()));
+    public List<Matricula> getHistorico() {
+        return Collections.unmodifiableList(historico);
+    }
 
-        if (jaAprovado) {
-            throw new IllegalStateException(
-                    "O aluno já foi aprovado nesta disciplina."
+    public boolean jaFoiAprovadoEm(Disciplina disciplina) {
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "Disciplina não pode ser nula."
+            );
+        }
+
+        return historico.stream()
+                .anyMatch(matricula ->
+                        matricula.getOfertaDisciplina()
+                                .getDisciplina()
+                                .equals(disciplina)
+                                && matricula.getResultado() == Resultado.APROVADO
+                );
+    }
+
+    private static void validarTexto(String valor, String campo) {
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    campo + " não pode ser vazio."
             );
         }
     }
 
-    void registrarMatricula(Matricula matricula) {
-        matriculas.add(matricula);
-    }
-
-    private void alterarEmail(String email) {
-        if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-            throw new IllegalArgumentException("O e-mail do aluno é inválido.");
+    private static void validarEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "E-mail não pode ser vazio."
+            );
         }
-        this.email = email.trim();
-    }
 
-    private static String validarTexto(String valor, String mensagem) {
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(mensagem);
+        if (!email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            throw new IllegalArgumentException(
+                    "E-mail inválido."
+            );
         }
-        return valor.trim();
-    }
-
-    @Override
-    public boolean equals(Object outro) {
-        if (this == outro) {
-            return true;
-        }
-        if (!(outro instanceof Aluno aluno)) {
-            return false;
-        }
-        return registroAcademico.equals(aluno.registroAcademico);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(registroAcademico);
     }
 
     @Override
     public String toString() {
-        return registroAcademico + " - " + nome;
+        return "Aluno{" +
+                "identificadorAcademico='" + identificadorAcademico + '\'' +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

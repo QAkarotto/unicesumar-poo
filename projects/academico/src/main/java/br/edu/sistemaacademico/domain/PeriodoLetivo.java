@@ -1,14 +1,16 @@
 package br.edu.sistemaacademico.domain;
 
-import java.util.Objects;
+/**
+ * Representa o Período Letivo (a linha do tempo, não a do Trunks do Futuro).
+ */
+public class PeriodoLetivo {
 
-public final class PeriodoLetivo {
     private final int ano;
     private final Semestre semestre;
 
     public PeriodoLetivo(int ano, Semestre semestre) {
-        if (ano <= 0) {
-            throw new IllegalArgumentException("O ano deve ser positivo.");
+        if (ano < 1900) {
+            throw new IllegalArgumentException("Ano letivo inválido.");
         }
         if (semestre == null) {
             throw new IllegalArgumentException("O semestre é obrigatório.");
@@ -27,23 +29,10 @@ public final class PeriodoLetivo {
     }
 
     @Override
-    public boolean equals(Object outro) {
-        if (this == outro) {
-            return true;
-        }
-        if (!(outro instanceof PeriodoLetivo periodo)) {
-            return false;
-        }
-        return ano == periodo.ano && semestre == periodo.semestre;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ano, semestre);
-    }
-
-    @Override
     public String toString() {
-        return ano + "/" + semestre.getNumero();
+        return "PeriodoLetivo{" +
+                "ano=" + ano +
+                ", semestre=" + semestre +
+                '}';
     }
 }

@@ -1,25 +1,31 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public final class OfertaDisciplina {
+public class OfertaDisciplina {
+
     private final Turma turma;
     private final Disciplina disciplina;
-    private final List<Matricula> matriculas = new ArrayList<>();
+    private final List<Matricula> matriculas;
 
-    OfertaDisciplina(Turma turma, Disciplina disciplina) {
+    public OfertaDisciplina(Turma turma, Disciplina disciplina) {
+        if (turma == null) {
+            throw new IllegalArgumentException(
+                    "A turma é obrigatória."
+            );
+        }
+
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "A disciplina é obrigatória."
+            );
+        }
+
         this.turma = turma;
         this.disciplina = disciplina;
-    }
-
-    public Matricula matricular(Aluno aluno) {
-        var codigo = "MAT-" + (matriculas.size() + 1);
-        return matricular(codigo, aluno);
-    }
-
-    public Matricula matricular(String codigo, Aluno aluno) {
-        return new Matricula(codigo, aluno, this);
+        this.matriculas = new ArrayList<>();
     }
 
     public Turma getTurma() {
@@ -31,26 +37,46 @@ public final class OfertaDisciplina {
     }
 
     public List<Matricula> getMatriculas() {
-        return List.copyOf(matriculas);
+        return Collections.unmodifiableList(matriculas);
     }
 
-    void validarNovaMatricula(Aluno aluno) {
-        boolean alunoJaMatriculado = matriculas.stream()
-                .anyMatch(matricula -> matricula.getAluno().equals(aluno));
-
-        if (alunoJaMatriculado) {
+    public Matricula matricular(Aluno aluno) {
+        if (aluno == null) {
             throw new IllegalArgumentException(
+                    "O aluno é obrigatório."
+            );
+        }
+
+        boolean matriculaDuplicada = matriculas.stream()
+                .anyMatch(matricula ->
+                        matricula.getAluno().equals(aluno)
+                );
+
+        if (matriculaDuplicada) {
+            throw new IllegalStateException(
                     "O aluno já está matriculado nesta oferta."
             );
         }
-    }
 
-    void registrarMatricula(Matricula matricula) {
+        if (aluno.jaFoiAprovadoEm(disciplina)) {
+            throw new IllegalStateException(
+                    "O aluno já foi aprovado nesta disciplina."
+            );
+        }
+
+        Matricula matricula = new Matricula(aluno, this);
+
         matriculas.add(matricula);
+        aluno.adicionarMatriculaAoHistorico(matricula);
+
+        return matricula;
     }
 
     @Override
     public String toString() {
-        return disciplina.getCodigo() + " - " + turma;
+        return "OfertaDisciplina{" +
+                "turma=" + turma.getCodigo() +
+                ", disciplina=" + disciplina +
+                '}';
     }
 }
