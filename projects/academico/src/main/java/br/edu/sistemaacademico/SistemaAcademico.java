@@ -96,21 +96,26 @@ public class SistemaAcademico {
         System.out.println();
         System.out.println("=== PRIMEIRA MATRÍCULA ===");
 
-        var primeiraMatricula = poo2025.matricular(paola);
-
+        var primeiraMatricula = poo2025.matricular(
+                "MAT2025001",
+                paola
+        );
         primeiraMatricula.concluir(
                 ResultadoAcademico.REPROVADO
         );
 
         System.out.println(
                 "Paola concluiu POO em 2025/2 com resultado: "
-                        + primeiraMatricula.getResultado()
+                        + primeiraMatricula.getResultadoAcademico()
         );
 
         System.out.println();
         System.out.println("=== NOVA MATRÍCULA APÓS REPROVAÇÃO ===");
 
-        var segundaMatricula = poo2026A.matricular(paola);
+        var segundaMatricula = poo2026A.matricular(
+                "MAT2026001",
+                paola
+        );
 
         System.out.println(
                 "Nova matrícula realizada: "
@@ -128,7 +133,7 @@ public class SistemaAcademico {
 
         System.out.println(
                 "Paola concluiu novamente POO com resultado: "
-                        + segundaMatricula.getResultado()
+                        + segundaMatricula.getResultadoAcademico()
         );
 
         System.out.println();
@@ -136,17 +141,26 @@ public class SistemaAcademico {
 
         esperarFalha(
                 "Aluno aprovado não pode cursar novamente a mesma disciplina.",
-                () -> poo2026B.matricular(paola)
+                () -> poo2026B.matricular(
+                        "MAT2026002",
+                        paola
+                )
         );
 
         System.out.println();
         System.out.println("=== MATRÍCULA DUPLICADA ===");
 
-        var matriculaBruno = poo2026A.matricular(bruno);
+        var matriculaBruno = poo2026A.matricular(
+                "MAT2026003",
+                bruno
+        );
 
         esperarFalha(
                 "Aluno não pode possuir duas matrículas na mesma oferta.",
-                () -> poo2026A.matricular(bruno)
+                () -> poo2026A.matricular(
+                        "MAT2026004",
+                        bruno
+                )
         );
 
         System.out.println();
