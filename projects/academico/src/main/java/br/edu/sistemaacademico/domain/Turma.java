@@ -1,46 +1,34 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public final class Turma {
+public class Turma {
+
     private final String codigo;
     private final PeriodoLetivo periodoLetivo;
+
     private final List<OfertaDisciplina> ofertas = new ArrayList<>();
 
-    public Turma(String codigo, PeriodoLetivo periodoLetivo) {
+    public Turma(
+            String codigo,
+            PeriodoLetivo periodoLetivo) {
+
         if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException("O código da turma é obrigatório.");
-        }
-        if (periodoLetivo == null) {
-            throw new IllegalArgumentException("O período letivo é obrigatório.");
-        }
-
-        this.codigo = codigo.trim();
-        this.periodoLetivo = periodoLetivo;
-    }
-
-    public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
-        this(codigo, periodoLetivo);
-        ofertarDisciplina(disciplina);
-    }
-
-    public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
-        if (disciplina == null) {
-            throw new IllegalArgumentException("A disciplina é obrigatória.");
-        }
-        boolean disciplinaJaOfertada = ofertas.stream()
-                .anyMatch(oferta -> oferta.getDisciplina().equals(disciplina));
-
-        if (disciplinaJaOfertada) {
             throw new IllegalArgumentException(
-                    "A disciplina já foi ofertada para esta turma."
+                    "O código da turma é obrigatório."
             );
         }
 
-        var oferta = new OfertaDisciplina(this, disciplina);
-        ofertas.add(oferta);
-        return oferta;
+        if (periodoLetivo == null) {
+            throw new IllegalArgumentException(
+                    "O período letivo é obrigatório."
+            );
+        }
+
+        this.codigo = codigo;
+        this.periodoLetivo = periodoLetivo;
     }
 
     public String getCodigo() {
@@ -52,20 +40,40 @@ public final class Turma {
     }
 
     public List<OfertaDisciplina> getOfertas() {
-        return List.copyOf(ofertas);
+        return Collections.unmodifiableList(ofertas);
     }
 
-    OfertaDisciplina obterUnicaOferta() {
-        if (ofertas.size() != 1) {
-            throw new IllegalStateException(
-                    "A turma deve possuir uma única oferta para esta operação."
+    public OfertaDisciplina ofertarDisciplina(
+            Disciplina disciplina) {
+
+        if (disciplina == null) {
+            throw new IllegalArgumentException(
+                    "A disciplina é obrigatória."
             );
         }
-        return ofertas.getFirst();
+
+        for (OfertaDisciplina oferta : ofertas) {
+            if (oferta.getDisciplina().equals(disciplina)) {
+                throw new IllegalArgumentException(
+                        "A disciplina já foi ofertada nesta turma."
+                );
+            }
+        }
+
+        OfertaDisciplina novaOferta =
+                new OfertaDisciplina(disciplina, this);
+
+        ofertas.add(novaOferta);
+
+        return novaOferta;
     }
 
     @Override
     public String toString() {
-        return codigo + " - " + periodoLetivo;
+        return "Turma{" +
+                "codigo='" + codigo + '\'' +
+                ", periodoLetivo=" + periodoLetivo +
+                ", ofertas=" + ofertas +
+                '}';
     }
 }
