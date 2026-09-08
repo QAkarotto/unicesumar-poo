@@ -1,25 +1,18 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public final class OfertaDisciplina {
+public class OfertaDisciplina {
+
     private final Turma turma;
     private final Disciplina disciplina;
     private final List<Matricula> matriculas = new ArrayList<>();
 
-    OfertaDisciplina(Turma turma, Disciplina disciplina) {
+    public OfertaDisciplina(Turma turma, Disciplina disciplina) {
         this.turma = turma;
         this.disciplina = disciplina;
-    }
-
-    public Matricula matricular(Aluno aluno) {
-        var codigo = "MAT-" + (matriculas.size() + 1);
-        return matricular(codigo, aluno);
-    }
-
-    public Matricula matricular(String codigo, Aluno aluno) {
-        return new Matricula(codigo, aluno, this);
     }
 
     public Turma getTurma() {
@@ -31,26 +24,37 @@ public final class OfertaDisciplina {
     }
 
     public List<Matricula> getMatriculas() {
-        return List.copyOf(matriculas);
+        return Collections.unmodifiableList(matriculas);
     }
 
-    void validarNovaMatricula(Aluno aluno) {
-        boolean alunoJaMatriculado = matriculas.stream()
-                .anyMatch(matricula -> matricula.getAluno().equals(aluno));
-
-        if (alunoJaMatriculado) {
-            throw new IllegalArgumentException(
-                    "O aluno já está matriculado nesta oferta."
+    public Matricula matricular(Aluno aluno) {
+        if (aluno.possuiAprovacaoNaDisciplina(disciplina)) {
+            throw new IllegalStateException(
+                    "O aluno jรก foi aprovado nesta disciplina."
             );
         }
-    }
 
-    void registrarMatricula(Matricula matricula) {
+        for (Matricula matricula : matriculas) {
+            if (matricula.getAluno().getIdentificadorAcademico()
+        .equals(aluno.getIdentificadorAcademico())) {
+                throw new IllegalStateException(
+                        "O aluno já está matriculado nesta oferta."
+                );
+            }
+        }
+
+        Matricula matricula = new Matricula(aluno, this);
         matriculas.add(matricula);
+        aluno.adicionarMatricula(matricula);
+
+        return matricula;
     }
 
     @Override
     public String toString() {
-        return disciplina.getCodigo() + " - " + turma;
+        return "OfertaDisciplina{" +
+                "turma=" + turma.getCodigo() +
+                ", disciplina=" + disciplina +
+                '}';
     }
 }
