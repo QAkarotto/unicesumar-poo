@@ -53,4 +53,43 @@ class OfertaDisciplinaTest {
         assertEquals(1, oferta.getMatriculas().size());
         assertEquals(1, aluno.getMatriculas().size());
     }
+
+    @Test
+    @DisplayName("Deve matricular alunos diferentes na mesma oferta")
+    void deveMatricularAlunosDiferentes() {
+        // Arrange
+        var oferta = new Turma("ESOFT4S-NA", new PeriodoLetivo(2026, Semestre.SEGUNDO))
+                .ofertarDisciplina(new Disciplina("POO", "Programação Orientada a Objetos", 80));
+
+        // Act
+        oferta.matricular(new Aluno("RA003", "Caio Bertoldi", "caio@email.com"));
+        oferta.matricular(new Aluno("RA004", "Larissa Prado", "larissa@email.com"));
+
+        // Assert
+        assertEquals(2, oferta.getMatriculas().size());
+    }
+
+    @Test
+    @DisplayName("Deve devolver a lista de matrículas como cópia protegida")
+    void deveProtegerAListaDeMatriculas() {
+        var oferta = new Turma("ESOFT4S-NA", new PeriodoLetivo(2026, Semestre.SEGUNDO))
+                .ofertarDisciplina(new Disciplina("POO", "Programação Orientada a Objetos", 80));
+        var matricula = oferta.matricular(new Aluno("RA005", "Tainá Moraes", "taina@email.com"));
+
+        var matriculas = oferta.getMatriculas();
+
+        assertThrows(UnsupportedOperationException.class, () -> matriculas.remove(matricula));
+        assertEquals(1, oferta.getMatriculas().size());
+    }
+
+    @Test
+    @DisplayName("Deve identificar a oferta pela disciplina e pela turma")
+    void toStringDescreveAOferta() {
+        var turma = new Turma("ESOFT4S-NA", new PeriodoLetivo(2026, Semestre.SEGUNDO));
+        var oferta = turma.ofertarDisciplina(
+                new Disciplina("POO", "Programação Orientada a Objetos", 80)
+        );
+
+        assertEquals("POO - ESOFT4S-NA - 2026/2", oferta.toString());
+    }
 }
