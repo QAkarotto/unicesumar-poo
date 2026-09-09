@@ -1,0 +1,42 @@
+import java.util.arrayList;
+import java.util.List;
+
+public class OfertarDisciplina{
+    private Disciplina disciplina;
+    private Turma turma;
+    private List<Matricula> matriculas;
+
+    public OfertarDisciplina(Disciplina disciplina, Turma turma) {
+        this.disciplina = disciplina;
+        this.turma = turma;
+        this.matriculas = new ArrayList<>();
+    }
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+    public Disciplina getTurma() {
+        return turma;
+    }
+    public List<Matricula> getMatriculas() {
+        return matriculas;
+    }
+    public void adicionarMatricula(Matricula matricula) {
+        if (matricula == null) {
+            throw new IllegalArgumentException(
+                "A matrícula não pode ser nula."
+            );
+        }
+        if (matriculas.contains(matricula)) {
+            throw new IllegalArgumentException(
+                "Essa matrícula já foi adicionada."
+            );
+        }
+        matriculas.add(matricula);
+    }
+    if (matriculas.size() >= 30) {
+        throw new IllegalArgumentException(
+            "Não é possível adicionar mais matrículas. A turma está cheia."
+        );
+    }
+    matriculas.add(matricula);
+}
