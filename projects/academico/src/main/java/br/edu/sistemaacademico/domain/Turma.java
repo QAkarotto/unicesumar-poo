@@ -1,44 +1,36 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public final class Turma {
+public class Turma {
+
     private final String codigo;
     private final PeriodoLetivo periodoLetivo;
     private final List<OfertaDisciplina> ofertas = new ArrayList<>();
 
     public Turma(String codigo, PeriodoLetivo periodoLetivo) {
         if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException("O código da turma é obrigatório.");
+            throw new IllegalArgumentException("Código da turma é obrigatório.");
         }
         if (periodoLetivo == null) {
-            throw new IllegalArgumentException("O período letivo é obrigatório.");
+            throw new IllegalArgumentException("Período letivo é obrigatório.");
         }
-
-        this.codigo = codigo.trim();
+        this.codigo = codigo;
         this.periodoLetivo = periodoLetivo;
-    }
-
-    public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
-        this(codigo, periodoLetivo);
-        ofertarDisciplina(disciplina);
     }
 
     public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
         if (disciplina == null) {
-            throw new IllegalArgumentException("A disciplina é obrigatória.");
+            throw new IllegalArgumentException("Disciplina é obrigatória.");
         }
-        boolean disciplinaJaOfertada = ofertas.stream()
-                .anyMatch(oferta -> oferta.getDisciplina().equals(disciplina));
-
-        if (disciplinaJaOfertada) {
-            throw new IllegalArgumentException(
-                    "A disciplina já foi ofertada para esta turma."
-            );
+        var jaOfertada = ofertas.stream()
+                .anyMatch(oferta -> oferta.getDisciplina().getCodigo().equals(disciplina.getCodigo()));
+        if (jaOfertada) {
+            throw new IllegalArgumentException("Disciplina já ofertada nesta turma.");
         }
-
-        var oferta = new OfertaDisciplina(this, disciplina);
+        var oferta = new OfertaDisciplina(disciplina, this);
         ofertas.add(oferta);
         return oferta;
     }
@@ -52,16 +44,7 @@ public final class Turma {
     }
 
     public List<OfertaDisciplina> getOfertas() {
-        return List.copyOf(ofertas);
-    }
-
-    OfertaDisciplina obterUnicaOferta() {
-        if (ofertas.size() != 1) {
-            throw new IllegalStateException(
-                    "A turma deve possuir uma única oferta para esta operação."
-            );
-        }
-        return ofertas.getFirst();
+        return Collections.unmodifiableList(ofertas);
     }
 
     @Override

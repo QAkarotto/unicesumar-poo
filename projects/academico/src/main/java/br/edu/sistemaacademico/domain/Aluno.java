@@ -1,26 +1,36 @@
 package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.regex.Pattern;
 
-public final class Aluno {
-    private final String registroAcademico;
+public class Aluno {
+
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[\\w.+-]+@[\\w-]+\\.[a-zA-Z]{2,}$");
+
+    private final String identificador;
     private final String nome;
     private String email;
-    private final List<Matricula> matriculas = new ArrayList<>();
+    private final List<Matricula> historico = new ArrayList<>();
 
-    public Aluno(String registroAcademico, String nome, String email) {
-        this.registroAcademico = validarTexto(
-                registroAcademico,
-                "O registro acadêmico é obrigatório."
-        );
-        this.nome = validarTexto(nome, "O nome do aluno é obrigatório.");
-        alterarEmail(email);
+    public Aluno(String identificador, String nome, String email) {
+        if (identificador == null || identificador.isBlank()) {
+            throw new IllegalArgumentException("Identificador acadêmico é obrigatório.");
+        }
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome do aluno é obrigatório.");
+        }
+        validarEmail(email);
+
+        this.identificador = identificador;
+        this.nome = nome;
+        this.email = email;
     }
 
-    public String getRegistroAcademico() {
-        return registroAcademico;
+    public String getIdentificador() {
+        return identificador;
     }
 
     public String getNome() {
@@ -31,61 +41,37 @@ public final class Aluno {
         return email;
     }
 
-    public void setEmail(String email) {
-        alterarEmail(email);
-    }
-
-    public List<Matricula> getMatriculas() {
-        return List.copyOf(matriculas);
-    }
-
-    void validarNovaMatricula(OfertaDisciplina oferta) {
-        boolean jaAprovado = matriculas.stream()
-                .anyMatch(matricula -> matricula.foiAprovadoEm(oferta.getDisciplina()));
-
-        if (jaAprovado) {
-            throw new IllegalStateException(
-                    "O aluno já foi aprovado nesta disciplina."
-            );
-        }
+    public void setEmail(String novoEmail) {
+        validarEmail(novoEmail);
+        this.email = novoEmail;
     }
 
     void registrarMatricula(Matricula matricula) {
-        matriculas.add(matricula);
+        historico.add(matricula);
     }
 
-    private void alterarEmail(String email) {
-        if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-            throw new IllegalArgumentException("O e-mail do aluno é inválido.");
-        }
-        this.email = email.trim();
+    public boolean jaFoiAprovadoEm(Disciplina disciplina) {
+        return historico.stream()
+                .anyMatch(matricula ->
+                        matricula.getOfertaDisciplina().getDisciplina().getCodigo().equals(disciplina.getCodigo())
+                                && matricula.getResultado() == ResultadoAcademico.APROVADO);
     }
 
-    private static String validarTexto(String valor, String mensagem) {
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(mensagem);
-        }
-        return valor.trim();
+    public List<Matricula> getMatriculas() {
+        return Collections.unmodifiableList(historico);
     }
 
-    @Override
-    public boolean equals(Object outro) {
-        if (this == outro) {
-            return true;
+    private static void validarEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("E-mail do aluno é obrigatório.");
         }
-        if (!(outro instanceof Aluno aluno)) {
-            return false;
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            throw new IllegalArgumentException("E-mail do aluno é inválido: " + email);
         }
-        return registroAcademico.equals(aluno.registroAcademico);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(registroAcademico);
     }
 
     @Override
     public String toString() {
-        return registroAcademico + " - " + nome;
+        return nome + " (" + identificador + ") <" + email + ">";
     }
 }
