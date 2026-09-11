@@ -2,17 +2,24 @@ package br.edu.sistemaacademico.domain;
 
 import java.util.Objects;
 
-public final class Disciplina {
+public class Disciplina {
+
     private final String codigo;
     private final String nome;
     private final int cargaHoraria;
 
     public Disciplina(String codigo, String nome, int cargaHoraria) {
-        this.codigo = validarTexto(codigo, "O código da disciplina é obrigatório.");
-        this.nome = validarTexto(nome, "O nome da disciplina é obrigatório.");
-        if (cargaHoraria <= 0) {
-            throw new IllegalArgumentException("A carga horária deve ser positiva.");
+        if (codigo == null || codigo.trim().isEmpty()) {
+            throw new IllegalArgumentException("O código da disciplina é obrigatório.");
         }
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("O nome da disciplina é obrigatório.");
+        }
+        if (cargaHoraria <= 0) {
+            throw new IllegalArgumentException("A carga horária deve ser maior que zero.");
+        }
+        this.codigo = codigo.trim();
+        this.nome = nome.trim();
         this.cargaHoraria = cargaHoraria;
     }
 
@@ -28,31 +35,25 @@ public final class Disciplina {
         return cargaHoraria;
     }
 
-    private static String validarTexto(String valor, String mensagem) {
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(mensagem);
-        }
-        return valor.trim();
-    }
-
     @Override
-    public boolean equals(Object outro) {
-        if (this == outro) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
-        if (!(outro instanceof Disciplina disciplina)) {
+        if (!(obj instanceof Disciplina)) {
             return false;
         }
-        return codigo.equals(disciplina.codigo);
+        Disciplina outra = (Disciplina) obj;
+        return codigo.equalsIgnoreCase(outra.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
+        return Objects.hash(codigo.toLowerCase());
     }
 
     @Override
     public String toString() {
-        return codigo + " - " + nome + " (" + cargaHoraria + "h)";
+        return nome;
     }
 }
