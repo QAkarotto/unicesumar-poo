@@ -1,13 +1,11 @@
 package br.edu.sistemaacademico;
 
-import br.edu.sistemaacademico.domain.Aluno;
-import br.edu.sistemaacademico.domain.Disciplina;
-import br.edu.sistemaacademico.domain.Matricula;
-import br.edu.sistemaacademico.domain.OfertaDisciplina;
-import br.edu.sistemaacademico.domain.PeriodoLetivo;
-import br.edu.sistemaacademico.domain.ResultadoAcademico;
-import br.edu.sistemaacademico.domain.Semestre;
-import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.Aluno;
+import br.edu.sistemaacademico.Disciplina;
+import br.edu.sistemaacademico.PeriodoLetivo;
+import br.edu.sistemaacademico.ResultadoAcademico;
+import br.edu.sistemaacademico.Semestre;
+import br.edu.sistemaacademico.Turma;
 
 public class SistemaAcademico {
 
