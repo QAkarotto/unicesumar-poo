@@ -1,22 +1,18 @@
-public class PeriodoLetivo {
+package br.edu.sistemaacademico.domain;
 
-    private int ano;
-    private Semestre semestre;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-    public PeriodoLetivo(int ano, Semestre semestre) {
-        this.ano = ano;
-        this.semestre = semestre;
-    }
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    public int getAno() {
-        return ano;
-    }
+class PeriodoLetivoTest {
 
-    public Semestre getSemestre() {
-        return semestre;
-    }
+    @Test
+    @DisplayName("Deve criar período letivo com ano e semestre corretos")
+    void deveCriarPeriodoLetivoCorretamente() {
+        var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
 
-    public void mostrarDados() {
-        System.out.println(ano + " - " + semestre);
+        assertEquals(2026, periodo.getAno());
+        assertEquals(Semestre.SEGUNDO, periodo.getSemestre());
     }
 }
