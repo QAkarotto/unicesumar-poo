@@ -1,83 +1,65 @@
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public class Aluno {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    private String identificadorAcademico;
-    private String nome;
-    private String email;
-    private List<Matricula> matriculas;
+class TurmaTest {
 
-    public Aluno(String identificadorAcademico, String nome, String email) {
-        this.identificadorAcademico = identificadorAcademico;
-        this.nome = nome;
-        this.email = email;
-        this.matriculas = new ArrayList<>();
+    @Test
+    @DisplayName("Deve inicializar a turma com a disciplina principal na lista")
+    void deveInicializarTurmaComDisciplinaPrincipal() {
+        var disciplinaInicial = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
+
+        var turma = new Turma("ESOFT4S-NA", disciplinaInicial, periodo);
+
+        assertEquals("ESOFT4S-NA", turma.getCodigo());
+        assertEquals(disciplinaInicial, turma.getDisciplina());
+        assertEquals(periodo, turma.getPeriodoLetivo());
+        assertEquals(1, turma.getDisciplinas().size());
+        assertEquals("POO001", turma.getDisciplinas().get(0).getCodigo());
     }
 
-    public String getIdentificadorAcademico() {
-        return identificadorAcademico;
+    @Test
+    @DisplayName("Deve adicionar novas disciplinas à turma com sucesso")
+    void deveAdicionarDisciplinaComSucesso() {
+        var disciplinaInicial = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var disciplinaAdicional = new Disciplina("BD001", "Banco de Dados", 60);
+        var turma = new Turma("ESOFT4S-NA", disciplinaInicial, new PeriodoLetivo(2026, Semestre.SEGUNDO));
+
+        turma.adicionarDisciplina(disciplinaAdicional);
+
+        assertEquals(2, turma.getDisciplinas().size());
+        assertEquals("BD001", turma.getDisciplinas().get(1).getCodigo());
     }
 
-    public String getNome() {
-        return nome;
-    }
+    @Test
+    @DisplayName("Deve impedir adição de disciplina duplicada pelo mesmo código")
+    void deveImpedirDisciplinaDuplicada() {
+        var disciplinaInicial = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var disciplinaDuplicada = new Disciplina("poo001", "Programação Orientada a Objetos II", 60);
+        var turma = new Turma("ESOFT4S-NA", disciplinaInicial, new PeriodoLetivo(2026, Semestre.SEGUNDO));
 
-    public String getEmail() {
-        return email;
-    }
-
-    public List<Matricula> getMatriculas() {
-        return matriculas;
-    }
-
-    // O próprio Aluno controla suas matrículas.
-    public void adicionarMatricula(Matricula matricula) {
-
-        if (matricula == null) {
-            throw new IllegalArgumentException(
-                "A matrícula não pode ser nula."
-            );
-        }
-
-        if (matriculas.contains(matricula)) {
-            throw new IllegalArgumentException(
-                "Essa matrícula já foi adicionada."
-            );
-        }
-
-        matriculas.add(matricula);
-    }
-
-    public void mostrarDados() {
-
-        System.out.println("\n===== DADOS DO ALUNO =====");
-        System.out.println(
-            "ID acadêmico: " + identificadorAcademico
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> turma.adicionarDisciplina(disciplinaDuplicada)
         );
-        System.out.println(
-            "Nome: " + nome
-        );
-        System.out.println(
-            "E-mail: " + email
-        );
+        assertEquals(1, turma.getDisciplinas().size());
     }
 
-    public void mostrarMatriculas() {
+    @Test
+    @DisplayName("Deve validar campos obrigatórios no construtor e ao adicionar disciplina")
+    void deveValidarCamposObrigatorios() {
+        var disciplina = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
 
-        System.out.println(
-            "\n===== MINHAS MATRÍCULAS ====="
-        );
+        assertThrows(IllegalArgumentException.class, () -> new Turma(null, disciplina, periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("", disciplina, periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("ESOFT4S-NA", null, periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("ESOFT4S-NA", disciplina, null));
 
-        if (matriculas.isEmpty()) {
-            System.out.println(
-                "Você não possui matrículas."
-            );
-            return;
-        }
-
-        for (Matricula matricula : matriculas) {
-            matricula.mostrarDados();
-        }
+        var turma = new Turma("ESOFT4S-NA", disciplina, periodo);
+        assertThrows(IllegalArgumentException.class, () -> turma.adicionarDisciplina(null));
     }
 }
