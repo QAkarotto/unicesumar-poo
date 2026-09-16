@@ -1,105 +1,65 @@
-import java.util.ArrayList;
-import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
-public class Turma {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-    private String codigo;
-    private Disciplina disciplina;
-    private PeriodoLetivo periodoLetivo;
+class TurmaTest {
 
-    private List<Disciplina> disciplinas;
+    @Test
+    @DisplayName("Deve inicializar a turma com a disciplina principal na lista")
+    void deveInicializarTurmaComDisciplinaPrincipal() {
+        var disciplinaInicial = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
 
-    public Turma(
-            String codigo,
-            Disciplina disciplina,
-            PeriodoLetivo periodoLetivo) {
+        var turma = new Turma("ESOFT4S-NA", disciplinaInicial, periodo);
 
-        if (codigo == null || codigo.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "O código da turma é obrigatório."
-            );
-        }
-
-        if (disciplina == null) {
-            throw new IllegalArgumentException(
-                    "A disciplina é obrigatória."
-            );
-        }
-
-        if (periodoLetivo == null) {
-            throw new IllegalArgumentException(
-                    "O período letivo é obrigatório."
-            );
-        }
-
-        this.codigo = codigo;
-        this.disciplina = disciplina;
-        this.periodoLetivo = periodoLetivo;
-
-        this.disciplinas = new ArrayList<Disciplina>();
-
-        // Adiciona a primeira disciplina da turma
-        this.disciplinas.add(disciplina);
+        assertEquals("ESOFT4S-NA", turma.getCodigo());
+        assertEquals(disciplinaInicial, turma.getDisciplina());
+        assertEquals(periodo, turma.getPeriodoLetivo());
+        assertEquals(1, turma.getDisciplinas().size());
+        assertEquals("POO001", turma.getDisciplinas().get(0).getCodigo());
     }
 
-    public String getCodigo() {
-        return codigo;
+    @Test
+    @DisplayName("Deve adicionar novas disciplinas à turma com sucesso")
+    void deveAdicionarDisciplinaComSucesso() {
+        var disciplinaInicial = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var disciplinaAdicional = new Disciplina("BD001", "Banco de Dados", 60);
+        var turma = new Turma("ESOFT4S-NA", disciplinaInicial, new PeriodoLetivo(2026, Semestre.SEGUNDO));
+
+        turma.adicionarDisciplina(disciplinaAdicional);
+
+        assertEquals(2, turma.getDisciplinas().size());
+        assertEquals("BD001", turma.getDisciplinas().get(1).getCodigo());
     }
 
-    public Disciplina getDisciplina() {
-        return disciplina;
-    }
+    @Test
+    @DisplayName("Deve impedir adição de disciplina duplicada pelo mesmo código")
+    void deveImpedirDisciplinaDuplicada() {
+        var disciplinaInicial = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var disciplinaDuplicada = new Disciplina("poo001", "Programação Orientada a Objetos II", 60);
+        var turma = new Turma("ESOFT4S-NA", disciplinaInicial, new PeriodoLetivo(2026, Semestre.SEGUNDO));
 
-    public PeriodoLetivo getPeriodoLetivo() {
-        return periodoLetivo;
-    }
-
-    public List<Disciplina> getDisciplinas() {
-        return new ArrayList<Disciplina>(disciplinas);
-    }
-
-    public void adicionarDisciplina(Disciplina disciplina) {
-
-        if (disciplina == null) {
-            throw new IllegalArgumentException(
-                    "A disciplina não pode ser nula."
-            );
-        }
-
-        // Impede disciplina duplicada
-        for (Disciplina existente : disciplinas) {
-
-            if (existente.getCodigo()
-                    .equalsIgnoreCase(disciplina.getCodigo())) {
-
-                throw new IllegalArgumentException(
-                        "A disciplina já está cadastrada nesta turma."
-                );
-            }
-        }
-
-        disciplinas.add(disciplina);
-    }
-
-    public void mostrarDados() {
-
-        System.out.println(
-                "\nTurma: " + codigo
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> turma.adicionarDisciplina(disciplinaDuplicada)
         );
+        assertEquals(1, turma.getDisciplinas().size());
+    }
 
-        System.out.println(
-                "Período: " + periodoLetivo
-        );
+    @Test
+    @DisplayName("Deve validar campos obrigatórios no construtor e ao adicionar disciplina")
+    void deveValidarCamposObrigatorios() {
+        var disciplina = new Disciplina("POO001", "Programação Orientada a Objetos", 80);
+        var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
 
-        System.out.println(
-                "Disciplinas:"
-        );
+        assertThrows(IllegalArgumentException.class, () -> new Turma(null, disciplina, periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("", disciplina, periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("ESOFT4S-NA", null, periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("ESOFT4S-NA", disciplina, null));
 
-        for (Disciplina disciplina : disciplinas) {
-
-            System.out.println(
-                    "- " + disciplina.getNome()
-            );
-        }
+        var turma = new Turma("ESOFT4S-NA", disciplina, periodo);
+        assertThrows(IllegalArgumentException.class, () -> turma.adicionarDisciplina(null));
     }
 }
