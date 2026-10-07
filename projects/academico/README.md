@@ -26,3 +26,16 @@ mvn compile
 ```
 
 Para executar pela IDE, abra a classe `SistemaAcademico` e utilize a opção de executar o método `main`.
+
+# API REST - Sistema Acadêmico
+
+Collection do Postman:
+https://www.postman.com/pbittencourt219-382892/workspace/atividades-2bim-esoft-nb-pierre-bittencourt/collection/58739882-8c77e2fe-c37a-4c89-8a67-b0715d0144e2?action=share&source=copy-link&creator=58739882
+
+
+
+## Endpoints
+
+- GET /api/matriculas/{id}
+- GET /api/alunos/{ra}
+- POST /api/matriculas
