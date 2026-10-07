@@ -8,10 +8,14 @@ import br.edu.sistemaacademico.domain.PeriodoLetivo;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import br.edu.sistemaacademico.domain.Semestre;
 import br.edu.sistemaacademico.domain.Turma;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+@SpringBootApplication
 public class SistemaAcademico {
 
     public static void main(String[] args) {
+SpringApplication.run(SistemaAcademico.class, args);
 
         var paola = new Aluno(
                 "RA2026001",

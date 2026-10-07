@@ -1,0 +1,111 @@
+{
+  "info": {
+    "_postman_id": "2b42737c-f133-4abf-bab3-5adb839af16b",
+    "name": "Sistema Academico - Atividade 2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58768304",
+    "_collection_link": "https://go.postman.co/collection/58768304-2b42737c-f133-4abf-bab3-5adb839af16b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Consultar Aluno por RA",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/api/alunos/RA2026001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar Matrícula",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8081/api/matriculas/MAT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar Matrícula - Erro Regra Negócio",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"codigo\": \"MAT-002\",\r\n  \"ra\": \"RA2026002\",\r\n  \"oferta\": \"POO-2026A\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8081/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar Matrícula (Sucesso)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"codigo\": \"MAT-002\",\r\n  \"ra\": \"RA2026003\",\r\n  \"oferta\": \"POO-2026A\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8081/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8081",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
