@@ -1,9 +1,12 @@
 package br.edu.sistemaacademico.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Matricula {
     private static int contagem = 1;
     private String codigo;
+    @JsonIgnore
     private Aluno aluno;
+
     private OfertaDisciplina oferta;
     private ResultadoAcademico resultado;
 //substitui turma para oferta disciplinas, ela quem carrega a disciplina

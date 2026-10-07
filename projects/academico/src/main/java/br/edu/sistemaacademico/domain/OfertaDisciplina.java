@@ -1,4 +1,6 @@
 package br.edu.sistemaacademico.domain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public class OfertaDisciplina {
         aluno.adicionarMatricula(matricula);
         return matricula;
     }
-
+    @JsonIgnore
     public Turma getTurma() {
         return this.turma;
     }
@@ -50,6 +52,7 @@ public class OfertaDisciplina {
         return this.disciplina;
     }
 //copia da lista
+    @JsonIgnore
     public List<Matricula> getMatriculas() {
         return new ArrayList<>(this.matriculas);
     }
