@@ -1,0 +1,161 @@
+{
+  "info": {
+    "_postman_id": "d3de27ca-0243-4b2a-af8f-9eb43facd572",
+    "name": "Sistema Acadêmico",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58704545",
+    "_collection_link": "https://go.postman.co/collection/58704545-d3de27ca-0243-4b2a-af8f-9eb43facd572?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Consultar matrícula existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar aluno existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar matrícula",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registroAcademico\": \"RA2026002\",\r\n  \"turma\": \"ESOFT4S-NB\",\r\n  \"disciplina\": \"BD\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Matrícula inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Matrícula duplicada",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registroAcademico\": \"RA2026002\",\r\n  \"turma\": \"ESOFT4S-NB\",\r\n  \"disciplina\": \"POO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Aluno já aprovado",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registroAcademico\": \"RA2026001\",\r\n  \"turma\": \"ADSIS4S\",\r\n  \"disciplina\": \"POO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
