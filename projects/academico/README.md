@@ -39,3 +39,27 @@ O JaCoCo exige no mínimo 80% de cobertura de linhas das classes de domínio. O 
 Os testes ficam em `src/test/java` e cobrem oferta de disciplinas, proteção das coleções, matrículas, mudanças de estado e as regras de aprovação e reprovação do histórico acadêmico.
 
 O workflow **Java Tests** do GitHub Actions executa os testes e verifica a cobertura a cada `push` e `pull_request`.
+
+## API REST com Spring Boot
+
+Feito na atividade 02 do 2º bimestre. Pra subir a API, no diretório `projects/academico`:
+
+```bash
+mvn spring-boot:run
+```
+
+Ela sobe em `http://localhost:8080` já com os alunos, turmas e matrículas do exemplo do `SistemaAcademico` carregados em memória. Não tem banco, então quando reinicia volta tudo ao começo.
+
+- `GET /api/matriculas/{codigo}` consulta uma matrícula. Ex.: `/api/matriculas/MAT-001`
+- `GET /api/alunos/{registroAcademico}` consulta um aluno pelo RA. Ex.: `/api/alunos/RA2026001`
+- `POST /api/matriculas` cria uma matrícula com o JSON abaixo
+
+```json
+{
+    "registroAcademico": "RA2026002",
+    "turma": "ESOFT4S-NB",
+    "disciplina": "BD"
+}
+```
+
+Collection do Postman que usei pra testar: https://documenter.getpostman.com/view/58769127/2sBYHPyh8c
