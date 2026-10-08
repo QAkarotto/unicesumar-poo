@@ -1,0 +1,22 @@
+Configuração do Maven Wrapper (pt-BR)
+=====================================
+
+Este diretório guarda a URL da distribuição do Maven que o wrapper baixa na primeira execução.
+
+Arquivo principal:
+  maven-wrapper.properties
+    - distributionUrl: endereço do Maven 3.9.9 (zip)
+    - wrapperVersion: versão do script mvnw / mvnw.cmd
+
+Variáveis de ambiente opcionais (documentação):
+  MVNW_REPOURL     — espelho alternativo para baixar o Maven
+  MVNW_USERNAME    — usuário, se o repositório exigir autenticação
+  MVNW_PASSWORD    — senha correspondente
+  MVNW_VERBOSE     — true: logs detalhados do wrapper
+
+Na pasta .mvn/, o arquivo jvm.config define idioma pt-BR para mensagens do Maven quando o JDK suportar.
+
+Comandos usuais (na pasta sistema-academico):
+  .\mvnw.cmd test              — roda os testes
+  .\mvnw.cmd spring-boot:run   — sobe a API
+  .\mvnw.cmd verify            — testes + verificação de cobertura JaCoCo

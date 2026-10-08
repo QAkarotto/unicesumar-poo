@@ -1,0 +1,17 @@
+$kind: http-request
+description: Identificador acadêmico (RA) já usado pelo domínio.
+url: "{{baseUrl}}/api/alunos/RA-1001"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('retorna 200', function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test('devolve o aluno e o histórico', function () {
+          var corpo = pm.response.json();
+          pm.expect(corpo.identificadorAcademico).to.eql('RA-1001');
+          pm.expect(corpo.historico[0].codigo).to.eql('MAT-001');
+      });
+    language: text/javascript
+order: 2000

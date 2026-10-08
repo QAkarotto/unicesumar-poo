@@ -1,0 +1,4 @@
+$kind: collection
+description: Consultas e criação de matrícula da API em memória. Suba a aplicação com mvn spring-boot:run antes de executar. Os dados voltam ao estado inicial quando a aplicação reinicia.
+variables:
+  baseUrl: http://localhost:8080
