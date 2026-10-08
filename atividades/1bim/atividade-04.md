@@ -30,7 +30,7 @@ Atributos: ano e semestre.
 
 Atributos: código, disciplina e período letivo.
 
-### `Matricula`
+### `MatriculaController`
 
 Atributos: código, aluno e turma.
 
