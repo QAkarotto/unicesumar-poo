@@ -1,16 +1,16 @@
 package br.edu.sistemaacademico.domain;
 
 public enum Semestre {
-    PRIMEIRO(1),
-    SEGUNDO(2);
+    PRIMEIRO("1º Semestre"),
+    SEGUNDO("2º Semestre");
+    private String descricao;
 
-    private final int numero;
-
-    Semestre(int numero) {
-        this.numero = numero;
+    Semestre(String descricao) {
+        this.descricao = descricao;
     }
 
-    public int getNumero() {
-        return numero;
+    @Override
+    public String toString() {
+        return this.descricao;
     }
 }

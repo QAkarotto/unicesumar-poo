@@ -3,9 +3,7 @@ package br.edu.sistemaacademico.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class HistoricoAcademicoTest {
 
@@ -20,7 +18,7 @@ class HistoricoAcademicoTest {
                 new PeriodoLetivo(2026, Semestre.PRIMEIRO)
         );
         var ofertaAnterior = turmaAnterior.ofertarDisciplina(poo);
-        var matriculaAnterior = ofertaAnterior.matricular("MAT-001", aluno);
+        var matriculaAnterior = ofertaAnterior.matricular(aluno);
         matriculaAnterior.concluir(ResultadoAcademico.REPROVADO);
 
         var novaTurma = new Turma(
@@ -29,11 +27,11 @@ class HistoricoAcademicoTest {
         );
         var novaOferta = novaTurma.ofertarDisciplina(poo);
 
-        var novaMatricula = novaOferta.matricular("MAT-002", aluno);
+        var novaMatricula = novaOferta.matricular(aluno);
 
         assertEquals(2, aluno.getMatriculas().size());
         assertSame(novaMatricula, novaOferta.getMatriculas().get(0));
-        assertEquals(SituacaoMatricula.ATIVA, novaMatricula.getSituacao());
+        assertNull(novaMatricula.getResultado());
     }
 
     @Test
@@ -47,7 +45,7 @@ class HistoricoAcademicoTest {
                 new PeriodoLetivo(2026, Semestre.PRIMEIRO)
         );
         var ofertaAnterior = turmaAnterior.ofertarDisciplina(poo);
-        var matriculaAnterior = ofertaAnterior.matricular("MAT-001", aluno);
+        var matriculaAnterior = ofertaAnterior.matricular(aluno);
         matriculaAnterior.concluir(ResultadoAcademico.APROVADO);
 
         var novaTurma = new Turma(
@@ -58,7 +56,7 @@ class HistoricoAcademicoTest {
 
         assertThrows(
                 IllegalStateException.class,
-                () -> novaOferta.matricular("MAT-002", aluno)
+                () -> novaOferta.matricular(aluno)
         );
         assertEquals(1, aluno.getMatriculas().size());
         assertEquals(0, novaOferta.getMatriculas().size());

@@ -2,37 +2,38 @@ package br.edu.sistemaacademico.domain;
 
 import java.util.Objects;
 
-public final class Disciplina {
-    private final String codigo;
-    private final String nome;
-    private final int cargaHoraria;
+public class Disciplina {
+    private String codigo;
+    private String nome;
+    private int cargaHoraria;
 
     public Disciplina(String codigo, String nome, int cargaHoraria) {
-        this.codigo = validarTexto(codigo, "O código da disciplina é obrigatório.");
-        this.nome = validarTexto(nome, "O nome da disciplina é obrigatório.");
-        if (cargaHoraria <= 0) {
-            throw new IllegalArgumentException("A carga horária deve ser positiva.");
+        if (codigo == null || codigo.equals("")) {
+            throw new IllegalArgumentException("O código da disciplina é obrigatório.");
         }
+        if (nome == null || nome.equals("")) {
+            throw new IllegalArgumentException("O nome da disciplina é obrigatório.");
+        }
+        if (cargaHoraria <= 0) {
+            throw new IllegalArgumentException("A carga horária deve ser maior que zero.");
+        }
+        this.codigo = codigo;
+        this.nome = nome;
         this.cargaHoraria = cargaHoraria;
     }
-
     public String getCodigo() {
-        return codigo;
+        return this.codigo;
     }
-
     public String getNome() {
-        return nome;
+        return this.nome;
     }
-
     public int getCargaHoraria() {
-        return cargaHoraria;
+        return this.cargaHoraria;
     }
 
-    private static String validarTexto(String valor, String mensagem) {
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(mensagem);
-        }
-        return valor.trim();
+    @Override
+    public String toString() {
+        return "[" + this.codigo + "] " + this.nome + " (" + this.cargaHoraria + "h)";
     }
 
     @Override
@@ -40,19 +41,15 @@ public final class Disciplina {
         if (this == outro) {
             return true;
         }
-        if (!(outro instanceof Disciplina disciplina)) {
+        if (!(outro instanceof Disciplina)) {
             return false;
         }
-        return codigo.equals(disciplina.codigo);
+        Disciplina disciplina = (Disciplina) outro;
+        return this.codigo.equals(disciplina.codigo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(codigo);
-    }
-
-    @Override
-    public String toString() {
-        return codigo + " - " + nome + " (" + cargaHoraria + "h)";
+        return Objects.hash(this.codigo);
     }
 }

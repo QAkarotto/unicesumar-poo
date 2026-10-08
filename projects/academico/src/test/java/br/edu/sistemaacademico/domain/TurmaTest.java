@@ -4,67 +4,83 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TurmaTest {
+public class TurmaTest {
 
     @Test
-    @DisplayName("Deve permitir ofertar disciplinas diferentes")
-    void devePermitirOfertarDisciplinasDiferentes() {
+    @DisplayName("Deve ofertar disciplina para a turma")
+    void deveOfertarDisciplina() {
         // Arrange
-        var turma = new Turma(
-                "ESOFT4S-NA",
-                new PeriodoLetivo(2026, Semestre.SEGUNDO)
-        );
-        var poo = new Disciplina("POO", "Programação Orientada a Objetos", 80);
-        var bancoDeDados = new Disciplina("BD", "Banco de Dados", 80);
+        var turma = new Turma("ESOFT4S-NA", new PeriodoLetivo(2026, Semestre.SEGUNDO));
+        var disciplina = new Disciplina("POO", "Programação Orientada a Objetos", 80);
 
         // Act
-        turma.ofertarDisciplina(poo);
-        turma.ofertarDisciplina(bancoDeDados);
+        var oferta = turma.ofertarDisciplina(disciplina);
+
+        // Assert
+        assertEquals(1, turma.getOfertas().size());
+        assertSame(oferta, turma.getOfertas().get(0));
+        assertSame(disciplina, oferta.getDisciplina());
+    }
+
+    @Test
+    @DisplayName("Deve impedir oferta de disciplina duplicada")
+    void deveImpedirOfertaDuplicada() {
+        // Arrange
+        var turma = new Turma("ESOFT4S-NA", new PeriodoLetivo(2026, Semestre.SEGUNDO));
+        var disciplina1 = new Disciplina("POO", "Programação Orientada a Objetos", 80);
+        var disciplina2 = new Disciplina("POO", "Programação Orientada a Objetos", 80);
+
+        turma.ofertarDisciplina(disciplina1);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> turma.ofertarDisciplina(disciplina2)
+        );
+
+        assertEquals(1, turma.getOfertas().size());
+    }
+
+    @Test
+    @DisplayName("Deve permitir ofertas de disciplinas diferentes para a mesma turma")
+    void devePermitirOfertasDeDisciplinasDiferentes() {
+        // Arrange
+        var turma = new Turma( "ESOFT4S-NA", new PeriodoLetivo(2026, Semestre.SEGUNDO) );
+        var disciplina1 = new Disciplina( "POO", "Programação Orientada a Objetos", 80 );
+        var disciplina2 = new Disciplina( "BD", "Banco de Dados", 60 );
+
+        // Act
+        turma.ofertarDisciplina(disciplina1);
+        turma.ofertarDisciplina(disciplina2);
 
         // Assert
         assertEquals(2, turma.getOfertas().size());
-        assertTrue(turma.getOfertas().stream()
-                .anyMatch(oferta -> oferta.getDisciplina().equals(poo)));
-        assertTrue(turma.getOfertas().stream()
-                .anyMatch(oferta -> oferta.getDisciplina().equals(bancoDeDados)));
     }
 
     @Test
-    @DisplayName("Deve impedir disciplina duplicada na turma")
-    void deveImpedirDisciplinaDuplicadaNaTurma() {
+    @DisplayName("Deve registrar a mesma oferta criada")
+    void deveRegistrarMesmaOfertaCriada() {
         // Arrange
-        var turma = new Turma(
-                "ESOFT4S-NA",
-                new PeriodoLetivo(2026, Semestre.SEGUNDO)
-        );
-        var poo = new Disciplina("POO", "Programação Orientada a Objetos", 80);
-        turma.ofertarDisciplina(poo);
+        var turma = new Turma("ESOFT4S-NA", new PeriodoLetivo(2026, Semestre.SEGUNDO));
+        var disciplina = new Disciplina("POO", "Programação Orientada a Objetos", 80);
 
-        // Act / Assert
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> turma.ofertarDisciplina(poo)
-        );
+        // Act
+        var oferta = turma.ofertarDisciplina(disciplina);
+
+        // Assert
+        assertSame(oferta, turma.getOfertas().get(0));
     }
-
     @Test
-    @DisplayName("Deve proteger a coleção de ofertas")
-    void deveProtegerColecaoDeOfertas() {
-        var turma = new Turma(
-                "ESOFT4S-NA",
-                new PeriodoLetivo(2026, Semestre.SEGUNDO)
-        );
-        turma.ofertarDisciplina(
-                new Disciplina("POO", "Programação Orientada a Objetos", 80)
-        );
+    @DisplayName("Deve lançar exceção ao criar turma com sigla ou período inválido")
+    void deveLancarExcecaoTurmaDadosInvalidos() {
+        // Arrange
+        var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> turma.getOfertas().clear()
-        );
-        assertEquals(1, turma.getOfertas().size());
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> new Turma(null, periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("", periodo));
+        assertThrows(IllegalArgumentException.class, () -> new Turma("ESOFT4S-NA", null));
     }
 }
