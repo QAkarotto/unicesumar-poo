@@ -68,6 +68,6 @@ Os dados ficam em memória (`api/DadosAcademicos`) e são os mesmos do exemplo e
 
 ### Postman
 
-Collection publicada: LINK_DA_COLLECTION
+Collection publicada: https://documenter.getpostman.com/view/58771920/2sBYHQ2NT9
 
 O arquivo `postman/sistema-academico.postman_collection.json` pode ser importado no Postman.
