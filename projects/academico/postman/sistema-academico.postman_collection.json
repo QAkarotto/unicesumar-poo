@@ -1,0 +1,64 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico - API REST",
+    "description": "Requisições da Atividade 02 - 2BIM (Primeiros Endpoints com Spring Boot). Execute na ordem, com a aplicação recém iniciada.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Consultar matrícula existente (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/matriculas/MAT-001" }
+    },
+    {
+      "name": "Consultar matrícula inexistente (404)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/matriculas/MAT-999" }
+    },
+    {
+      "name": "Consultar aluno existente (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/alunos/RA2026002" }
+    },
+    {
+      "name": "Consultar aluno inexistente (404)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/alunos/RA0000000" }
+    },
+    {
+      "name": "Criar matrícula (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/matriculas",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"BD\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Matrícula repetida na mesma oferta (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/matriculas",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"BD\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Matrícula de aluno já aprovado (409)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/matriculas",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"RA2026001\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"POO\"\n}"
+        }
+      }
+    }
+  ]
+}
