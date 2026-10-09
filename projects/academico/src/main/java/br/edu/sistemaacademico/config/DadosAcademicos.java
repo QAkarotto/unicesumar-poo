@@ -1,4 +1,4 @@
-package br.edu.sistemaacademico.api;
+package br.edu.sistemaacademico.config;
 
 import br.edu.sistemaacademico.domain.Aluno;
 import br.edu.sistemaacademico.domain.Disciplina;
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
  // Guarda em memória os alunos e as turmas usados pela API.
- // Os dois controllers usam esta mesma instância
- // Os métodos são synchronized para que duas requisições ao mesmo tempo não mexam nas listas ao mesmo tempo.
+ // Os dois controllers usam essa instância
+ // Os métodos são synchronized para que duas requisições não mexam nas listas ao mesmo tempo.
 @Component
 public class DadosAcademicos {
 
@@ -30,9 +30,9 @@ public class DadosAcademicos {
     // dados iniciais
 
     private void criarAlunos() {
-        alunos.add(new Aluno("RA2026001", "Paola Oliveira", "paola.oliveira@email.com"));
-        alunos.add(new Aluno("RA2026002", "Bruno Santos", "bruno.santos@email.com"));
-        alunos.add(new Aluno("RA2026003", "Carla Mendes", "carla.mendes@email.com"));
+        alunos.add(new Aluno("RA2026001", "Danilo Machado", "danilo.machado@email.com"));
+        alunos.add(new Aluno("RA2026002", "Doris Daniella", "doris.daniella@email.com"));
+        alunos.add(new Aluno("RA2026003", "Goku Santos", "goku.santos@email.com"));
     }
 
     private void criarTurmas() {
@@ -51,7 +51,6 @@ public class DadosAcademicos {
     }
 
     private void criarMatriculasIniciais() {
-        // Gera MAT-001 e MAT-002
         matricular(buscarAluno("RA2026001"), buscarOferta("ESOFT4S-NB", "POO"));
         matricular(buscarAluno("RA2026002"), buscarOferta("ESOFT4S-NB", "POO"));
     }
@@ -95,7 +94,7 @@ public class DadosAcademicos {
     //criação
 
 
-     //Só escolhe o código da nova matrícula e manda para o domínio, que valida as regras e lança exceção.
+     //Só escolhe o código da matrícula e manda para o domínio.
     public synchronized Matricula matricular(Aluno aluno, OfertaDisciplina oferta) {
         String codigo = gerarCodigoMatricula();
         return oferta.matricular(codigo, aluno);

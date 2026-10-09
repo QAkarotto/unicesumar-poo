@@ -1,7 +1,7 @@
-package br.edu.sistemaacademico.api;
+package br.edu.sistemaacademico.dto;
 
 
-  //JSON esperado no corpo de POST /api/matriculas:
+  //JSON esperado no corpo de POST /matriculas:
   //{
     //"registroAcademico": "RA2026003","codigoTurma": "ESOFT4S-NB","codigoDisciplina": "BD"
   //}

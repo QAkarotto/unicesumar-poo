@@ -1,4 +1,4 @@
-package br.edu.sistemaacademico.api;
+package br.edu.sistemaacademico.dto;
 
 import br.edu.sistemaacademico.domain.Aluno;
 import br.edu.sistemaacademico.domain.Matricula;

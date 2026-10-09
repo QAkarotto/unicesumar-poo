@@ -1,4 +1,4 @@
-package br.edu.sistemaacademico.api;
+package br.edu.sistemaacademico.dto;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

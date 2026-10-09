@@ -1,5 +1,9 @@
-package br.edu.sistemaacademico.api;
+package br.edu.sistemaacademico.controller;
 
+import br.edu.sistemaacademico.dto.CriarMatriculaRequest;
+import br.edu.sistemaacademico.config.DadosAcademicos;
+import br.edu.sistemaacademico.dto.ErroResponse;
+import br.edu.sistemaacademico.dto.MatriculaResponse;
 import br.edu.sistemaacademico.domain.Aluno;
 import br.edu.sistemaacademico.domain.Matricula;
 import br.edu.sistemaacademico.domain.OfertaDisciplina;
@@ -15,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/matriculas")
+@RequestMapping("/matriculas")
 public class MatriculaController {
 
     private final DadosAcademicos dados;
@@ -24,7 +28,7 @@ public class MatriculaController {
         this.dados = dados;
     }
 
-    // GET /api/matriculas/MAT-001
+    // GET /matriculas/MAT-001
     @GetMapping("/{id}")
     public ResponseEntity<?> consultar(@PathVariable("id") String id) {
         Matricula matricula = dados.buscarMatricula(id);
@@ -37,7 +41,7 @@ public class MatriculaController {
         return ResponseEntity.ok(MatriculaResponse.de(matricula)); // 200
     }
 
-    // POST /api/matriculas
+    // POST /matriculas
     @PostMapping
     public ResponseEntity<?> criar(@RequestBody CriarMatriculaRequest requisicao) {
         // O JSON veio completo
@@ -67,7 +71,7 @@ public class MatriculaController {
         //Matricular: as regras ficam no domínio. Se alguma for violada, ele lança uma exceção.
         try {
             Matricula matricula = dados.matricular(aluno, oferta);
-            URI local = URI.create("/api/matriculas/" + matricula.getCodigo());
+            URI local = URI.create("/matriculas/" + matricula.getCodigo());
             return ResponseEntity.created(local).body(MatriculaResponse.de(matricula)); // 201
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ErroResponse.de(HttpStatus.CONFLICT, e.getMessage()); // 409
