@@ -1,0 +1,94 @@
+{
+  "info": {
+    "_postman_id": "0d4a7f15-5c55-4d3b-9c87-atividade02",
+    "name": "Sistema Academico - Atividade 02",
+    "description": "Collection para validar os endpoints REST da Atividade 02 do Sistema Acadêmico.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "GET - Matrícula existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/matriculas/MAT-001",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "matriculas", "MAT-001"]
+        }
+      }
+    },
+    {
+      "name": "GET - Aluno existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos/RA2026001",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "alunos", "RA2026001"]
+        }
+      }
+    },
+    {
+      "name": "POST - Criar matrícula",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"MAT-004\",\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"BD\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/matriculas",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "matriculas"]
+        }
+      }
+    },
+    {
+      "name": "GET - Aluno inexistente (404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos/RA9999999",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "alunos", "RA9999999"]
+        }
+      }
+    },
+    {
+      "name": "POST - Matrícula proibida pela regra de aprovação (409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"MAT-005\",\n  \"registroAcademico\": \"RA2026001\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"POO\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/matriculas",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "matriculas"]
+        }
+      }
+    }
+  ]
+}
