@@ -1,51 +1,26 @@
 package br.edu.sistemaacademico.api;
-
-import br.edu.sistemaacademico.domain.Aluno;
-import br.edu.sistemaacademico.domain.Matricula;
+import br.edu.sistemaacademico.domain.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import java.util.Map;
 @RestController
 @RequestMapping("/api/matriculas")
 public class MatriculaController {
-
-    private final AlunoController alunoController;
-    private final List<Matricula> matriculas = new ArrayList<>();
-
-    public MatriculaController(AlunoController alunoController) {
-        this.alunoController = alunoController;
-        // Matrícula inicial para o aluno Luiz Henrique de Amorais Franco - 25131800-2
-        Aluno aluno = alunoController.getRepositorio().get("25131800-2");
-        if (aluno != null) {
-            matriculas.add(new Matricula(aluno, "2025-1"));
-        }
-    }
-
-    @GetMapping
-    public List<Matricula> listar() {
-        return matriculas;
-    }
-
-    @GetMapping("/aluno/{registro}")
-    public ResponseEntity<List<Matricula>> porAluno(@PathVariable String registro) {
-        if (!alunoController.getRepositorio().containsKey(registro)) {
-            return ResponseEntity.notFound().build();
-        }
-        List<Matricula> result = matriculas.stream()
-                .filter(m -> m.getAluno().getRegistro().equals(registro))
-                .toList();
-        return ResponseEntity.ok(result);
-    }
-
-    @PostMapping
-    public ResponseEntity<Matricula> matricular(@RequestBody Map<String, String> body) {
-        String registro = body.get("registro");
-        String periodo = body.getOrDefault("periodo", "2025-1");
-        Aluno aluno = alunoController.getRepositorio().get(registro);
-        if (aluno == null) return ResponseEntity.notFound().build();
-        Matricula nova = new Matricula(aluno, periodo);
-        matriculas.add(nova);
-        return ResponseEntity.ok(nova);
-    }
+@GetMapping
+public ResponseEntity<?> listar() {
+var aluno = new Aluno("25131800-2", "Luiz Henrique de Amorais Franco", "luiz@unicesumar.edu.br");
+var periodo = new PeriodoLetivo(2026, Semestre.SEGUNDO);
+var turma = new Turma("ESOF7AS-NA", periodo);
+var disciplina = new Disciplina("POO", "Programacao Orientada a Objetos", 80);
+var oferta = turma.ofertarDisciplina(disciplina);
+var matricula = oferta.matricular("MAT-001", aluno);
+return ResponseEntity.ok(List.of(Map.of("codigo", matricula.getCodigo(), "aluno", aluno.getNome(), "ra", "25131800-2", "turma", turma.getCodigo(), "disciplina", disciplina.getNome())));
+}
+@GetMapping("/info")
+public ResponseEntity<?> info() {
+return ResponseEntity.ok(Map.of("ra", "25131800-2", "nome", "Luiz Henrique de Amorais Franco", "curso", "Engenharia de Software"));
+}
 }
