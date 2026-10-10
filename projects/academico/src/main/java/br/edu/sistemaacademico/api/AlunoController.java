@@ -10,24 +10,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
-
     @GetMapping
     public ResponseEntity<?> listar() {
-        return ResponseEntity.ok(List.of(
-            Map.of(
-                "ra", "25131800-2",
-                "nome", "Luiz Henrique de Amorais Franco",
-                "email", "luiz@unicesumar.edu.br"
-            )
-        ));
+        return ResponseEntity.ok(List.of(Map.of("ra","25131800-2","nome","Luiz Henrique de Amorais Franco","email","luiz@unicesumar.edu.br")));
     }
-
     @GetMapping("/info")
     public ResponseEntity<?> info() {
-        return ResponseEntity.ok(Map.of(
-            "ra", "25131800-2",
-            "nome", "Luiz Henrique de Amorais Franco",
-            "curso", "Engenharia de Software"
-        ));
+        return ResponseEntity.ok(Map.of("ra","25131800-2","nome","Luiz Henrique de Amorais Franco","curso","Engenharia de Software"));
     }
 }
