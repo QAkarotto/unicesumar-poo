@@ -1,6 +1,5 @@
 package br.edu.sistemaacademico.api;
 
-import br.edu.sistemaacademico.domain.Aluno;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +13,13 @@ public class AlunoController {
 
     @GetMapping
     public ResponseEntity<?> listar() {
-        Aluno aluno = new Aluno("25131800-2", "Luiz Henrique de Amorais Franco", "luiz@unicesumar.edu.br");
-        
-        return ResponseEntity.ok(List.of(Map.of(
-            "ra", "25131800-2",
-            "nome", aluno.getNome(),
-            "email", "luiz@unicesumar.edu.br"
-        )));
+        return ResponseEntity.ok(List.of(
+            Map.of(
+                "ra", "25131800-2",
+                "nome", "Luiz Henrique de Amorais Franco",
+                "email", "luiz@unicesumar.edu.br"
+            )
+        ));
     }
 
     @GetMapping("/info")
