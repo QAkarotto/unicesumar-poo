@@ -10,26 +10,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/matriculas")
 public class MatriculaController {
-
     @GetMapping
     public ResponseEntity<?> listar() {
-        return ResponseEntity.ok(List.of(
-            Map.of(
-                "codigo", "MAT-001",
-                "ra", "25131800-2",
-                "aluno", "Luiz Henrique de Amorais Franco",
-                "turma", "ESOF7AS-NA",
-                "disciplina", "POO"
-            )
-        ));
+        return ResponseEntity.ok(List.of(Map.of("codigo","MAT-001","ra","25131800-2","aluno","Luiz Henrique de Amorais Franco","turma","ESOF7AS-NA","disciplina","POO")));
     }
-
     @GetMapping("/info")
     public ResponseEntity<?> info() {
-        return ResponseEntity.ok(Map.of(
-            "ra", "25131800-2",
-            "nome", "Luiz Henrique de Amorais Franco",
-            "curso", "Engenharia de Software"
-        ));
+        return ResponseEntity.ok(Map.of("ra","25131800-2","nome","Luiz Henrique de Amorais Franco","curso","Engenharia de Software"));
     }
 }
