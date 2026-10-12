@@ -1,0 +1,153 @@
+{
+  "info": {
+    "_postman_id": "b0891c28-de9a-4b8e-8ccd-be10b724ec94",
+    "name": "API - Arthur Pacher",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58771005",
+    "_collection_link": "https://go.postman.co/collection/58771005-b0891c28-de9a-4b8e-8ccd-be10b724ec94?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Consulta de aluno",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consulta inválida",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA0",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA0"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consulta de matricula",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consulta de matricula invalida",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar matricula",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registroAcademico\": \"RA2026002\",\r\n  \"codigoTurma\": \"ESOFT4S-NB\",\r\n  \"codigoDisciplina\": \"BD\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar matricula com aluno ja aprovado",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"registroAcademico\": \"RA2026001\",\r\n  \"codigoTurma\": \"ADSIS4S\",\r\n  \"codigoDisciplina\": \"POO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
