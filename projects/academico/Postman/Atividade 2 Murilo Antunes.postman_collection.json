@@ -1,0 +1,80 @@
+{
+  "info": {
+    "_postman_id": "eda4fc14-0d7d-46b3-acc6-4db23806dd8c",
+    "name": "Atividade 2 Murilo Antunes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58769720",
+    "_collection_link": "https://go.postman.co/collection/58769720-eda4fc14-0d7d-46b3-acc6-4db23806dd8c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Cadastrar matrícula",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"ra\": \"RA2026001\",\r\n  \"codigoDisciplina\": \"POO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consulta matricula pelo id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consulta aluno pelo RA.",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar matrícula inexistente",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}

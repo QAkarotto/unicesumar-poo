@@ -1,5 +1,6 @@
 package br.edu.sistemaacademico.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class Aluno {
         this.email = email;
     }
 
+    @JsonIgnore
     public List<Matricula> getMatriculas() {
         return List.copyOf(matriculas);
     }
