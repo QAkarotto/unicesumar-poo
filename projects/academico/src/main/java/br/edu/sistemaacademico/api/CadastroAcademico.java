@@ -8,6 +8,7 @@ import br.edu.sistemaacademico.domain.PeriodoLetivo;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import br.edu.sistemaacademico.domain.Semestre;
 import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.domain.OfertaDisciplina;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class CadastroAcademico {
 
     private final Map<String, Aluno> alunos = new HashMap<>();
     private final Map<String, Matricula> matriculas = new HashMap<>();
+    private final Map<String, Turma> turmas = new HashMap<>();
 
     public CadastroAcademico() {
         var paola = new Aluno("RA2026001", "Paola Oliveira", "paola.oliveira@email.com");
@@ -30,6 +32,10 @@ public class CadastroAcademico {
         var turma2025 = new Turma("ESOFT4S-NA", new PeriodoLetivo(2025, Semestre.SEGUNDO));
         var turma2026A = new Turma("ESOFT4S-NB", new PeriodoLetivo(2026, Semestre.PRIMEIRO));
         var turma2026B = new Turma("ADSIS4S", new PeriodoLetivo(2026, Semestre.SEGUNDO));
+
+        turmas.put(turma2025.getCodigo(), turma2025);
+        turmas.put(turma2026A.getCodigo(), turma2026A);
+        turmas.put(turma2026B.getCodigo(), turma2026B);
 
         var poo2025 = turma2025.ofertarDisciplina(poo);
         var poo2026A = turma2026A.ofertarDisciplina(poo);
@@ -54,5 +60,24 @@ public class CadastroAcademico {
     }
     public Matricula buscarMatricula(String codigo) {
         return matriculas.get(codigo);
+    }
+    public OfertaDisciplina buscarOferta(String codigoTurma, String codigoDisciplina) {
+        Turma turma = turmas.get(codigoTurma);
+        if (turma == null) {
+            return null;
+        }
+        for (OfertaDisciplina oferta : turma.getOfertas()) {
+            if (oferta.getDisciplina().getCodigo().equals(codigoDisciplina)) {
+                return oferta;
+            }
+        }
+        return null;
+    }
+
+    public Matricula matricular(Aluno aluno, OfertaDisciplina oferta) {
+        String codigo = String.format("MAT-%03d", matriculas.size() + 1);
+        Matricula matricula = oferta.matricular(codigo, aluno);
+        matriculas.put(codigo, matricula);
+        return matricula;
     }
 }
