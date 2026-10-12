@@ -20,9 +20,9 @@ public class TurmaTeste {
         var oferta = turma.ofertarDisciplina(disciplina);
 
         // Assert
-        assertEquals(1, turma.getOfertas().size());
-        assertSame(oferta, turma.getOfertas().get(0));
-        assertSame(disciplina, oferta.getDisciplina());
+        Assertions.assertEquals(1, turma.getOfertas().size());
+        Assertions.assertSame(oferta, turma.getOfertas().get(0));
+        Assertions.assertSame(disciplina, oferta.getDisciplina());
     }
 
     @Test
@@ -35,12 +35,12 @@ public class TurmaTeste {
 
         turma.ofertarDisciplina(disciplina1);
 
-        assertThrows(
+        Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> turma.ofertarDisciplina(disciplina2)
         );
 
-        assertEquals(1, turma.getOfertas().size());
+        Assertions.assertEquals(1, turma.getOfertas().size());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class TurmaTeste {
         turma.ofertarDisciplina(disciplina2);
 
         // Assert
-        assertEquals(2, turma.getOfertas().size());
+        Assertions.assertEquals(2, turma.getOfertas().size());
     }
 
     @Test
@@ -70,6 +70,6 @@ public class TurmaTeste {
         var oferta = turma.ofertarDisciplina(disciplina);
 
         // Assert
-        assertSame(oferta, turma.getOfertas().get(0));
+        Assertions.assertSame(oferta, turma.getOfertas().get(0));
     }
 }

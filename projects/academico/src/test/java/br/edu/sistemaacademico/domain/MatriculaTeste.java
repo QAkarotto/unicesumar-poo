@@ -21,7 +21,7 @@ class MatriculaTest {
         matricula.cancelar();
 
         // Assert
-        assertEquals(SituacaoMatricula.CANCELADA, matricula.getSituacao());
+        Assertions.assertEquals(SituacaoMatricula.CANCELADA, matricula.getSituacao());
     }
 
     @Test
@@ -36,7 +36,7 @@ class MatriculaTest {
         matricula.trancar();
 
         // Assert
-        assertEquals(SituacaoMatricula.TRANCADA, matricula.getSituacao());
+        Assertions.assertEquals(SituacaoMatricula.TRANCADA, matricula.getSituacao());
     }
 
     @Test
@@ -51,8 +51,8 @@ class MatriculaTest {
         matricula.concluir(ResultadoAcademico.APROVADO);
 
         // Assert
-        assertEquals(SituacaoMatricula.CONCLUIDA, matricula.getSituacao());
-        assertEquals(ResultadoAcademico.APROVADO, matricula.getResultado());
+        Assertions.assertEquals(SituacaoMatricula.CONCLUIDA, matricula.getSituacao());
+        Assertions.assertEquals(ResultadoAcademico.APROVADO, matricula.getResultado());
     }
 
     @Test
@@ -67,8 +67,8 @@ class MatriculaTest {
         matricula.concluir(ResultadoAcademico.REPROVADO);
 
         // Assert
-        assertEquals(SituacaoMatricula.CONCLUIDA, matricula.getSituacao());
-        assertEquals(ResultadoAcademico.REPROVADO, matricula.getResultado()); }
+        Assertions.assertEquals(SituacaoMatricula.CONCLUIDA, matricula.getSituacao());
+        Assertions.assertEquals(ResultadoAcademico.REPROVADO, matricula.getResultado()); }
 
     @Test
     @DisplayName("Deve iniciar matrícula como ativa")
@@ -81,7 +81,7 @@ class MatriculaTest {
         var matricula = turma.getOfertas().get(0).matricular(aluno);
 
         // Assert
-        assertEquals(SituacaoMatricula.ATIVA, matricula.getSituacao());
+        Assertions.assertEquals(SituacaoMatricula.ATIVA, matricula.getSituacao());
     }
 
     @Test
@@ -93,10 +93,10 @@ class MatriculaTest {
         var matricula = turma.getOfertas().get(0).matricular(aluno); matricula.concluir(ResultadoAcademico.APROVADO);
 
         // Act
-        assertThrows( IllegalStateException.class, () -> matricula.concluir(ResultadoAcademico.REPROVADO) );
+        Assertions.assertThrows( IllegalStateException.class, () -> matricula.concluir(ResultadoAcademico.REPROVADO) );
         // Assert
-        assertEquals(SituacaoMatricula.CONCLUIDA, matricula.getSituacao());
-        assertEquals(ResultadoAcademico.APROVADO, matricula.getResultado());
+        Assertions.assertEquals(SituacaoMatricula.CONCLUIDA, matricula.getSituacao());
+        Assertions.assertEquals(ResultadoAcademico.APROVADO, matricula.getResultado());
     }
 
     @Test
@@ -108,10 +108,10 @@ class MatriculaTest {
         var matricula = turma.getOfertas().get(0).matricular(aluno); matricula.trancar();
 
         // Act
-        assertThrows( IllegalStateException.class, () -> matricula.concluir(ResultadoAcademico.APROVADO) );
+        Assertions.assertThrows( IllegalStateException.class, () -> matricula.concluir(ResultadoAcademico.APROVADO) );
 
         // Assert
-        assertEquals(SituacaoMatricula.TRANCADA, matricula.getSituacao());
+        Assertions.assertEquals(SituacaoMatricula.TRANCADA, matricula.getSituacao());
     }
 
     @Test
@@ -126,7 +126,7 @@ class MatriculaTest {
         var matricula = oferta.matricular(aluno);
 
         // Assert
-        assertSame(aluno, matricula.getAluno());
+        Assertions.assertSame(aluno, matricula.getAluno());
     }
 
     @Test
@@ -139,7 +139,7 @@ class MatriculaTest {
         var matricula = new Matricula( " MAT-001 ", aluno, turma );
 
         // Assert
-        assertEquals("MAT-001", matricula.getCodigo());
+        Assertions.assertEquals("MAT-001", matricula.getCodigo());
     }
 
     @Test
@@ -153,7 +153,7 @@ class MatriculaTest {
         var matricula = new Matricula("MAT-001", aluno, turma);
 
         // Assert
-        assertSame(turma, matricula.getTurma());
-        assertSame(aluno, matricula.getAluno());
+        Assertions.assertSame(turma, matricula.getTurma());
+        Assertions.assertSame(aluno, matricula.getAluno());
     }
 }

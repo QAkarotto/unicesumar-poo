@@ -26,11 +26,11 @@ class OfertaDisciplinaTest {
         var matricula = oferta.matricular(aluno);
 
         // Assert
-        assertEquals(1, oferta.getMatriculas().size());
-        assertEquals(1, aluno.getMatriculas().size());
-        assertSame(matricula, oferta.getMatriculas().get(0));
-        assertSame(matricula, aluno.getMatriculas().get(0));
-        assertEquals(SituacaoMatricula.ATIVA, matricula.getSituacao());
+        Assertions.assertEquals(1, oferta.getMatriculas().size());
+        Assertions.assertEquals(1, aluno.getMatriculas().size());
+        Assertions.assertSame(matricula, oferta.getMatriculas().get(0));
+        Assertions.assertSame(matricula, aluno.getMatriculas().get(0));
+        Assertions.assertEquals(SituacaoMatricula.ATIVA, matricula.getSituacao());
     }
 
     @Test
@@ -46,11 +46,11 @@ class OfertaDisciplinaTest {
         );
         oferta.matricular("MATRICULA-001", aluno);
 
-        assertThrows(
+        Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> oferta.matricular("MATRICULA-002", aluno)
         );
-        assertEquals(1, oferta.getMatriculas().size());
-        assertEquals(1, aluno.getMatriculas().size());
+        Assertions.assertEquals(1, oferta.getMatriculas().size());
+        Assertions.assertEquals(1, aluno.getMatriculas().size());
     }
 }
