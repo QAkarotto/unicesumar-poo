@@ -1,0 +1,9 @@
+$kind: collection
+description: "Fluxo da atividade: cadastrar admin, login, cadastrar produto, consultar produto e um cenario invalido. Rode de cima para baixo."
+variables:
+  baseUrl: https://serverest.dev
+  senha: senha123
+  email: ""
+  token: ""
+  produto: ""
+  produtoId: ""
