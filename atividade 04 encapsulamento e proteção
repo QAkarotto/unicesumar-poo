@@ -1,0 +1,243 @@
+package br.edu.sistemaacademico.domain;
+
+public enum Semestre {
+    PRIMEIRO,
+    SEGUNDO
+}
+package br.edu.sistemaacademico.domain;
+
+public class Aluno {
+
+    private String identificadorAcademico;
+    private String nome;
+    private String email;
+
+    public Aluno(String identificadorAcademico, String nome, String email) {
+
+        if (identificadorAcademico == null || identificadorAcademico.isEmpty()) {
+            throw new IllegalArgumentException("Identificador academico obrigatorio");
+        }
+
+        if (nome == null || nome.isEmpty()) {
+            throw new IllegalArgumentException("Nome obrigatorio");
+        }
+
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email obrigatorio");
+        }
+
+        this.identificadorAcademico = identificadorAcademico;
+        this.nome = nome;
+        this.email = email;
+    }
+
+    public String getIdentificadorAcademico() {
+        return identificadorAcademico;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email obrigatorio");
+        }
+
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "Aluno{" +
+                "identificadorAcademico='" + identificadorAcademico + '\'' +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+}
+package br.edu.sistemaacademico.domain;
+
+public class Disciplina {
+
+    private String codigo;
+    private String nome;
+    private int cargaHoraria;
+
+    public Disciplina(String codigo, String nome, int cargaHoraria) {
+
+        if (codigo == null || codigo.isEmpty()) {
+            throw new IllegalArgumentException("Codigo obrigatorio");
+        }
+
+        if (nome == null || nome.isEmpty()) {
+            throw new IllegalArgumentException("Nome obrigatorio");
+        }
+
+        if (cargaHoraria <= 0) {
+            throw new IllegalArgumentException("Carga horaria deve ser maior que zero");
+        }
+
+        this.codigo = codigo;
+        this.nome = nome;
+        this.cargaHoraria = cargaHoraria;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public int getCargaHoraria() {
+        return cargaHoraria;
+    }
+
+    @Override
+    public String toString() {
+        return "Disciplina{" +
+                "codigo='" + codigo + '\'' +
+                ", nome='" + nome + '\'' +
+                ", cargaHoraria=" + cargaHoraria +
+                '}';
+    }
+}
+package br.edu.sistemaacademico.domain;
+
+public class PeriodoLetivo {
+
+    private int ano;
+    private Semestre semestre;
+
+    public PeriodoLetivo(int ano, Semestre semestre) {
+
+        if (ano <= 0) {
+            throw new IllegalArgumentException("Ano invalido");
+        }
+
+        if (semestre == null) {
+            throw new IllegalArgumentException("Semestre obrigatorio");
+        }
+
+        this.ano = ano;
+        this.semestre = semestre;
+    }
+
+    public int getAno() {
+        return ano;
+    }
+
+    public Semestre getSemestre() {
+        return semestre;
+    }
+
+    @Override
+    public String toString() {
+        return "PeriodoLetivo{" +
+                "ano=" + ano +
+                ", semestre=" + semestre +
+                '}';
+    }
+}
+package br.edu.sistemaacademico.domain;
+
+public class Turma {
+
+    private String codigo;
+    private Disciplina disciplina;
+    private PeriodoLetivo periodoLetivo;
+
+    public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
+
+        if (codigo == null || codigo.isEmpty()) {
+            throw new IllegalArgumentException("Codigo obrigatorio");
+        }
+
+        if (disciplina == null) {
+            throw new IllegalArgumentException("Disciplina obrigatoria");
+        }
+
+        if (periodoLetivo == null) {
+            throw new IllegalArgumentException("Periodo letivo obrigatorio");
+        }
+
+        this.codigo = codigo;
+        this.disciplina = disciplina;
+        this.periodoLetivo = periodoLetivo;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public Disciplina getDisciplina() {
+        return disciplina;
+    }
+
+    public PeriodoLetivo getPeriodoLetivo() {
+        return periodoLetivo;
+    }
+
+    @Override
+    public String toString() {
+        return "Turma{" +
+                "codigo='" + codigo + '\'' +
+                ", disciplina=" + disciplina +
+                ", periodoLetivo=" + periodoLetivo +
+                '}';
+    }
+}
+package br.edu.sistemaacademico.domain;
+
+public class Matricula {
+
+    private String codigo;
+    private Aluno aluno;
+    private Turma turma;
+
+    public Matricula(String codigo, Aluno aluno, Turma turma) {
+
+        if (codigo == null || codigo.isEmpty()) {
+            throw new IllegalArgumentException("Codigo obrigatorio");
+        }
+
+        if (aluno == null) {
+            throw new IllegalArgumentException("Aluno obrigatorio");
+        }
+
+        if (turma == null) {
+            throw new IllegalArgumentException("Turma obrigatoria");
+        }
+
+        this.codigo = codigo;
+        this.aluno = aluno;
+        this.turma = turma;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public Aluno getAluno() {
+        return aluno;
+    }
+
+    public Turma getTurma() {
+        return turma;
+    }
+
+    @Override
+    public String toString() {
+        return "Matricula{" +
+                "codigo='" + codigo + '\'' +
+                ", aluno=" + aluno +
+                ", turma=" + turma +
+                '}';
+    }
+}
