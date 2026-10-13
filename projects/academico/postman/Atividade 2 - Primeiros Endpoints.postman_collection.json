@@ -1,0 +1,140 @@
+{
+  "info": {
+    "_postman_id": "ab6048a6-57e9-4d10-a670-b3ec2fb9ffd5",
+    "name": "Atividade 2 - Primeiros Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58770648",
+    "_collection_link": "https://go.postman.co/collection/58770648-ab6048a6-57e9-4d10-a670-b3ec2fb9ffd5?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Buscar aluno",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar matrícula inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar matrícula",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n  \"identificadorAluno\": \"RA2026002\",\r\n  \"codigoTurma\": \"ESOFT4S-NA\",\r\n  \"codigoDisciplina\": \"BD\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar matrícula inválida",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n  \"identificadorAluno\": \"RA9999999\",\r\n  \"codigoTurma\": \"ESOFT4S-NA\",\r\n  \"codigoDisciplina\": \"POO\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar matrícula duplicada",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "\r\n{\r\n  \"identificadorAluno\": \"RA2026001\",\r\n  \"codigoTurma\": \"ESOFT4S-NA\",\r\n  \"codigoDisciplina\": \"POO\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
