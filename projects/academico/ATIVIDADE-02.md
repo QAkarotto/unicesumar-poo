@@ -36,4 +36,4 @@ Os controllers ficaram responsáveis por receber as requisições e retornar as 
 Uma das dificuldades foi tratar as matrículas com dados inválidos, principalmente quando o RA informado não existe. Para resolver isso, fiz verificações dos dados recebidos e tratei as exceções, retornando o status HTTP adequado para cada situação.
 
 ## Collection do Postman
-https://www.postman.com/mateushbp1402-1324453/mateus-presner/collection/uhg8zur/atividade-02-spring-boot?action=share&creator=58792600
+https://www.postman.com/mateushbp1402-1324453/mateus-presner/collection/uhg8zur/atividade-02-spring-boot?action=share&creator=58792600[Atividade 02 - Spring Boot.postman_collection.json](../../../Atividade%2002%20-%20Spring%20Boot.postman_collection.json)
