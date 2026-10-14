@@ -1,0 +1,39 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico - Atividade 02 (Spring Boot)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:8080" }],
+  "item": [
+    {
+      "name": "Consultar matrícula existente (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/matriculas/MAT-001" }
+    },
+    {
+      "name": "Consultar aluno existente (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/alunos/RA2026001" }
+    },
+    {
+      "name": "Criar matrícula (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/matriculas",
+        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"BD\"\n}" }
+      }
+    },
+    {
+      "name": "Matrícula inexistente (404)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/matriculas/MAT-999" }
+    },
+    {
+      "name": "Matrícula proibida pelo domínio - aluno já aprovado (409)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/matriculas",
+        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026001\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"POO\"\n}" }
+      }
+    }
+  ]
+}
