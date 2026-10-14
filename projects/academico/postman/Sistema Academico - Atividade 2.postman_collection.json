@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "Sistema Academico - Atividade 2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Buscar matricula existente",
+      "request": {
+        "method": "GET",
+        "url": "https://fantastic-potato-wr454g9pq6x6c5g7x-8080.app.github.dev/api/matriculas/MAT-1001"
+      }
+    },
+    {
+      "name": "Buscar aluno existente",
+      "request": {
+        "method": "GET",
+        "url": "https://fantastic-potato-wr454g9pq6x6c5g7x-8080.app.github.dev/api/alunos/RA2026001"
+      }
+    },
+    {
+      "name": "Criar matricula",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"MAT-1002\",\"registroAcademico\":\"RA2026002\",\"codigoTurma\":\"ESOFT4S-NB\",\"codigoDisciplina\":\"POO\"}"
+        },
+        "url": "https://fantastic-potato-wr454g9pq6x6c5g7x-8080.app.github.dev/api/matriculas"
+      }
+    },
+    {
+      "name": "Matricula inexistente",
+      "request": {
+        "method": "GET",
+        "url": "https://fantastic-potato-wr454g9pq6x6c5g7x-8080.app.github.dev/api/matriculas/MAT-9999"
+      }
+    }
+  ]
+}
