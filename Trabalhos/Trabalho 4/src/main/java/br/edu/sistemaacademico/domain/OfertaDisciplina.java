@@ -7,6 +7,9 @@ public class OfertaDisciplina {
     private Turma turma;
     private Disciplina disciplina;
     private List<Matricula> matriculas = new ArrayList<>();
+    public String getCodigo() {
+        return turma.getCodigo() + "-" + disciplina.getCodigo();
+    }
 
     public OfertaDisciplina(Turma turma, Disciplina disciplina) {
         this.turma = turma;
@@ -22,7 +25,7 @@ public class OfertaDisciplina {
     }
 
     public Matricula matricular(Aluno aluno) {
-        // Regra 1: Aluno já aprovado na disciplina não pode se matricular de novo
+
         if (aluno.jaFoiAprovadoEm(this.disciplina)) {
             throw new IllegalStateException("Aluno " + aluno.getNome() + " já foi aprovado na disciplina " + disciplina.getNome() + ".");
         }
@@ -34,11 +37,11 @@ public class OfertaDisciplina {
             }
         }
 
-        Matricula novaMatricula = new Matricula(aluno, this);
-        this.matriculas.add(novaMatricula);
+        String idMatricula = "MAT-" + aluno.getRa() + "-" + disciplina.getSigla();
+        Matricula novaMatricula = new Matricula(idMatricula, aluno, this);
 
-        // Responsabilidade dupla: adiciona no aluno também!
-        aluno.adicionarMatricula(novaMatricula);
+        this.matriculas.add(novaMatricula);
+        aluno.getMatriculas().add(novaMatricula);
 
         return novaMatricula;
     }

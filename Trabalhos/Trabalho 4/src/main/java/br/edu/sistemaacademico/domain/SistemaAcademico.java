@@ -67,6 +67,10 @@ public class SistemaAcademico {
                 periodo2026_2
         );
 
+        var matricula2025 = new Matricula(
+
+        )
+
         System.out.println("=== OFERTA DE DISCIPLINAS ===");
 
         var poo2025 = turma2025.ofertarDisciplina(poo);

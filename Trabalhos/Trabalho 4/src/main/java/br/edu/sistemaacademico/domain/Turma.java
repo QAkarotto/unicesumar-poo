@@ -21,9 +21,7 @@ public class Turma {
         return ofertas;
     }
 
-    // Método principal: Ofertar a disciplina e criar a OfertaDisciplina
     public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
-        // Validação: Impede a mesma disciplina na mesma turma
         for (OfertaDisciplina oferta : ofertas) {
             if (oferta.getDisciplina().equals(disciplina)) {
                 throw new IllegalArgumentException("A disciplina " + disciplina.getNome() + " já está ofertada nesta turma.");
@@ -33,5 +31,6 @@ public class Turma {
         OfertaDisciplina novaOferta = new OfertaDisciplina(this, disciplina);
         this.ofertas.add(novaOferta);
         return novaOferta;
+
     }
 }

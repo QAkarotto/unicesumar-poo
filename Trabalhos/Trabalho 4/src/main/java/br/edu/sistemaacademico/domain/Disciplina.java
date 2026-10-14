@@ -5,11 +5,15 @@ public class Disciplina {
     private String nome;
     private int cargaHoraria;
 
-    // O construtor agora aceita os TRÊS parâmetros que o professor enviou no SistemaAcademico
+
     public Disciplina(String sigla, String nome, int cargaHoraria) {
         this.sigla = sigla;
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
+    }
+
+    public String getCodigo() {
+        return sigla;
     }
 
     public String getSigla() {
@@ -26,6 +30,6 @@ public class Disciplina {
 
     @Override
     public String toString() {
-        return nome; // Retorna o nome por extenso para ficar bonito no console
+        return nome;
     }
 }
