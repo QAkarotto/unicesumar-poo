@@ -1,4 +1,4 @@
-package br.edu.sistemaacademico;
+package br.edu.sistemaacademico.domain;
 
 import br.edu.sistemaacademico.domain.Aluno;
 import br.edu.sistemaacademico.domain.Disciplina;
