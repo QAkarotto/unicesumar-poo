@@ -19,6 +19,14 @@ public class Aluno {
         return nome;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     public List<Matricula> getMatriculas() {
         return matriculas;
     }
