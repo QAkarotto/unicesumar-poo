@@ -60,6 +60,6 @@ Corpo do POST: `{"registroAcademico": "RA2026002", "turma": "ADSIS4S", "discipli
 
 ### Collection do Postman
 
-Link da Collection: _COLE AQUI O LINK PUBLICADO DA COLLECTION_
+Link da Collection: https://documenter.getpostman.com/view/58935716/2sBYHRW2FS
 
 O arquivo [`postman-collection.json`](postman-collection.json) pode ser importado no Postman.
