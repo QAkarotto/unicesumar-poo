@@ -1,0 +1,66 @@
+{
+  "info": {
+    "_postman_id": "1a3d5c85-74b4-40b6-b9d1-04cbb4e413a6",
+    "name": "Pedro - Sistema Academico",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58767412",
+    "_collection_link": "https://go.postman.co/collection/58767412-1a3d5c85-74b4-40b6-b9d1-04cbb4e413a6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Consultar matricula MAT-001",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar aluno RA2026101",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Matricular aluno em BD - Sucesso",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Matricular aluno em POO - Conflito",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar matricula inexistente MAT-999",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
+}
