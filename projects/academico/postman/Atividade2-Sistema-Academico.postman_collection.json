@@ -1,0 +1,145 @@
+{
+  "info": {
+    "name": "Atividade 2 - Sistema Academico (Spring Boot)",
+    "description": "Collection para validar a API REST do Sistema Academico. Suba o servidor antes de executar. Os dados sao em memoria: para repetir os testes, reinicie o servidor.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "1. Consultar matricula existente (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Retorna MAT-001', function () { pm.expect(pm.response.json().id).to.eql('MAT-001'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/matriculas/MAT-001",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "matriculas", "MAT-001"]
+        }
+      }
+    },
+    {
+      "name": "2. Consultar aluno existente (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+              "pm.test('Retorna RA-001', function () { pm.expect(pm.response.json().identificador).to.eql('RA-001'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos/RA-001",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "alunos", "RA-001"]
+        }
+      }
+    },
+    {
+      "name": "3. Criar matricula (201)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+              "pm.test('Matricula criada com id', function () { pm.expect(pm.response.json().id).to.be.a('string'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"identificadorAluno\": \"RA-002\",\n  \"codigoDisciplina\": \"POO\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/matriculas",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "matriculas"]
+        }
+      }
+    },
+    {
+      "name": "4. Matricula inexistente (404 - invalido)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404', function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/matriculas/MAT-999",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "matriculas", "MAT-999"]
+        }
+      }
+    },
+    {
+      "name": "5. Matricula proibida pela regra do dominio (409 - invalido)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 409', function () { pm.response.to.have.status(409); });",
+              "pm.test('Mensagem de erro do dominio', function () { pm.expect(pm.response.json().mensagem).to.be.a('string'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"identificadorAluno\": \"RA-001\",\n  \"codigoDisciplina\": \"POO\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/matriculas",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "matriculas"]
+        }
+      }
+    }
+  ]
+}
