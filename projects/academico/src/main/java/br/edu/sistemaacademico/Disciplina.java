@@ -48,4 +48,7 @@ public class Disciplina {
     public String toString() {
         return String.format("%s (%s)", nome, codigo);
     } // João Pedro Hulchak Kazmierzak RA: 25141620-2 e Hiuri Luciano dos Santos RA: 25208360-2
+    public int getCargaHoraria() {
+        return cargaHoraria;
+    }
 }

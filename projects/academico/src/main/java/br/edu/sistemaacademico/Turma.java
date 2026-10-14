@@ -51,4 +51,7 @@ public class Turma {
     public String toString() {
         return String.format("Turma[%s - %s]", codigo, periodoLetivo);
     } // João Pedro Hulchak Kazmierzak RA: 25141620-2 e Hiuri Luciano dos Santos RA: 25208360-2
+    public PeriodoLetivo getPeriodoLetivo() {
+        return periodoLetivo;
+    }
 }

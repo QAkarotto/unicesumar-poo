@@ -52,5 +52,14 @@ public class Aluno {
     @Override
     public String toString() {
         return String.format("Aluno[%s - %s]", identificador, nome);
-    } // João Pedro Hulchak Kazmierzak RA: 25141620-2 e Hiuri Luciano dos Santos RA: 25208360-2
+    } // João Pedro Hulchak Kazmierzak RA: ... e Hiuri Luciano ...
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
 }
