@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseUrl}}/usuarios"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Admin Teste",
+      "email": "{{email}}",
+      "password": "{{senha}}",
+      "administrador": "true"
+    }
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set('email', 'admin.teste.' + Date.now() + '@exemplo.com');
+    language: text/javascript
+order: 1000
