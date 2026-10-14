@@ -1,0 +1,4 @@
+$kind: collection
+description: API local em [http://localhost:8080](http://localhost:8080). Suba SistemaAcademicoApplication antes de executar.
+variables:
+  baseUrl: http://localhost:8080

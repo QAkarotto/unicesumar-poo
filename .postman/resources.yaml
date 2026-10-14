@@ -6,8 +6,9 @@ workspace:
 
 cloudResources:
   collections:
-    ../postman/collections/Sistema Acadêmico: 646fc2e1-3b61-469c-95d6-e1ed4578e848
     ../postman/collections/Lucas Dobis ADSIS4S - ServeRest: 2273c0d2-73e0-45ff-8a3a-8bcec96fcf06
+    ../postman/collections/Sistema Acadêmico FINAL BOSS: 646fc2e1-3b61-469c-95d6-e1ed4578e848
+    ../postman/collections/Lucas Dobis ADSIS4S - Sistema Academico ATV - 02: 4f87deb0-1108-4da4-bc38-c9cf68533196
 
 # All resources in the `postman/` folder are automatically registered in Local View.
 # Point to additional files outside the `postman/` folder to register them individually. Example:
