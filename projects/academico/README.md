@@ -1,41 +1,68 @@
-# Sistema Acadêmico
+# Sistema Acadêmico — API REST com Spring Boot
 
-Projeto didático em Java 26 para praticar orientação a objetos e testes unitários com JUnit 5.
+Projeto didático em Java 26. A API expõe funcionalidades do domínio acadêmico usando Spring Boot e mantém os dados apenas em memória (não há banco de dados).
 
-O domínio representa alunos, turmas, ofertas de disciplinas e matrículas. As regras permanecem nos próprios objetos, sem frameworks ou camadas adicionais.
+## Como executar
 
-## Executando a aplicação
-
-No diretório `projects/academico`, compile com:
+Requisitos: JDK 26 e Maven. Abra um terminal nesta pasta (`projects/academico`) e execute:
 
 ```bash
-mvn compile
+mvn spring-boot:run
 ```
 
-Depois, execute `br.edu.sistemaacademico.SistemaAcademico` pela IDE.
+A API ficará disponível em `http://localhost:8080`. Os dados de exemplo são recriados sempre que a aplicação inicia.
 
-## Testes unitários
+## Endpoints
 
-Para executar todos os testes:
+| Método | Rota | Sucesso | Descrição |
+|---|---|---:|---|
+| GET | `/api/matriculas/{id}` | 200 | Consulta matrícula pelo código |
+| GET | `/api/alunos/{identificador}` | 200 | Consulta aluno pelo RA ou e-mail |
+| POST | `/api/matriculas` | 201 | Cria uma matrícula |
+
+Respostas de erro: `400 Bad Request` para corpo inválido ou violação de regra do domínio; `404 Not Found` para aluno, turma, disciplina, oferta ou matrícula inexistente; `409 Conflict` para código de matrícula já utilizado.
+
+### Exemplo de POST `/api/matriculas`
+
+Header: `Content-Type: application/json`
+
+```json
+{
+  "registroAcademico": "RA2026002",
+  "turmaCodigo": "ESOFT4S-NA",
+  "disciplinaCodigo": "BD"
+}
+```
+
+O campo `codigo` é opcional; se omitido, a API gera um código. Para informar um código manualmente:
+
+```json
+{
+  "codigo": "MAT-2026-010",
+  "registroAcademico": "RA2026002",
+  "turmaCodigo": "ESOFT4S-NA",
+  "disciplinaCodigo": "BD"
+}
+```
+
+### Dados de exemplo
+
+- Alunos: `RA2026001` (Paola Oliveira) e `RA2026002` (Bruno Santos).
+- Turma: `ESOFT4S-NA`, período `2026/1`.
+- Disciplinas ofertadas: `POO` e `BD`.
+- Matrícula existente: `MAT-2026-001` (Paola em POO).
+
+A tentativa de matricular novamente Paola na mesma oferta de POO é inválida; as regras continuam implementadas nas classes do domínio.
+
+## Postman
+
+Importe `postman/Sistema-Academico-API.postman_collection.json` no Postman. A collection contém consultas válidas, criação de matrícula e cenários de erro. Rode as requisições na ordem, pois a matrícula criada pelo POST passa a existir apenas durante a execução atual da aplicação.
+
+## Testes
 
 ```bash
 mvn test
-```
-
-Para executar apenas os testes de matrícula:
-
-```bash
-mvn -Dtest=MatriculaTest test
-```
-
-Para executar os testes e verificar a cobertura de código:
-
-```bash
 mvn verify
 ```
 
-O JaCoCo exige no mínimo 80% de cobertura de linhas das classes de domínio. O relatório HTML é gerado em `target/site/jacoco/index.html`. A classe `SistemaAcademico` não entra nessa métrica porque representa o fluxo de demonstração da aplicação.
-
-Os testes ficam em `src/test/java` e cobrem oferta de disciplinas, proteção das coleções, matrículas, mudanças de estado e as regras de aprovação e reprovação do histórico acadêmico.
-
-O workflow **Java Tests** do GitHub Actions executa os testes e verifica a cobertura a cada `push` e `pull_request`.
+O segundo comando também verifica a cobertura mínima de 80% configurada para o domínio.
