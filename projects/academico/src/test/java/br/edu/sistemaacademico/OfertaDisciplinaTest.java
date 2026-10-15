@@ -1,5 +1,6 @@
-package br.edu.sistemaacademico.domain;
+package br.edu.sistemaacademico;
 
+import br.edu.sistemaacademico.domain.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,8 +14,8 @@ class OfertaDisciplinaTest {
         return new Turma("T01", periodo);
     }
 
-    private Disciplina criarDisciplina() {
-        return new Disciplina(
+    private Aluno.Disciplina criarDisciplina() {
+        return new Aluno.Disciplina(
                 "POO",
                 "Programação Orientada a Objetos",
                 80
@@ -33,7 +34,7 @@ class OfertaDisciplinaTest {
     void deveCriarOfertaDeDisciplina() {
         // Arrange
         Turma turma = criarTurma();
-        Disciplina disciplina = criarDisciplina();
+        Aluno.Disciplina disciplina = criarDisciplina();
 
         // Act
         OfertaDisciplina oferta =
@@ -50,7 +51,7 @@ class OfertaDisciplinaTest {
     void deveRejeitarAlunoNulo() {
         // Arrange
         Turma turma = criarTurma();
-        Disciplina disciplina = criarDisciplina();
+        Aluno.Disciplina disciplina = criarDisciplina();
         OfertaDisciplina oferta =
                 turma.ofertarDisciplina(disciplina);
 
@@ -65,7 +66,7 @@ class OfertaDisciplinaTest {
     void deveMatricularAluno() {
         // Arrange
         Turma turma = criarTurma();
-        Disciplina disciplina = criarDisciplina();
+        Aluno.Disciplina disciplina = criarDisciplina();
         OfertaDisciplina oferta =
                 turma.ofertarDisciplina(disciplina);
 
@@ -86,7 +87,7 @@ class OfertaDisciplinaTest {
     void naoDevePermitirMatriculaDuplicadaNaMesmaOferta() {
         // Arrange
         Turma turma = criarTurma();
-        Disciplina disciplina = criarDisciplina();
+        Aluno.Disciplina disciplina = criarDisciplina();
         OfertaDisciplina oferta =
                 turma.ofertarDisciplina(disciplina);
 
@@ -105,7 +106,7 @@ class OfertaDisciplinaTest {
     void listaDeMatriculasDeveSerSomenteParaLeitura() {
         // Arrange
         Turma turma = criarTurma();
-        Disciplina disciplina = criarDisciplina();
+        Aluno.Disciplina disciplina = criarDisciplina();
         OfertaDisciplina oferta =
                 turma.ofertarDisciplina(disciplina);
 
@@ -120,7 +121,7 @@ class OfertaDisciplinaTest {
     void deveGerarTextoDaOferta() {
         // Arrange
         Turma turma = criarTurma();
-        Disciplina disciplina = criarDisciplina();
+        Aluno.Disciplina disciplina = criarDisciplina();
 
         OfertaDisciplina oferta =
                 turma.ofertarDisciplina(disciplina);

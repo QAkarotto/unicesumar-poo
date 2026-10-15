@@ -1,5 +1,6 @@
-package br.edu.sistemaacademico.domain;
+package br.edu.sistemaacademico;
 
+import br.edu.sistemaacademico.domain.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -59,8 +60,8 @@ class TurmaTest {
 
         Turma turma = new Turma("T01", periodo);
 
-        Disciplina disciplina =
-                new Disciplina("POO", "Programação Orientada a Objetos", 80);
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina("POO", "Programação Orientada a Objetos", 80);
 
         // Act
         OfertaDisciplina oferta =
@@ -94,8 +95,8 @@ class TurmaTest {
 
         Turma turma = new Turma("T01", periodo);
 
-        Disciplina disciplina =
-                new Disciplina("POO", "Programação Orientada a Objetos", 80);
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina("POO", "Programação Orientada a Objetos", 80);
 
         turma.ofertarDisciplina(disciplina);
 
@@ -131,8 +132,8 @@ class TurmaTest {
 
         Turma turma = new Turma("T01", periodo);
 
-        Disciplina disciplina =
-                new Disciplina("POO", "Programação", 80);
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina("POO", "Programação", 80);
 
         turma.ofertarDisciplina(disciplina);
 

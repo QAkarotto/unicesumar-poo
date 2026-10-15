@@ -10,22 +10,21 @@ public class Disciplina {
 
     public Disciplina(String codigo, String nome, int cargaHoraria) {
         if (codigo == null || codigo.isBlank()) {
-            throw new IllegalArgumentException(
-                    "O código da disciplina não pode ser vazio."
-            );
+            throw new IllegalArgumentException("Código inválido.");
         }
+
         if (nome == null || nome.isBlank()) {
-            throw new IllegalArgumentException(
-                    "O nome da disciplina não pode ser vazio."
-            );
+            throw new IllegalArgumentException("Nome inválido.");
         }
+
         if (cargaHoraria <= 0) {
             throw new IllegalArgumentException(
                     "A carga horária deve ser maior que zero."
             );
         }
-        this.codigo = codigo;
-        this.nome = nome;
+
+        this.codigo = codigo.trim();
+        this.nome = nome.trim();
         this.cargaHoraria = cargaHoraria;
     }
 
@@ -42,10 +41,17 @@ public class Disciplina {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Disciplina that)) return false;
-        return codigo.equals(that.codigo);
+    public boolean equals(Object objeto) {
+        if (this == objeto) {
+            return true;
+        }
+
+        if (!(objeto instanceof Disciplina)) {
+            return false;
+        }
+
+        Disciplina outra = (Disciplina) objeto;
+        return codigo.equals(outra.codigo);
     }
 
     @Override
@@ -55,10 +61,8 @@ public class Disciplina {
 
     @Override
     public String toString() {
-        return "Disciplina{" +
-                "codigo='" + codigo + '\'' +
-                ", nome='" + nome + '\'' +
-                ", cargaHoraria=" + cargaHoraria +
-                '}';
+        return "Disciplina: " + codigo
+                + " - " + nome
+                + " (" + cargaHoraria + " horas)";
     }
 }

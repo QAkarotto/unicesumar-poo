@@ -1,5 +1,6 @@
-package br.edu.sistemaacademico.domain;
+package br.edu.sistemaacademico;
 
+import br.edu.sistemaacademico.domain.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,8 +13,8 @@ class MatriculaTest {
 
         Turma turma = new Turma("T01", periodo);
 
-        Disciplina disciplina =
-                new Disciplina(
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina(
                         "POO",
                         "Programação Orientada a Objetos",
                         80
@@ -147,8 +148,8 @@ class MatriculaTest {
         Turma novaTurma =
                 new Turma("T02", novoPeriodo);
 
-        Disciplina disciplina =
-                new Disciplina(
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina(
                         "POO",
                         "Programação Orientada a Objetos",
                         80
@@ -230,8 +231,8 @@ class MatriculaTest {
         Turma novaTurma =
                 new Turma("T02", novoPeriodo);
 
-        Disciplina disciplina =
-                new Disciplina(
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina(
                         "POO",
                         "Programação Orientada a Objetos",
                         80

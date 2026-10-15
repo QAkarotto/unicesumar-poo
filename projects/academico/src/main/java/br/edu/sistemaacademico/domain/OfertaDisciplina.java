@@ -7,10 +7,10 @@ import java.util.List;
 public class OfertaDisciplina {
 
     private final Turma turma;
-    private final Disciplina disciplina;
+    private final Aluno.Disciplina disciplina;
     private final List<Matricula> matriculas = new ArrayList<>();
 
-    OfertaDisciplina(Turma turma, Disciplina disciplina) {
+    OfertaDisciplina(Turma turma, Aluno.Disciplina disciplina) {
         if (turma == null) {
             throw new IllegalArgumentException("A turma não pode ser nula.");
         }
@@ -25,7 +25,7 @@ public class OfertaDisciplina {
         return turma;
     }
 
-    public Disciplina getDisciplina() {
+    public Aluno.Disciplina getDisciplina() {
         return disciplina;
     }
 

@@ -37,7 +37,7 @@ public class Turma {
         return Collections.unmodifiableList(ofertas);
     }
 
-    public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
+    public OfertaDisciplina ofertarDisciplina(Aluno.Disciplina disciplina) {
         if (disciplina == null) {
             throw new IllegalArgumentException("A disciplina não pode ser nula.");
         }

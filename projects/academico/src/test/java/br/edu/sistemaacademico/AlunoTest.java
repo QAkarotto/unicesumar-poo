@@ -1,5 +1,7 @@
-package br.edu.sistemaacademico.domain;
+package br.edu.sistemaacademico;
 
+import br.edu.sistemaacademico.domain.Aluno;
+import br.edu.sistemaacademico.domain.Matricula;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -142,8 +144,8 @@ class AlunoTest {
                 "matheus@email.com"
         );
 
-        Disciplina disciplina =
-                new Disciplina("POO", "Programação Orientada a Objetos", 80);
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina("POO", "Programação Orientada a Objetos", 80);
 
         assertFalse(aluno.jaAprovadoEm(disciplina));
     }

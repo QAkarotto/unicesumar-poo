@@ -1,5 +1,6 @@
-package br.edu.sistemaacademico.domain;
+package br.edu.sistemaacademico;
 
+import br.edu.sistemaacademico.domain.Aluno;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,8 +14,8 @@ class DisciplinaTest {
         String nome = "Programação Orientada a Objetos";
         int cargaHoraria = 80;
 
-        Disciplina disciplina =
-                new Disciplina(codigo, nome, cargaHoraria);
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina(codigo, nome, cargaHoraria);
 
         assertEquals("POO", disciplina.getCodigo());
         assertEquals("Programação Orientada a Objetos", disciplina.getNome());
@@ -25,7 +26,7 @@ class DisciplinaTest {
     void deveRejeitarCodigoVazio() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Disciplina("", "Programação", 80)
+                () -> new Aluno.Disciplina("", "Programação", 80)
         );
     }
 
@@ -33,7 +34,7 @@ class DisciplinaTest {
     void deveRejeitarNomeVazio() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Disciplina("POO", "", 80)
+                () -> new Aluno.Disciplina("POO", "", 80)
         );
     }
 
@@ -41,18 +42,18 @@ class DisciplinaTest {
     void deveRejeitarCargaHorariaInvalida() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Disciplina("POO", "Programação", 0)
+                () -> new Aluno.Disciplina("POO", "Programação", 0)
         );
     }
 
     @Test
     void deveCompararDisciplinasComMesmoCodigo() {
         // Arrange
-        Disciplina disciplina1 =
-                new Disciplina("POO", "Programação", 80);
+        Aluno.Disciplina disciplina1 =
+                new Aluno.Disciplina("POO", "Programação", 80);
 
-        Disciplina disciplina2 =
-                new Disciplina("POO", "Programação Orientada", 100);
+        Aluno.Disciplina disciplina2 =
+                new Aluno.Disciplina("POO", "Programação Orientada", 100);
 
         // Assert
         assertEquals(disciplina1, disciplina2);
@@ -62,8 +63,8 @@ class DisciplinaTest {
 
     void deveGerarTextoDaDisciplina() {
         // Arrange
-        Disciplina disciplina =
-                new Disciplina("POO", "Programação", 80);
+        Aluno.Disciplina disciplina =
+                new Aluno.Disciplina("POO", "Programação", 80);
 
         // Act
         String resultado = disciplina.toString();
