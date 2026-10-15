@@ -1,4 +1,4 @@
-package br.edu.sistemaacademico.domain;
+package br.edu.sistemaacademico;
 
 import java.util.ArrayList;
 import java.util.Collections;
