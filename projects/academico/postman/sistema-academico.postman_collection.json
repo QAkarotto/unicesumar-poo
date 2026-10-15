@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico - API REST",
+    "description": "Validação da API do Sistema Acadêmico (Spring Boot). Suba a aplicação antes (mvn spring-boot:run). Os dados ficam em memória: reiniciar a aplicação restaura o estado inicial.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "1. Consultar matrícula existente (200)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Código da matrícula', () => pm.expect(pm.response.json().codigo).to.eql('MAT-001'));"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/matriculas/MAT-001", "host": ["{{baseUrl}}"], "path": ["api", "matriculas", "MAT-001"] } }
+    },
+    {
+      "name": "2. Consultar aluno existente (200)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Aluno correto', () => pm.expect(pm.response.json().registroAcademico).to.eql('RA2026001'));"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/alunos/RA2026001", "host": ["{{baseUrl}}"], "path": ["api", "alunos", "RA2026001"] } }
+    },
+    {
+      "name": "3. Criar matrícula (201)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 201', () => pm.response.to.have.status(201));",
+        "pm.test('Header Location presente', () => pm.expect(pm.response.headers.has('Location')).to.be.true);",
+        "pm.test('Matrícula ATIVA', () => pm.expect(pm.response.json().situacao).to.eql('ATIVA'));"
+      ] } }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026003\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"BD\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/matriculas", "host": ["{{baseUrl}}"], "path": ["api", "matriculas"] },
+        "description": "Só funciona uma vez por execução da aplicação (depois a Carla já estará matriculada em BD e a resposta será 409). Reinicie a API para repetir."
+      }
+    },
+    {
+      "name": "4. Matrícula inexistente (404)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 404', () => pm.response.to.have.status(404));"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/matriculas/MAT-999", "host": ["{{baseUrl}}"], "path": ["api", "matriculas", "MAT-999"] } }
+    },
+    {
+      "name": "5. Aluno inexistente (404)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 404', () => pm.response.to.have.status(404));"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/alunos/RA0000000", "host": ["{{baseUrl}}"], "path": ["api", "alunos", "RA0000000"] } }
+    },
+    {
+      "name": "6. Matrícula proibida pelo domínio - aluno já aprovado (409)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 409', () => pm.response.to.have.status(409));",
+        "pm.test('Mensagem vem do domínio', () => pm.expect(pm.response.json().erro).to.include('aprovado'));"
+      ] } }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026001\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"POO\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/matriculas", "host": ["{{baseUrl}}"], "path": ["api", "matriculas"] }
+      }
+    },
+    {
+      "name": "7. Matrícula duplicada na mesma oferta (409)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 409', () => pm.response.to.have.status(409));"
+      ] } }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"POO\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/matriculas", "host": ["{{baseUrl}}"], "path": ["api", "matriculas"] }
+      }
+    },
+    {
+      "name": "8. Corpo incompleto (400)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('Status 400', () => pm.response.to.have.status(400));"
+      ] } }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026003\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/matriculas", "host": ["{{baseUrl}}"], "path": ["api", "matriculas"] }
+      }
+    }
+  ]
+}
