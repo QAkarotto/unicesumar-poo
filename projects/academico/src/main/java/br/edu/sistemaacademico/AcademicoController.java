@@ -46,7 +46,7 @@ public class AcademicoController {
         SpringApplication.run(AcademicoController.class, args);
     }
 
-    // 1. Consultar um aluno (GET /api/alunos/{identificador})
+    //Consultar um aluno (GET /api/alunos/{identificador})
     @GetMapping("/alunos/{identificador}")
     public ResponseEntity<Aluno> buscarAluno(@PathVariable String identificador) {
         for (Aluno aluno : alunos) {
@@ -57,7 +57,7 @@ public class AcademicoController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    // 2. Consultar uma matrícula (GET /api/matriculas/{id})
+    //Consultar uma matrícula (GET /api/matriculas/{id})
     @GetMapping("/matriculas/{id}")
     public ResponseEntity<Matricula> buscarMatricula(@PathVariable String id) {
         Matricula matriculaEncontrada = matriculas.get(id);
@@ -67,7 +67,7 @@ public class AcademicoController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    // 3. Criar uma matrícula (POST /api/matriculas)
+    //Criar uma matrícula (POST /api/matriculas)
     @PostMapping("/matriculas")
     public ResponseEntity<String> criarMatricula(@RequestBody DadosNovaMatricula dados) {
         // Procurar o aluno e a oferta de disciplina em memória
@@ -84,7 +84,6 @@ public class AcademicoController {
         }
 
         try {
-            // A MAGIA ACONTECE AQUI: Deixamos a regra de negócio no domínio!
             // O método matricular já valida duplicatas e aprovações e lança exceção se falhar.
             Matricula novaMatricula = ofertaEncontrada.matricular(alunoEncontrado);
 
@@ -99,9 +98,7 @@ public class AcademicoController {
         }
     }
 
-    // Classe auxiliar para receber o JSON. (Pode justificar isto ao professor:
-    // "Criámos esta classe porque o Jackson precisa de construtores vazios para ler o JSON,
-    // e não queríamos estragar as classes de domínio originais tirando a sua integridade").
+    // Classe auxiliar para receber o JSON.
     static class DadosNovaMatricula {
         private String identificadorAluno;
         private String codigoDisciplina;
