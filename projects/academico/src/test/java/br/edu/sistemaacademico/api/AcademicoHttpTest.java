@@ -118,31 +118,41 @@ class AcademicoHttpTest {
         var consultado = get("/api/alunos/RA2026003");
         assertEquals(200, consultado.statusCode());
         assertEquals(json(aluno), json(consultado));
-        assertEquals(60, json(get("/api/disciplinas/ES")).get("cargaHoraria").asInt());
-        assertEquals(3, json(get("/api/alunos")).size());
-        assertEquals(3, json(get("/api/disciplinas")).size());
+        var consultada = get("/api/disciplinas/ES");
+        assertEquals(200, consultada.statusCode());
+        assertEquals(json(disciplina), json(consultada));
     }
 
     @Test
-    void listaEConsultaOsDadosIniciaisDoBanco() throws Exception {
-        var alunos = json(get("/api/alunos"));
-        assertEquals("RA2026001", alunos.get(0).get("registroAcademico").asText());
-        assertEquals("RA2026002", alunos.get(1).get("registroAcademico").asText());
+    void consultaDadosIniciaisDoBancoERegistroInexistente() throws Exception {
         var poo = get("/api/disciplinas/POO");
         assertEquals(200, poo.statusCode());
         assertEquals("Programação Orientada a Objetos", json(poo).get("nome").asText());
         assertEquals(80, json(poo).get("cargaHoraria").asInt());
-        assertEquals(404, get("/api/disciplinas/ausente").statusCode());
+        for (var rota : new String[]{"/api/alunos/RA0000000", "/api/disciplinas/ausente"}) {
+            var resposta = get(rota);
+            assertEquals(404, resposta.statusCode());
+            assertTrue(json(resposta).has("mensagem"));
+        }
     }
 
     @Test
-    void recusaCadastroInvalidoOuRepetido() throws Exception {
+    void cadastroDuplicadoDaConflitoSemAlterarOOriginal() throws Exception {
+        var aluno = post("/api/alunos", "{\"registroAcademico\":\"RA2026001\",\"nome\":\"Outro\",\"email\":\"outro@example.com\"}");
+        assertEquals(409, aluno.statusCode());
+        assertEquals("Já existe aluno com este registro acadêmico.", json(aluno).get("mensagem").asText());
+        var disciplina = post("/api/disciplinas", "{\"codigo\":\"POO\",\"nome\":\"Outra\",\"cargaHoraria\":40}");
+        assertEquals(409, disciplina.statusCode());
+        assertEquals("Aluno Exemplo Um", json(get("/api/alunos/RA2026001")).get("nome").asText());
+        assertEquals(80, json(get("/api/disciplinas/POO")).get("cargaHoraria").asInt());
+    }
+
+    @Test
+    void recusaCadastroComDadosInvalidos() throws Exception {
         var invalidos = new String[][]{
-                {"/api/alunos", "{\"registroAcademico\":\"RA2026001\",\"nome\":\"Outro\",\"email\":\"outro@example.com\"}"},
                 {"/api/alunos", "{\"registroAcademico\":\"RA2026009\",\"nome\":\"Sem Email\",\"email\":\"invalido\"}"},
                 {"/api/alunos", "{\"registroAcademico\":\" \",\"nome\":\"Aluno\",\"email\":\"a@example.com\"}"},
                 {"/api/alunos", "{}"},
-                {"/api/disciplinas", "{\"codigo\":\"POO\",\"nome\":\"Outra\",\"cargaHoraria\":40}"},
                 {"/api/disciplinas", "{\"codigo\":\"ES\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":0}"},
                 {"/api/disciplinas", "{"}};
         for (var caso : invalidos) {
@@ -150,9 +160,8 @@ class AcademicoHttpTest {
             assertEquals(400, resposta.statusCode(), caso[1]);
             assertTrue(json(resposta).has("mensagem"));
         }
-        assertEquals("Aluno Exemplo Um", json(get("/api/alunos/RA2026001")).get("nome").asText());
-        assertEquals(2, json(get("/api/alunos")).size());
-        assertEquals(2, json(get("/api/disciplinas")).size());
+        assertEquals(404, get("/api/alunos/RA2026009").statusCode());
+        assertEquals(404, get("/api/disciplinas/ES").statusCode());
     }
 
     @AfterAll

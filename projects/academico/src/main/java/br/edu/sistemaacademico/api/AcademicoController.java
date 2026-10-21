@@ -6,7 +6,6 @@ import br.edu.sistemaacademico.persistencia.DisciplinaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -21,14 +20,9 @@ public class AcademicoController {
         this.disciplinas = disciplinas;
     }
 
-    @GetMapping("/alunos")
-    public List<AlunoResponse> listarAlunos() {
-        return alunos.listarTodos().stream().map(AlunoResponse::de).toList();
-    }
-
     @GetMapping("/alunos/{registroAcademico}")
     public AlunoResponse buscarAluno(@PathVariable("registroAcademico") String registroAcademico) {
-        return AlunoResponse.de(alunos.buscarPorRegistroAcademico(registroAcademico)
+        return AlunoResponse.de(alunos.buscarPorRa(registroAcademico)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno não encontrado.")));
     }
 
@@ -38,11 +32,6 @@ public class AcademicoController {
         alunos.salvar(aluno);
         return ResponseEntity.created(URI.create("/api/alunos/" + aluno.getRegistroAcademico()))
                 .body(AlunoResponse.de(aluno));
-    }
-
-    @GetMapping("/disciplinas")
-    public List<DisciplinaResponse> listarDisciplinas() {
-        return disciplinas.listarTodas().stream().map(DisciplinaResponse::de).toList();
     }
 
     @GetMapping("/disciplinas/{codigo}")
