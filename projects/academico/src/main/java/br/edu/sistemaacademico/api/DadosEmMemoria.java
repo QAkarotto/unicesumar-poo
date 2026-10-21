@@ -1,18 +1,23 @@
 package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.domain.*;
+import br.edu.sistemaacademico.persistencia.AlunoRepository;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DadosEmMemoria {
+    private final AlunoRepository repositorioAlunos;
+    // matriculas e ofertas continuam so em memoria. o aluno carregado do banco fica guardado aqui
+    // pra que as matriculas dele (e a regra de aprovacao anterior) usem sempre o mesmo objeto
     private final Map<String, Aluno> alunos = new HashMap<>();
     private final Map<String, OfertaDisciplina> ofertas = new HashMap<>();
     private final Map<String, Matricula> matriculas = new HashMap<>();
     private int proximoCodigo = 2;
 
-    public DadosEmMemoria() {
+    public DadosEmMemoria(AlunoRepository repositorioAlunos) {
+        this.repositorioAlunos = repositorioAlunos;
         var aluno = new Aluno("RA2026001", "Aluno Exemplo Um", "aluno1@example.com");
         var outro = new Aluno("RA2026002", "Aluno Exemplo Dois", "aluno2@example.com");
         alunos.put(aluno.getRegistroAcademico(), aluno);
@@ -25,7 +30,13 @@ public class DadosEmMemoria {
     }
 
     public synchronized Aluno buscarAluno(String registroAcademico) {
-        return exigirExistente(alunos.get(registroAcademico), "Aluno não encontrado.");
+        var aluno = alunos.get(registroAcademico);
+        if (aluno == null) {
+            aluno = exigirExistente(repositorioAlunos.buscarPorRa(registroAcademico).orElse(null),
+                    "Aluno não encontrado.");
+            alunos.put(registroAcademico, aluno);
+        }
+        return aluno;
     }
 
     public synchronized Matricula buscarMatricula(String codigo) {
