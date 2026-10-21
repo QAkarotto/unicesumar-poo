@@ -2,7 +2,9 @@ package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.AplicacaoAcademica;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
+import br.edu.sistemaacademico.persistencia.BancoDeTeste;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.web.server.context.WebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -10,6 +12,7 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.net.http.*;
+import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AcademicoHttpTest {
@@ -17,10 +20,18 @@ class AcademicoHttpTest {
     private static String baseUrl;
     private static final HttpClient CLIENTE = HttpClient.newHttpClient();
     private static final ObjectMapper JSON = new ObjectMapper();
+    @TempDir
+    Path pasta;
+    private String urlBanco;
 
     @BeforeEach
-    void iniciar() {
-        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0");
+    void iniciar() throws Exception {
+        urlBanco = BancoDeTeste.criar(pasta);
+        subir();
+    }
+
+    private void subir() {
+        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0", "--app.database.url=" + urlBanco);
         baseUrl = "http://localhost:" + ((WebServerApplicationContext) contexto).getWebServer().getPort();
     }
 
@@ -88,6 +99,62 @@ class AcademicoHttpTest {
         assertEquals(2, aluno.getMatriculas().size());
     }
 
+    @Test
+    void cadastroDeAlunoEDisciplinaContinuaDepoisDeReiniciarAApi() throws Exception {
+        var aluno = post("/api/alunos", """
+                {"registroAcademico":"RA2026003","nome":"Aluno Novo","email":"novo@example.com"}
+                """);
+        assertEquals(201, aluno.statusCode());
+        assertEquals("/api/alunos/RA2026003", aluno.headers().firstValue("Location").orElseThrow());
+        var disciplina = post("/api/disciplinas", """
+                {"codigo":"ES","nome":"Engenharia de Software","cargaHoraria":60}
+                """);
+        assertEquals(201, disciplina.statusCode());
+        assertEquals("/api/disciplinas/ES", disciplina.headers().firstValue("Location").orElseThrow());
+
+        contexto.close();
+        subir();
+
+        var consultado = get("/api/alunos/RA2026003");
+        assertEquals(200, consultado.statusCode());
+        assertEquals(json(aluno), json(consultado));
+        assertEquals(60, json(get("/api/disciplinas/ES")).get("cargaHoraria").asInt());
+        assertEquals(3, json(get("/api/alunos")).size());
+        assertEquals(3, json(get("/api/disciplinas")).size());
+    }
+
+    @Test
+    void listaEConsultaOsDadosIniciaisDoBanco() throws Exception {
+        var alunos = json(get("/api/alunos"));
+        assertEquals("RA2026001", alunos.get(0).get("registroAcademico").asText());
+        assertEquals("RA2026002", alunos.get(1).get("registroAcademico").asText());
+        var poo = get("/api/disciplinas/POO");
+        assertEquals(200, poo.statusCode());
+        assertEquals("Programação Orientada a Objetos", json(poo).get("nome").asText());
+        assertEquals(80, json(poo).get("cargaHoraria").asInt());
+        assertEquals(404, get("/api/disciplinas/ausente").statusCode());
+    }
+
+    @Test
+    void recusaCadastroInvalidoOuRepetido() throws Exception {
+        var invalidos = new String[][]{
+                {"/api/alunos", "{\"registroAcademico\":\"RA2026001\",\"nome\":\"Outro\",\"email\":\"outro@example.com\"}"},
+                {"/api/alunos", "{\"registroAcademico\":\"RA2026009\",\"nome\":\"Sem Email\",\"email\":\"invalido\"}"},
+                {"/api/alunos", "{\"registroAcademico\":\" \",\"nome\":\"Aluno\",\"email\":\"a@example.com\"}"},
+                {"/api/alunos", "{}"},
+                {"/api/disciplinas", "{\"codigo\":\"POO\",\"nome\":\"Outra\",\"cargaHoraria\":40}"},
+                {"/api/disciplinas", "{\"codigo\":\"ES\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":0}"},
+                {"/api/disciplinas", "{"}};
+        for (var caso : invalidos) {
+            var resposta = post(caso[0], caso[1]);
+            assertEquals(400, resposta.statusCode(), caso[1]);
+            assertTrue(json(resposta).has("mensagem"));
+        }
+        assertEquals("Aluno Exemplo Um", json(get("/api/alunos/RA2026001")).get("nome").asText());
+        assertEquals(2, json(get("/api/alunos")).size());
+        assertEquals(2, json(get("/api/disciplinas")).size());
+    }
+
     @AfterAll
     static void fecharCliente() {
         CLIENTE.close();
@@ -124,7 +191,11 @@ class AcademicoHttpTest {
     }
 
     private static HttpResponse<String> post(String corpo) throws Exception {
-        return CLIENTE.send(HttpRequest.newBuilder(URI.create(baseUrl + "/api/matriculas"))
+        return post("/api/matriculas", corpo);
+    }
+
+    private static HttpResponse<String> post(String rota, String corpo) throws Exception {
+        return CLIENTE.send(HttpRequest.newBuilder(URI.create(baseUrl + rota))
                 .header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(corpo)).build(),
                 HttpResponse.BodyHandlers.ofString());
     }
