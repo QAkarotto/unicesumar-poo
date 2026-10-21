@@ -3,6 +3,7 @@ package br.edu.sistemaacademico.api;
 import br.edu.sistemaacademico.AplicacaoAcademica;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.web.server.context.WebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -18,9 +19,14 @@ class AcademicoHttpTest {
     private static final HttpClient CLIENTE = HttpClient.newHttpClient();
     private static final ObjectMapper JSON = new ObjectMapper();
 
+    @TempDir
+    java.nio.file.Path pasta;
+
+    // cada teste usa um banco novo, preparado pelos scripts de database/, sem tocar no banco local
     @BeforeEach
     void iniciar() {
-        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0");
+        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0",
+                "--app.database.url=jdbc:sqlite:" + pasta.resolve("teste.db"));
         baseUrl = "http://localhost:" + ((WebServerApplicationContext) contexto).getWebServer().getPort();
     }
 
