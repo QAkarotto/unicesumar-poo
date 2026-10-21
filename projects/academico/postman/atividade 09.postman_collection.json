@@ -1,0 +1,211 @@
+{
+  "info": {
+    "_postman_id": "baf4274d-1d36-4484-a3fb-bc9279f463fc",
+    "name": "atividade 09",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58739882",
+    "_collection_link": "https://go.postman.co/collection/58739882-baf4274d-1d36-4484-a3fb-bc9279f463fc?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Cria aluno",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ra\": \"RA2026003\", \"nome\": \"Carlos Lima\", \"email\": \"carlos.lima@email.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "aluno existetne",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "aluno inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA9999999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA9999999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "aluno duplicado",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ra\": \"RA2026003\", \"nome\": \"Carlos Lima\", \"email\": \"carlos.lima@email.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "disciplina",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\": \"ES\", \"nome\": \"Engenharia de Software\", \"cargaHoraria\": 80}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "disciplina existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/POO",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "POO"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "disciplina inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/XXX",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "XXX"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "disciplina duplicada",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\": \"ES\", \"nome\": \"Engenharia de Software\", \"cargaHoraria\": 80}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

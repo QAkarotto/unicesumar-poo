@@ -1,41 +1,27 @@
-# Sistema Acadêmico
+## Persistência com JDBC e SQLite (Atividade 03)
 
-Projeto didático em Java para a criação de uma pequena parte de um sistema acadêmico.
+### Requisitos
+- JDK 25
 
-## Contexto
+### Como executar
+A aplicação deve ser executada a partir da **raiz do repositório**, porque os caminhos em `application.properties` são relativos a ela.
 
-Este projeto é o ponto de partida da Atividade 04. Apenas `SistemaAcademico` é fornecida; as classes de domínio devem ser criadas pelos alunos com foco em encapsulamento e proteção de estado.
-
-## Modelo inicial
-
-- `Aluno`: representa um aluno com identificador acadêmico, nome e e-mail.
-- `Disciplina`: representa um componente curricular e sua carga horária.
-- `Turma`: representa a oferta de uma disciplina em um período letivo.
-- `Matricula`: representa a relação entre um aluno e uma turma.
-- `PeriodoLetivo`: representa um ano e um semestre letivo.
-- `Semestre`: `enum` que representa os semestres aceitos pelo sistema.
-
-Esses tipos ainda não estão implementados. Consulte o enunciado em `atividades/atividade-04.md`.
-
-## Executando
-
-O projeto requer o JDK 25. Depois de criar todas as classes solicitadas, compile no diretório `projects/academico` com:
-
-```bash
-mvn compile
+- **VS Code:** rodar a classe `SistemaAcademico` pelo botão Run.
+- **Terminal (na raiz do repositório):**
+```
+  mvn -f projects/academico/pom.xml spring-boot:run
 ```
 
-Para executar pela IDE, abra a classe `SistemaAcademico` e utilize a opção de executar o método `main`.
+A API sobe em `http://localhost:8080`.
 
-# API REST - Sistema Acadêmico
+### Banco de dados
+Não é necessário nenhum passo manual. Ao iniciar, a aplicação cria o arquivo `projects/academico/database/academico.db` e executa `schema.sql` (tabelas) e `dados-iniciais.sql` (dados de exemplo, com `INSERT OR IGNORE`, então pode reiniciar sem duplicar). O arquivo `.db` não é versionado.
 
-Collection do Postman:
-https://www.postman.com/pbittencourt219-382892/workspace/atividades-2bim-esoft-nb-pierre-bittencourt/collection/58739882-8c77e2fe-c37a-4c89-8a67-b0715d0144e2?action=share&source=copy-link&creator=58739882
+### Endpoints
+- `POST /api/alunos` e `GET /api/alunos/{ra}`
+- `POST /api/disciplinas` e `GET /api/disciplinas/{codigo}`
 
+Status usados: 201 (criado), 200 (encontrado), 404 (não encontrado), 409 (duplicado), 400 (dados inválidos).
 
-
-## Endpoints
-
-- GET /api/matriculas/{id}
-- GET /api/alunos/{ra}
-- POST /api/matriculas
+### Validação
+Collection do Postman em `projects/academico/postman/`.
