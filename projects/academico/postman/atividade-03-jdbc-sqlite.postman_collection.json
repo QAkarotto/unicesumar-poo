@@ -1,0 +1,257 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico — Atividade 03 (JDBC e SQLite)",
+    "description": "Rode a pasta 1 com a API no ar. Depois encerre a API, inicie de novo e rode a pasta 2: ela consulta os registros criados na pasta 1. O RA e o código são gerados a cada execução da pasta 1, então a Collection pode ser repetida sem apagar o banco.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "ra", "value": "" },
+    { "key": "codigo", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Antes de reiniciar",
+      "item": [
+        {
+          "name": "Cadastrar aluno",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const sufixo = Date.now().toString().slice(-7);",
+                  "pm.collectionVariables.set('ra', 'RA' + sufixo);",
+                  "pm.collectionVariables.set('codigo', 'D' + sufixo);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Location aponta pro aluno', () => pm.expect(pm.response.headers.get('Location')).to.eql('/api/alunos/' + pm.collectionVariables.get('ra')));",
+                  "pm.test('Corpo com o aluno', () => pm.expect(pm.response.json().nome).to.eql('Aluno da Collection'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"registroAcademico\":\"{{ra}}\",\"nome\":\"Aluno da Collection\",\"email\":\"collection@example.com\"}" },
+            "url": "{{baseUrl}}/api/alunos"
+          }
+        },
+        {
+          "name": "Consultar aluno cadastrado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Mesmo aluno', () => pm.expect(pm.response.json().registroAcademico).to.eql(pm.collectionVariables.get('ra')));"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/alunos/{{ra}}" }
+        },
+        {
+          "name": "Cadastrar aluno duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict', () => pm.response.to.have.status(409));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.include(pm.collectionVariables.get('ra')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"registroAcademico\":\"{{ra}}\",\"nome\":\"Outro Nome\",\"email\":\"outro@example.com\"}" },
+            "url": "{{baseUrl}}/api/alunos"
+          }
+        },
+        {
+          "name": "Cadastrar aluno com e-mail inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensagem do domínio', () => pm.expect(pm.response.json().mensagem).to.eql('O e-mail do aluno é inválido.'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"registroAcademico\":\"RA-INVALIDO\",\"nome\":\"Aluno\",\"email\":\"sem-arroba\"}" },
+            "url": "{{baseUrl}}/api/alunos"
+          }
+        },
+        {
+          "name": "Consultar aluno inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.eql('Aluno não encontrado.'));"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/alunos/RA0000000" }
+        },
+        {
+          "name": "Cadastrar disciplina",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "pm.test('Location aponta pra disciplina', () => pm.expect(pm.response.headers.get('Location')).to.eql('/api/disciplinas/' + pm.collectionVariables.get('codigo')));",
+                  "pm.test('Carga horária gravada', () => pm.expect(pm.response.json().cargaHoraria).to.eql(60));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"codigo\":\"{{codigo}}\",\"nome\":\"Disciplina da Collection\",\"cargaHoraria\":60}" },
+            "url": "{{baseUrl}}/api/disciplinas"
+          }
+        },
+        {
+          "name": "Consultar disciplina cadastrada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Mesma disciplina', () => pm.expect(pm.response.json().codigo).to.eql(pm.collectionVariables.get('codigo')));"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/disciplinas/{{codigo}}" }
+        },
+        {
+          "name": "Cadastrar disciplina duplicada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409 Conflict', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"codigo\":\"{{codigo}}\",\"nome\":\"Outra\",\"cargaHoraria\":40}" },
+            "url": "{{baseUrl}}/api/disciplinas"
+          }
+        },
+        {
+          "name": "Cadastrar disciplina sem carga horária",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400 Bad Request', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"codigo\":\"SEM-CH\",\"nome\":\"Sem carga\"}" },
+            "url": "{{baseUrl}}/api/disciplinas"
+          }
+        },
+        {
+          "name": "Consultar disciplina inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', () => pm.response.to.have.status(404));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.eql('Disciplina não encontrada.'));"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/disciplinas/NAO-EXISTE" }
+        }
+      ]
+    },
+    {
+      "name": "2. Depois de reiniciar a API",
+      "item": [
+        {
+          "name": "Aluno continua cadastrado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Dados preservados', () => pm.expect(pm.response.json().nome).to.eql('Aluno da Collection'));"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/alunos/{{ra}}" }
+        },
+        {
+          "name": "Disciplina continua cadastrada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('Dados preservados', () => pm.expect(pm.response.json().cargaHoraria).to.eql(60));"
+                ]
+              }
+            }
+          ],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/disciplinas/{{codigo}}" }
+        }
+      ]
+    }
+  ]
+}

@@ -13,7 +13,7 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-A API inicia em `http://localhost:8080`. Os dados são reiniciados a cada execução; SQLite não é utilizado pelos Controllers.
+A API inicia em `http://localhost:8080`. Matrículas são reiniciadas a cada execução; desde a Atividade 03, alunos e disciplinas ficam no SQLite (veja abaixo).
 
 | Método e rota | Exemplo / resultado |
 | --- | --- |
@@ -35,41 +35,76 @@ No Postman, use **Import** e selecione `postman/sistema-academico.postman_collec
 
 ## Atividade 03 - 2BIM: Persistência com JDBC e SQLite
 
-Esta atividade está apenas preparada. Os alunos implementarão a persistência de Aluno e Disciplina, seus Repositories, operações JDBC e integração HTTP. Os endpoints de cadastro de alunos e disciplinas também fazem parte dessa evolução; não estão implementados nesta base.
+Aluno e Disciplina são gravados no SQLite por JDBC puro (`DriverManager`, `PreparedStatement`, `ResultSet`), sem JPA, Hibernate, Spring Data ou H2. Matrículas, turmas e ofertas continuam em memória, porque ainda não têm tabela.
 
-O driver `org.xerial:sqlite-jdbc:3.53.4.0` já está configurado no Maven. Não há Repository JDBC nem acesso ao banco na aplicação.
+### Como executar
 
-- Estrutura: `database/schema.sql`.
-- Dois alunos e duas disciplinas fictícias: `database/dados-iniciais.sql`.
-- Banco local: `database/sistema-academico.db` (ignorado pelo Git).
-- URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`, somente para uso futuro.
+A partir de `projects/academico`, com JDK 26 e Maven no PATH:
 
-Os caminhos são relativos a `projects/academico`. Com o executável `sqlite3` instalado e disponível no PATH, execute nesse diretório (PowerShell, Bash ou terminal equivalente):
+```bash
+mvn spring-boot:run
+```
+
+A API precisa ser iniciada **de dentro de `projects/academico`**, porque o caminho do banco (`database/sistema-academico.db`) e dos scripts é relativo a essa pasta. Na IDE, configure o diretório de trabalho para ela.
+
+### Preparação do banco
+
+Não é preciso fazer nada: se o arquivo do banco não existir ou não tiver as tabelas, a API executa `database/schema.sql` e `database/dados-iniciais.sql` ao iniciar (`InicializadorBanco`). Se as tabelas já existem, os scripts **não** são executados de novo. O `schema.sql` começa com `DROP TABLE`, então rodá-lo a cada inicialização apagaria tudo o que foi cadastrado.
+
+Para começar do zero, apague `database/sistema-academico.db` com a API parada, ou recrie o banco manualmente com o `sqlite3`:
 
 ```bash
 sqlite3 database/sistema-academico.db ".read database/schema.sql"
 sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
 ```
 
-O primeiro comando recria as duas tabelas e apaga seus dados anteriores. O segundo deve ser executado uma vez após o schema. A inicialização é manual; iniciar a API não cria nem carrega o banco.
+### Endpoints
 
-`registro_academico` corresponde a `Aluno.registroAcademico`, e `carga_horaria` a `Disciplina.cargaHoraria`. O e-mail é obrigatório, mas não é único no domínio. Matrículas e demais relacionamentos ainda não possuem tabelas.
+| Método e rota | Resultado |
+| --- | --- |
+| `POST /api/alunos` | `{"registroAcademico","nome","email"}` — 201 com `Location` |
+| `GET /api/alunos/{registroAcademico}` | 200, ou 404 se não existir |
+| `POST /api/disciplinas` | `{"codigo","nome","cargaHoraria"}` — 201 com `Location` |
+| `GET /api/disciplinas/{codigo}` | 200, ou 404 se não existir |
 
-Fluxo conceitual: **Connection → PreparedStatement → ResultSet**.
+Cadastro com RA ou código já existente retorna **409**. Dados inválidos para o domínio (campo vazio, e-mail inválido, carga horária ausente ou não positiva) e JSON malformado retornam **400**. Erro inesperado no banco retorna 500 com mensagem genérica; o detalhe fica no log. O e-mail não é único: dois alunos podem ter o mesmo, como no domínio.
 
-- `Connection` representa a conexão com o banco, obtida por meio do `DriverManager`.
-- `PreparedStatement` representa um comando SQL parametrizado a ser executado.
-- `ResultSet` permite percorrer os registros retornados por uma consulta.
+Um aluno cadastrado pela API também pode ser matriculado em `POST /api/matriculas`: a matrícula busca o aluno pelo Repository.
 
-A implementação desse fluxo e a conversão entre registros e objetos são responsabilidade dos alunos.
+### Organização
 
-Referências:
+```
+requisição HTTP → AlunoController / DisciplinaController → AlunoRepository / DisciplinaRepository (interfaces)
+                → AlunoRepositoryJdbc / DisciplinaRepositoryJdbc → JDBC → SQLite
+```
 
-- [JDBC Basics](https://docs.oracle.com/javase/tutorial/jdbc/basics/)
-- [DriverManager — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/DriverManager.html)
-- [PreparedStatement — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/PreparedStatement.html)
-- [ResultSet — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/ResultSet.html)
-- [SQLite JDBC](https://github.com/xerial/sqlite-jdbc)
+- `api`: Controllers. Recebem o JSON, criam o objeto do domínio e devolvem a resposta HTTP. Não têm SQL.
+- `domain`: regras e validações, sem alteração nesta atividade.
+- `persistencia`: interfaces de Repository, implementações JDBC, `ConexaoBanco` e `InicializadorBanco`.
+
+Na volta, cada linha do `ResultSet` vira objeto pelo construtor do domínio (`new Aluno(...)`, `new Disciplina(...)`), passando pelas mesmas validações de um cadastro novo.
+
+### Validação no Postman
+
+Importe `postman/atividade-03-jdbc-sqlite.postman_collection.json`.
+
+1. Com a API no ar, execute a pasta **1. Antes de reiniciar**. Ela cadastra um aluno e uma disciplina com RA e código gerados na hora, consulta os dois, e testa duplicado (409), inválido (400) e inexistente (404).
+2. Encerre a API e inicie de novo.
+3. Execute a pasta **2. Depois de reiniciar a API**. Ela consulta os mesmos registros, que devem continuar lá.
+
+Como o RA e o código mudam a cada execução da pasta 1, a Collection pode ser repetida sem apagar o banco.
+
+Os mesmos cenários estão automatizados em `PersistenciaHttpTest`. Cada teste usa um banco SQLite numa pasta temporária, então `mvn test` não mexe no banco local.
+
+### Perguntas
+
+**Onde estão os comandos SQL da aplicação?** Nas classes `AlunoRepositoryJdbc` e `DisciplinaRepositoryJdbc`, do pacote `persistencia`, como constantes usadas com `PreparedStatement`. A estrutura das tabelas fica em `database/schema.sql`. Controllers e domínio não têm SQL.
+
+**Por que o Controller não deve executar SQL diretamente?** Porque o papel dele é traduzir HTTP: ler a requisição e montar a resposta com o status certo. Com SQL dentro, ele passaria a depender de tabela, coluna e conexão. Qualquer mudança no banco obrigaria a mexer na camada web, e o mesmo SQL acabaria repetido em vários endpoints.
+
+**Qual é o objetivo da interface de Repository?** Separar *o que* se precisa dos dados (`salvar`, `buscarPorRa`) de *como* isso é feito. O Controller depende só da interface e trabalha com objetos do domínio, sem saber que existe JDBC ou SQLite por trás.
+
+**O que precisaria mudar para substituir SQLite por outra tecnologia de persistência?** Criar novas implementações das interfaces (por exemplo `AlunoRepositoryPostgres`, ou uma versão que grave em arquivo) e registrá-las no lugar das atuais. Controllers e domínio continuam iguais. Para outro banco relacional, bastaria trocar o driver no `pom.xml` e a `app.database.url`, além de ajustar o SQL específico do SQLite (a detecção de chave duplicada em `ErrosSqlite` e a consulta à `sqlite_master` no `InicializadorBanco`).
 
 ## Testes e cobertura
 
