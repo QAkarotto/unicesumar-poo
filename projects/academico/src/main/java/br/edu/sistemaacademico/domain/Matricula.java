@@ -1,19 +1,29 @@
 package br.edu.sistemaacademico.domain;
 
 public class Matricula {
+    private final String id;
     private final Aluno aluno;
     private final OfertaDisciplina oferta;
     private ResultadoAcademico resultado;
 
     Matricula(Aluno aluno, OfertaDisciplina oferta) {
+        this(null, aluno, oferta);
+    }
+
+    Matricula(String id, Aluno aluno, OfertaDisciplina oferta) {
         if (aluno == null) {
             throw new IllegalArgumentException("Aluno é obrigatório.");
         }
         if (oferta == null) {
             throw new IllegalArgumentException("Oferta é obrigatória.");
         }
+        this.id = id;
         this.aluno = aluno;
         this.oferta = oferta;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public Aluno getAluno() {

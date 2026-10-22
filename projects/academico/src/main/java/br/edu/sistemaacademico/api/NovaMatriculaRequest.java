@@ -1,4 +1,4 @@
 package br.edu.sistemaacademico.api;
 
-public record NovaMatriculaRequest() {
+public record NovaMatriculaRequest(String identificadorAluno, String codigoDisciplina) {
 }

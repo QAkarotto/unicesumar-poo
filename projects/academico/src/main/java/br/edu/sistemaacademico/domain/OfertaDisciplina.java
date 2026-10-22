@@ -33,6 +33,10 @@ public class OfertaDisciplina {
     }
 
     public Matricula matricular(Aluno aluno) {
+        return matricular(aluno, null);
+    }
+
+    public Matricula matricular(Aluno aluno, String idMatricula) {
         if (aluno == null) {
             throw new IllegalArgumentException("Aluno é obrigatório.");
         }
@@ -50,7 +54,7 @@ public class OfertaDisciplina {
                             + " e não pode se matricular novamente.");
         }
 
-        Matricula matricula = new Matricula(aluno, this);
+        Matricula matricula = new Matricula(idMatricula, aluno, this);
         matriculas.add(matricula);
         aluno.adicionarMatricula(matricula);
         return matricula;
