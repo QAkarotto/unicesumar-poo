@@ -14,17 +14,13 @@ import org.springframework.stereotype.Component;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Turmas e matrículas continuam em memória (fora do escopo da Atividade 03).
- * Aluno e Disciplina agora vêm do banco, via Repository.
- */
+
 @Component
 public class DadosEmMemoria {
 
     private final AlunoRepository alunoRepository;
     private final DisciplinaRepository disciplinaRepository;
 
-    // Alunos já carregados: mantém o MESMO objeto (e suas matrículas) entre requisições.
     private final Map<String, Aluno> alunos = new LinkedHashMap<>();
     private final Map<String, Turma> turmas = new LinkedHashMap<>();
     private final Map<String, Matricula> matriculas = new LinkedHashMap<>();
