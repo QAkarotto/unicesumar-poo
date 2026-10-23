@@ -4,15 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- INÍCIO DAS ADIÇÕES DO SPRING BOOT -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
-        <relativePath/>
-    </parent>
-    <!-- FIM DAS ADIÇÕES DO SPRING BOOT -->
-
     <groupId>br.edu.sistemaacademico</groupId>
     <artifactId>sistema-academico</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -46,13 +37,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <!-- INÍCIO DAS ADIÇÕES DO SPRING BOOT -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <!-- FIM DAS ADIÇÕES DO SPRING BOOT -->
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
@@ -130,7 +114,7 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.60</minimum>
+                                            <minimum>0.80</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
