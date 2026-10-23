@@ -1,0 +1,322 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico — Atividade 03 (JDBC e SQLite)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "raAluno",
+      "value": "RA2026100"
+    },
+    {
+      "key": "codigoDisciplina",
+      "value": "WEB1"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Cadastrar Aluno",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('Retorna registroAcademico', () => pm.expect(pm.response.json().registroAcademico).to.eql(pm.collectionVariables.get('raAluno')));",
+              "pm.test('Header Location correto', () => pm.expect(pm.response.headers.get('Location')).to.include('/api/alunos/' + pm.collectionVariables.get('raAluno')));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"{{raAluno}}\",\n  \"nome\": \"Carlos Andrade\",\n  \"email\": \"carlos.andrade@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/api/alunos"
+      }
+    },
+    {
+      "name": "2. Consultar Aluno Criado",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Dados do aluno corretos', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json.registroAcademico).to.eql(pm.collectionVariables.get('raAluno'));",
+              "  pm.expect(json.nome).to.eql('Carlos Andrade');",
+              "  pm.expect(json.email).to.eql('carlos.andrade@example.com');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/alunos/{{raAluno}}"
+      }
+    },
+    {
+      "name": "3. Tentativa de Cadastro de Aluno Duplicado",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 409 Conflict', () => pm.response.to.have.status(409));",
+              "pm.test('Retorna mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.be.a('string'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"{{raAluno}}\",\n  \"nome\": \"Carlos Andrade Repetido\",\n  \"email\": \"outro.email@example.com\"\n}"
+        },
+        "url": "{{baseUrl}}/api/alunos"
+      }
+    },
+    {
+      "name": "4. Consultar Aluno Inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));",
+              "pm.test('Mensagem de recurso ausente', () => pm.expect(pm.response.json().mensagem).to.eql('Aluno não encontrado.'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/alunos/RA-INEXISTENTE"
+      }
+    },
+    {
+      "name": "5. Cadastro de Aluno Inválido (Email Incorreto)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 400 Bad Request', () => pm.response.to.have.status(400));",
+              "pm.test('Possui mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.be.a('string'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"RA-INV\",\n  \"nome\": \"Nome Inválido\",\n  \"email\": \"email-sem-arroba\"\n}"
+        },
+        "url": "{{baseUrl}}/api/alunos"
+      }
+    },
+    {
+      "name": "6. Cadastrar Disciplina",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('Retorna código', () => pm.expect(pm.response.json().codigo).to.eql(pm.collectionVariables.get('codigoDisciplina')));",
+              "pm.test('Header Location correto', () => pm.expect(pm.response.headers.get('Location')).to.include('/api/disciplinas/' + pm.collectionVariables.get('codigoDisciplina')));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"{{codigoDisciplina}}\",\n  \"nome\": \"Desenvolvimento Web I\",\n  \"cargaHoraria\": 60\n}"
+        },
+        "url": "{{baseUrl}}/api/disciplinas"
+      }
+    },
+    {
+      "name": "7. Consultar Disciplina Criada",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Dados da disciplina corretos', () => {",
+              "  const json = pm.response.json();",
+              "  pm.expect(json.codigo).to.eql(pm.collectionVariables.get('codigoDisciplina'));",
+              "  pm.expect(json.nome).to.eql('Desenvolvimento Web I');",
+              "  pm.expect(json.cargaHoraria).to.eql(60);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/disciplinas/{{codigoDisciplina}}"
+      }
+    },
+    {
+      "name": "8. Tentativa de Cadastro de Disciplina Duplicada",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 409 Conflict', () => pm.response.to.have.status(409));",
+              "pm.test('Possui mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.be.a('string'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"{{codigoDisciplina}}\",\n  \"nome\": \"Desenvolvimento Web Duplicado\",\n  \"cargaHoraria\": 80\n}"
+        },
+        "url": "{{baseUrl}}/api/disciplinas"
+      }
+    },
+    {
+      "name": "9. Consultar Disciplina Inexistente",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));",
+              "pm.test('Mensagem de disciplina não encontrada', () => pm.expect(pm.response.json().mensagem).to.eql('Disciplina não encontrada.'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/disciplinas/COD-INEXISTENTE"
+      }
+    },
+    {
+      "name": "10. Cadastro de Disciplina Inválida (Carga Horária Zerada)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 400 Bad Request', () => pm.response.to.have.status(400));",
+              "pm.test('Possui mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.be.a('string'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"DISC-ZERO\",\n  \"nome\": \"Carga Zero\",\n  \"cargaHoraria\": 0\n}"
+        },
+        "url": "{{baseUrl}}/api/disciplinas"
+      }
+    },
+    {
+      "name": "11. Consultar Aluno Inicial do Banco (Persistência)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('RA2026001 persistido', () => pm.expect(pm.response.json().registroAcademico).to.eql('RA2026001'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/alunos/RA2026001"
+      }
+    },
+    {
+      "name": "12. Consultar Disciplina Inicial do Banco (Persistência)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('POO persistida', () => pm.expect(pm.response.json().codigo).to.eql('POO'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/disciplinas/POO"
+      }
+    }
+  ]
+}

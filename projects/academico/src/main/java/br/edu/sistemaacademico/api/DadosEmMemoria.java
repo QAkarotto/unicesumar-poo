@@ -24,12 +24,22 @@ public class DadosEmMemoria {
         matriculas.put("MAT-001", poo.matricular("MAT-001", aluno));
     }
 
+    public synchronized boolean temAluno(String registroAcademico) {
+        return alunos.containsKey(registroAcademico);
+    }
+
     public synchronized Aluno buscarAluno(String registroAcademico) {
         return exigirExistente(alunos.get(registroAcademico), "Aluno não encontrado.");
     }
 
     public synchronized Matricula buscarMatricula(String codigo) {
         return exigirExistente(matriculas.get(codigo), "Matrícula não encontrada.");
+    }
+
+    public synchronized void registrarAluno(Aluno aluno) {
+        if (aluno != null && !alunos.containsKey(aluno.getRegistroAcademico())) {
+            alunos.put(aluno.getRegistroAcademico(), aluno);
+        }
     }
 
     public synchronized Matricula matricular(String registroAcademico, String ofertaId) {

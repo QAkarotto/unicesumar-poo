@@ -13,7 +13,7 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-A API inicia em `http://localhost:8080`. Os dados são reiniciados a cada execução; SQLite não é utilizado pelos Controllers.
+A API inicia em `http://localhost:8080`.
 
 | Método e rota | Exemplo / resultado |
 | --- | --- |
@@ -21,58 +21,81 @@ A API inicia em `http://localhost:8080`. Os dados são reiniciados a cada execu�
 | `GET /api/matriculas/{codigo}` | `MAT-001` — 200 |
 | `POST /api/matriculas` | Cria matrícula — 201 e cabeçalho `Location` |
 
-Exemplo de corpo para criar uma matrícula:
-
-```json
-{"registroAcademico":"RA2026002","ofertaId":"POO-2026-2"}
-```
-
-Ofertas de exemplo: `POO-2026-2` e `BD-2026-2`, ambas da turma `ESOFT4S-NA`, período 2026/2. `ofertaId` é a chave em memória da oferta; o código da matrícula é gerado pela aplicação. `MAT-001` já vincula `RA2026001` à oferta de POO.
-
-Recurso inexistente retorna 404; JSON/campos inválidos ou matrícula duplicada na oferta retornam 400; impedimento por estado do domínio (como aprovação anterior) retorna 409. Erros retornam JSON com `mensagem`. As regras de matrícula permanecem nas classes do domínio.
-
-No Postman, use **Import** e selecione `postman/sistema-academico.postman_collection.json`. A variável `baseUrl` aponta para `http://localhost:8080`. Execute a Collection na ordem, com a aplicação recém-iniciada; reinicie para repetir o cenário de criação. A Collection verifica status e campos das respostas, incluindo consulta da matrícula criada e casos inválidos.
-
 ## Atividade 03 - 2BIM: Persistência com JDBC e SQLite
 
-Esta atividade está apenas preparada. Os alunos implementarão a persistência de Aluno e Disciplina, seus Repositories, operações JDBC e integração HTTP. Os endpoints de cadastro de alunos e disciplinas também fazem parte dessa evolução; não estão implementados nesta base.
+Esta atividade evolui a API REST para persistir alunos e disciplinas no banco SQLite utilizando JDBC.
 
-O driver `org.xerial:sqlite-jdbc:3.53.4.0` já está configurado no Maven. Não há Repository JDBC nem acesso ao banco na aplicação.
+### Arquitetura e Separação de Responsabilidades
 
-- Estrutura: `database/schema.sql`.
-- Dois alunos e duas disciplinas fictícias: `database/dados-iniciais.sql`.
-- Banco local: `database/sistema-academico.db` (ignorado pelo Git).
-- URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`, somente para uso futuro.
+- **HTTP / Controller (`AcademicoController`):** Trata requisições e respostas HTTP, status codes e serialização JSON.
+- **Domínio (`Aluno`, `Disciplina`, etc.):** Mantém regras de negócio e validações intrínsecas às entidades.
+- **Interfaces de Repository (`AlunoRepository`, `DisciplinaRepository`):** Definem os contratos de acesso a dados desacoplados da tecnologia de banco.
+- **Implementação JDBC (`AlunoRepositoryJdbc`, `DisciplinaRepositoryJdbc`):** Gerenciam `Connection`, executam SQL com `PreparedStatement` e mapeiam o `ResultSet` para instâncias de domínio, tratando adequadamente `SQLException`.
+- **Configuração / Infraestrutura (`ConnectionFactory`, `DatabaseInitializer`):** Provê conexões JDBC e inicializa automaticamente as tabelas e dados iniciais caso ainda não existam.
 
-Os caminhos são relativos a `projects/academico`. Com o executável `sqlite3` instalado e disponível no PATH, execute nesse diretório (PowerShell, Bash ou terminal equivalente):
+### Endpoints da Atividade 03
 
-```bash
-sqlite3 database/sistema-academico.db ".read database/schema.sql"
-sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
-```
+| Método e rota | Status Sucesso | Descrição |
+| --- | --- | --- |
+| `POST /api/alunos` | `201 Created` | Cadastra novo aluno (retorna `409 Conflict` se duplicado, `400 Bad Request` se inválido) |
+| `GET /api/alunos/{registroAcademico}` | `200 OK` | Consulta aluno por registro acadêmico (retorna `404 Not Found` se inexistente) |
+| `POST /api/disciplinas` | `201 Created` | Cadastra nova disciplina (retorna `409 Conflict` se duplicada, `400 Bad Request` se inválida) |
+| `GET /api/disciplinas/{codigo}` | `200 OK` | Consulta disciplina por código (retorna `404 Not Found` se inexistente) |
 
-O primeiro comando recria as duas tabelas e apaga seus dados anteriores. O segundo deve ser executado uma vez após o schema. A inicialização é manual; iniciar a API não cria nem carrega o banco.
+### Como Executar o Projeto e Preparar o Banco
 
-`registro_academico` corresponde a `Aluno.registroAcademico`, e `carga_horaria` a `Disciplina.cargaHoraria`. O e-mail é obrigatório, mas não é único no domínio. Matrículas e demais relacionamentos ainda não possuem tabelas.
+1. **Compilar e rodar os testes:**
+   No diretório `projects/academico`:
+   ```bash
+   mvn clean test
+   ```
 
-Fluxo conceitual: **Connection → PreparedStatement → ResultSet**.
+2. **Iniciar a aplicação:**
+   ```bash
+   mvn spring-boot:run
+   ```
+   *Nota:* O banco de dados SQLite (`database/sistema-academico.db`) é preparado e inicializado automaticamente na primeira execução através do `DatabaseInitializer` a partir de `database/schema.sql` e `database/dados-iniciais.sql`. Alternativamente, pode ser preparado manualmente com:
+   ```bash
+   sqlite3 database/sistema-academico.db ".read database/schema.sql"
+   sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
+   ```
 
-- `Connection` representa a conexão com o banco, obtida por meio do `DriverManager`.
-- `PreparedStatement` representa um comando SQL parametrizado a ser executado.
-- `ResultSet` permite percorrer os registros retornados por uma consulta.
+3. **Validação com Postman:**
+   - Importe a collection `postman/atividade-03-persistencia.postman_collection.json`.
+   - A collection contém os testes automatizados para:
+     1. Cadastro de aluno (`POST /api/alunos` → `201 Created`);
+     2. Consulta de aluno (`GET /api/alunos/{ra}` → `200 OK`);
+     3. Cadastro duplicado de aluno (`POST /api/alunos` → `409 Conflict`);
+     4. Consulta de aluno inexistente (`GET /api/alunos/NAOEXISTE` → `404 Not Found`);
+     5. Cadastro de aluno inválido (`POST /api/alunos` → `400 Bad Request`);
+     6. Cadastro de disciplina (`POST /api/disciplinas` → `201 Created`);
+     7. Consulta de disciplina (`GET /api/disciplinas/{codigo}` → `200 OK`);
+     8. Cadastro duplicado de disciplina (`POST /api/disciplinas` → `409 Conflict`);
+     9. Consulta de disciplina inexistente (`GET /api/disciplinas/NAOEXISTE` → `404 Not Found`);
+     10. Cadastro de disciplina inválida (`POST /api/disciplinas` → `400 Bad Request`);
+     11. Consulta de aluno persistido inicial (`GET /api/alunos/RA2026001` → `200 OK`);
+     12. Consulta de disciplina persistida inicial (`GET /api/disciplinas/POO` → `200 OK`).
 
-A implementação desse fluxo e a conversão entre registros e objetos são responsabilidade dos alunos.
+### Respostas para a Entrega (Pull Request)
 
-Referências:
+1. **Onde estão os comandos SQL da aplicação?**
+   > Os comandos SQL estão isolados exclusivamente nas classes de implementação dos repositórios: `AlunoRepositoryJdbc` e `DisciplinaRepositoryJdbc` (no pacote `br.edu.sistemaacademico.repository.jdbc`), não se misturando com os Controllers nem com as classes de domínio.
 
-- [JDBC Basics](https://docs.oracle.com/javase/tutorial/jdbc/basics/)
-- [DriverManager — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/DriverManager.html)
-- [PreparedStatement — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/PreparedStatement.html)
-- [ResultSet — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/ResultSet.html)
-- [SQLite JDBC](https://github.com/xerial/sqlite-jdbc)
+2. **Por que o Controller não deve executar SQL diretamente?**
+   > Porque violaria o Princípio da Responsabilidade Única (SRP). O Controller deve se concentrar em receber requisições HTTP, tratar parâmetros, invocar as operações adequadas e devolver a resposta HTTP com status e payload corretos. Permitir que o Controller execute SQL criaria alto acoplamento à tecnologia de banco, dificultaria testes unitários e impediria a reutilização de consultas.
 
-## Testes e cobertura
+3. **Qual é o objetivo da interface de Repository?**
+   > Estabelecer um contrato abstrato para as operações de persistência e recuperação de entidades. As camadas de controle e domínio dependem dessa interface (abstração) e não de uma tecnologia concreta (Princípio da Inversão de Dependência - DIP), permitindo alternar a implementação para outro banco ou mockar em testes sem alterar regras de negócio ou rotas da API.
 
-`mvn clean test` executa os testes de domínio e os testes HTTP com servidor real em porta aleatória. `mvn -Dtest=MatriculaTest test` executa apenas os testes de matrícula.
+4. **O que precisaria mudar para substituir SQLite por outra tecnologia de persistência?**
+   > Bastaria:
+   > 1. Adicionar o driver JDBC do novo banco no `pom.xml`;
+   > 2. Alterar a URL e credenciais no `application.properties` (e no `ConnectionFactory`);
+   > 3. Criar ou adaptar a classe concreta do Repository (ex: `AlunoRepositoryPostgres` ou similar) implementando a mesma interface `AlunoRepository`, adequando comandos SQL caso haja diferenças de dialeto;
+   > 4. Nenhuma classe de Controller ou do pacote de domínio precisaria sofrer qualquer alteração.
 
-`mvn verify` verifica também a cobertura mínima de 80% de linhas do domínio, com relatório em `target/site/jacoco/index.html`. A demonstração `SistemaAcademico` permanece excluída do relatório. O workflow **Java Tests** mantém Java 26, executa `mvn --batch-mode clean test` e verifica a cobertura sem repetir os testes.
+## Testes e Cobertura
+
+`mvn clean test` executa todos os testes de domínio, testes HTTP e testes de integração com SQLite JDBC.
+
+`mvn verify` verifica a cobertura mínima de 80% das classes do domínio com JaCoCo.
