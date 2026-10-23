@@ -126,7 +126,6 @@ class AcademicoHttpTest {
         assertEquals(201, disciplina.statusCode());
         assertEquals("/api/disciplinas/ES", disciplina.headers().firstValue("Location").orElseThrow());
 
-        // Reinicia a aplicação mantendo o mesmo banco
         contexto.close();
         subir();
 
