@@ -1,0 +1,27 @@
+$kind: http-request
+description: Pedro Alves já foi aprovado em POO. OfertaDisciplina.matricular recusa a nova matrícula.
+url: "{{baseUrl}}/api/matriculas"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |
+    {
+      "codigo": "MAT-020",
+      "identificadorAluno": "RA-1002",
+      "codigoTurma": "ADS-2026-1",
+      "codigoDisciplina": "POO"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('retorna 409', function () {
+          pm.response.to.have.status(409);
+      });
+      pm.test('preserva a mensagem do domínio', function () {
+          var corpo = pm.response.json();
+          pm.expect(corpo.mensagem).to.eql('Aluno já foi aprovado nesta disciplina e não pode se matricular novamente');
+      });
+    language: text/javascript
+order: 5000

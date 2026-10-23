@@ -1,0 +1,12 @@
+$kind: http-request
+description: Identificador que não existe no catálogo em memória.
+url: "{{baseUrl}}/api/matriculas/MAT-999"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('retorna 404', function () {
+          pm.response.to.have.status(404);
+      });
+    language: text/javascript
+order: 4000
