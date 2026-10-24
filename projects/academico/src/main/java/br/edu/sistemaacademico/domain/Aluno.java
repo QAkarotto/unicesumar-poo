@@ -7,7 +7,6 @@ public class Aluno {
     private String nome;
     private String email;
     private final List<Matricula> matriculas = new ArrayList<>();
-
     public Aluno(String ra, String nome, String email) {
         if (ra == null || ra.equals("")) {
             throw new IllegalArgumentException("O RA é obrigatório.");
