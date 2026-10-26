@@ -7,6 +7,15 @@ public class Disciplina {
 
 
     public Disciplina(String sigla, String nome, int cargaHoraria) {
+        if (sigla == null || sigla.isBlank()) {
+            throw new IllegalArgumentException("Código da disciplina é obrigatório");
+        }
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome da disciplina é obrigatório");
+        }
+        if (cargaHoraria <= 0) {
+            throw new IllegalArgumentException("Carga horária deve ser maior que zero");
+        }
         this.sigla = sigla;
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;

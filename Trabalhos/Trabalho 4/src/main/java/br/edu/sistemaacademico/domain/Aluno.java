@@ -11,14 +11,27 @@ public class Aluno {
 
     // Construtor flexível que mapeia os parâmetros corretamente
     public Aluno(String parametro1, String parametro2, String email) {
-        if (parametro1.startsWith("RA")) {
+        if (ehRa(parametro1)) {
             this.ra = parametro1;
             this.nome = parametro2;
-        } else {
+        } else if (ehRa(parametro2)) {
             this.nome = parametro1;
             this.ra = parametro2;
+        } else {
+            throw new IllegalArgumentException("RA inválido: deve começar com \"RA\"");
+        }
+
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome do aluno é obrigatório");
+        }
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("E-mail do aluno é obrigatório");
         }
         this.email = email;
+    }
+
+    private static boolean ehRa(String valor) {
+        return valor != null && valor.startsWith("RA") && valor.length() > 2;
     }
 
     public boolean jaFoiAprovadoEm(Disciplina disciplina) {

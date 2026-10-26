@@ -1,28 +1,46 @@
 package br.edu.sistemaacademico.controller;
 
 import br.edu.sistemaacademico.domain.Aluno;
-import br.edu.sistemaacademico.domain.DadosEmMemoria;
+import br.edu.sistemaacademico.dto.AlunoRequest;
+import br.edu.sistemaacademico.repository.AlunoRepository;
+import br.edu.sistemaacademico.repository.RegistroDuplicadoException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
 
-    private final DadosEmMemoria dadosEmMemoria;
+    private final AlunoRepository alunoRepository;
 
-    public AlunoController(DadosEmMemoria dadosEmMemoria) {
-        this.dadosEmMemoria = dadosEmMemoria;
+    public AlunoController(AlunoRepository alunoRepository) {
+        this.alunoRepository = alunoRepository;
     }
 
     @GetMapping("/{identificador}")
     public ResponseEntity<Aluno> buscarPorIdentificador(@PathVariable String identificador) {
-        Aluno aluno = dadosEmMemoria.buscarAlunoPorRa(identificador);
+        return alunoRepository.buscarPorRa(identificador)
+                .map(ResponseEntity::ok) // HTTP 200
+                .orElse(ResponseEntity.notFound().build()); // HTTP 404
+    }
 
-        if (aluno == null) {
-            return ResponseEntity.notFound().build(); // HTTP 404
+    @PostMapping
+    public ResponseEntity<?> cadastrar(@RequestBody AlunoRequest request) {
+        try {
+            Aluno aluno = new Aluno(request.getRa(), request.getNome(), request.getEmail());
+            Aluno salvo = alunoRepository.salvar(aluno);
+
+            return ResponseEntity
+                    .created(URI.create("/api/alunos/" + salvo.getRa()))
+                    .body(salvo); // HTTP 201
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // HTTP 400
+        } catch (RegistroDuplicadoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // HTTP 409
         }
-
-        return ResponseEntity.ok(aluno); // HTTP 200
     }
 }
