@@ -31,6 +31,7 @@ replay_pid*
 !/.gitignore
 
 target/
+projects/academico/database/*.db
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

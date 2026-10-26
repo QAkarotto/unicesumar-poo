@@ -1,95 +1,50 @@
 {
   "info": {
-    "_postman_id": "0d2d596b-53a7-43e8-9d75-6b7e70d2ba79",
-    "name": "Sistema Acadêmico - Atividade 02",
-    "description": "Collection para validar os endpoints REST da Atividade 02. Execute as requisições na ordem apresentada.",
+    "name": "Sistema Acadêmico - Atividade 03 (JDBC e SQLite)",
+    "description": "Cadastre, consulte, tente duplicar e reinicie a API antes de repetir as consultas para comprovar a persistência.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8080"
-    }
-  ],
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:8080" }],
   "item": [
     {
-      "name": "1. Consultar aluno existente",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/alunos/RA2026001"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] }
-        }
-      ]
+      "name": "1. Cadastrar aluno",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026999\",\n  \"nome\": \"Ana Silva\",\n  \"email\": \"ana.silva@email.com\"\n}" }, "url": "{{baseUrl}}/api/alunos" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] } }]
     },
     {
-      "name": "2. Consultar matrícula existente",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/matriculas/MAT-001"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] }
-        }
-      ]
+      "name": "2. Consultar aluno cadastrado",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/alunos/RA2026999" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }]
     },
     {
-      "name": "3. Consultar matrícula inexistente",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/matriculas/MAT-999"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": { "exec": ["pm.test('Status 404', function () { pm.response.to.have.status(404); });"] }
-        }
-      ]
+      "name": "3. Aluno inexistente",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/alunos/RA-NAO-EXISTE" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 404', function () { pm.response.to.have.status(404); });"] } }]
     },
     {
-      "name": "4. Criar matrícula",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"MAT-002\",\n  \"registroAcademico\": \"RA2026002\",\n  \"codigoTurma\": \"ESOFT4S-NB\",\n  \"codigoDisciplina\": \"POO\"\n}"
-        },
-        "url": "{{baseUrl}}/api/matriculas"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] }
-        }
-      ]
+      "name": "4. Aluno duplicado",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026999\",\n  \"nome\": \"Ana Silva\",\n  \"email\": \"ana.silva@email.com\"\n}" }, "url": "{{baseUrl}}/api/alunos" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 409', function () { pm.response.to.have.status(409); });"] } }]
     },
     {
-      "name": "5. Matrícula inválida - duplicada na oferta",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"codigo\": \"MAT-003\",\n  \"registroAcademico\": \"RA2026002\",\n  \"codigoTurma\": \"ESOFT4S-NB\",\n  \"codigoDisciplina\": \"POO\"\n}"
-        },
-        "url": "{{baseUrl}}/api/matriculas"
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": { "exec": ["pm.test('Status 422', function () { pm.response.to.have.status(422); });"] }
-        }
-      ]
+      "name": "5. Cadastrar disciplina",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"codigo\": \"ENG\",\n  \"nome\": \"Engenharia de Software\",\n  \"cargaHoraria\": 80\n}" }, "url": "{{baseUrl}}/api/disciplinas" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', function () { pm.response.to.have.status(201); });"] } }]
+    },
+    {
+      "name": "6. Consultar disciplina cadastrada",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/disciplinas/ENG" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', function () { pm.response.to.have.status(200); });"] } }]
+    },
+    {
+      "name": "7. Disciplina inexistente",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/disciplinas/NAO-EXISTE" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 404', function () { pm.response.to.have.status(404); });"] } }]
+    },
+    {
+      "name": "8. Disciplina duplicada",
+      "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"codigo\": \"ENG\",\n  \"nome\": \"Engenharia de Software\",\n  \"cargaHoraria\": 80\n}" }, "url": "{{baseUrl}}/api/disciplinas" },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 409', function () { pm.response.to.have.status(409); });"] } }]
     }
   ]
 }
