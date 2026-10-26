@@ -1,18 +1,53 @@
 # Sistema Acadêmico
 
-Projeto didático em Java 26 para praticar orientação a objetos e testes unitários com JUnit 5.
+Projeto didático em Java 21, Spring Boot, JDBC e SQLite para praticar orientação a objetos, API REST e persistência.
 
 O domínio representa alunos, turmas, ofertas de disciplinas e matrículas. As regras permanecem nos próprios objetos, sem frameworks ou camadas adicionais.
 
-## Executando a aplicação
+## Executando a API
 
-No diretório `projects/academico`, compile com:
+No diretório `projects/academico`, execute:
 
 ```bash
-mvn compile
+mvn spring-boot:run
 ```
 
-Depois, execute `br.edu.sistemaacademico.SistemaAcademico` pela IDE.
+O banco persistente é criado em `database/sistema-academico.db`. A estrutura e os dados iniciais são aplicados a partir de `src/main/resources/database/` toda vez que a aplicação inicia, sem apagar registros existentes.
+
+## Endpoints
+
+| Método | Endpoint | Resultado |
+| --- | --- | --- |
+| POST | `/api/alunos` | Cria um aluno (`201`) |
+| GET | `/api/alunos/{registroAcademico}` | Consulta aluno (`200` ou `404`) |
+| POST | `/api/disciplinas` | Cria uma disciplina (`201`) |
+| GET | `/api/disciplinas/{codigo}` | Consulta disciplina (`200` ou `404`) |
+
+Exemplo de aluno:
+
+```json
+{
+  "registroAcademico": "RA2026999",
+  "nome": "Ana Silva",
+  "email": "ana.silva@email.com"
+}
+```
+
+Exemplo de disciplina:
+
+```json
+{
+  "codigo": "ENG",
+  "nome": "Engenharia de Software",
+  "cargaHoraria": 80
+}
+```
+
+Registros duplicados retornam `409 Conflict`; dados inválidos retornam `422 Unprocessable Entity`.
+
+## Organização da persistência
+
+Os comandos SQL ficam exclusivamente nas implementações `AlunoJdbcRepository` e `DisciplinaJdbcRepository`. Os controllers apenas recebem a requisição e produzem a resposta HTTP; a interface Repository desacopla a API da tecnologia de persistência. Para trocar SQLite por outra tecnologia, basta fornecer novas implementações dessas interfaces e ajustar a configuração/inicialização do banco.
 
 ## Testes unitários
 
