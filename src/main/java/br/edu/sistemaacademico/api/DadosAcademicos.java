@@ -1,13 +1,14 @@
 package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.domain.Aluno;
-import br.edu.sistemaacademico.domain.Disciplina;
 import br.edu.sistemaacademico.domain.Matricula;
 import br.edu.sistemaacademico.domain.OfertaDisciplina;
 import br.edu.sistemaacademico.domain.PeriodoLetivo;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import br.edu.sistemaacademico.domain.Semestre;
 import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.repository.AlunoRepository;
+import br.edu.sistemaacademico.repository.DisciplinaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,35 +17,24 @@ import java.util.List;
 @Component
 public class DadosAcademicos {
 
+    private final AlunoRepository alunoRepository;
+    private final DisciplinaRepository disciplinaRepository;
     private final List<Aluno> alunos = new ArrayList<>();
     private final List<OfertaDisciplina> ofertas = new ArrayList<>();
 
-    public DadosAcademicos() {
+    public DadosAcademicos(AlunoRepository alunoRepository, DisciplinaRepository disciplinaRepository) {
+        this.alunoRepository = alunoRepository;
+        this.disciplinaRepository = disciplinaRepository;
         carregarDadosIniciais();
     }
 
     private void carregarDadosIniciais() {
-        var paola = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola.oliveira@email.com"
-        );
-        var bruno = new Aluno(
-                "RA2026002",
-                "Bruno Santos",
-                "bruno.santos@email.com"
-        );
-
-        var poo = new Disciplina(
-                "POO",
-                "Programação Orientada a Objetos",
-                80
-        );
-        var bancoDados = new Disciplina(
-                "BD",
-                "Banco de Dados",
-                80
-        );
+        var paola = buscarAluno("RA2026001");
+        var bruno = buscarAluno("RA2026002");
+        var poo = disciplinaRepository.buscarPorCodigo("POO")
+                .orElseThrow(() -> new IllegalStateException("Execute database/dados-iniciais.sql."));
+        var bancoDados = disciplinaRepository.buscarPorCodigo("BD")
+                .orElseThrow(() -> new IllegalStateException("Execute database/dados-iniciais.sql."));
 
         var turma2025 = new Turma(
                 "ESOFT4S-NA",
@@ -64,9 +54,6 @@ public class DadosAcademicos {
         registrarOferta(turma2026A.ofertarDisciplina(bancoDados));
         registrarOferta(turma2026B.ofertarDisciplina(poo));
 
-        alunos.add(paola);
-        alunos.add(bruno);
-
         var primeiraMatricula = poo2025.matricular(paola);
         primeiraMatricula.concluir(ResultadoAcademico.REPROVADO);
 
@@ -82,12 +69,16 @@ public class DadosAcademicos {
     }
 
     public Aluno buscarAluno(String registroAcademico) {
+        Aluno alunoDoBanco = alunoRepository.buscarPorRa(registroAcademico)
+                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado: " + registroAcademico));
+        // Reutiliza o objeto que mantém o histórico das matrículas em memória.
         return alunos.stream()
                 .filter(aluno -> aluno.getRegistroAcademico().equalsIgnoreCase(registroAcademico))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Aluno não encontrado: " + registroAcademico
-                ));
+                .orElseGet(() -> {
+                    alunos.add(alunoDoBanco);
+                    return alunoDoBanco;
+                });
     }
 
     public Matricula buscarMatricula(String codigo) {
