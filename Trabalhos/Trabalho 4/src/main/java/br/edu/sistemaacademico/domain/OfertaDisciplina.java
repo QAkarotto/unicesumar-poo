@@ -31,7 +31,6 @@ public class OfertaDisciplina {
             throw new IllegalStateException("Aluno " + aluno.getNome() + " já foi aprovado na disciplina " + disciplina.getNome() + ".");
         }
 
-        // Regra 2: Aluno não pode ter duas matrículas na mesma oferta
         for (Matricula m : matriculas) {
             if (m.getAluno().equals(aluno)) {
                 throw new IllegalArgumentException("Aluno " + aluno.getNome() + " já está matriculado nesta oferta.");
