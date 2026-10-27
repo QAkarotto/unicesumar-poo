@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import br.edu.sistemaacademico.repository.AlunoRepository;
 import br.edu.sistemaacademico.repository.RegistroDuplicadoException;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-@SpringBootApplication(scanBasePackages = "br.edu.sistemaacademico")
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
@@ -27,15 +24,11 @@ public class AlunoController {
         this.alunoRepository = alunoRepository;
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(AlunoController.class, args);
-    }
-
     @GetMapping("/{registroAcademico}")
     public ResponseEntity<AlunoResposta> consultar(@PathVariable String registroAcademico) {
         return alunoRepository.buscarPorRegistroAcademico(registroAcademico)
                 .map(aluno -> ResponseEntity.ok(AlunoResposta.de(aluno)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno não encontrado."));
     }
 
     @PostMapping

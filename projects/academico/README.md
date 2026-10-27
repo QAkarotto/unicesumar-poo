@@ -1,76 +1,71 @@
 # Sistema Acadêmico
 
-Projeto didático em Java 21, Spring Boot, JDBC e SQLite para praticar orientação a objetos, API REST e persistência.
+Projeto didático em Java 26, Maven e JUnit 5. O domínio mantém as regras e o encapsulamento das atividades anteriores. A demonstração de console continua disponível em `SistemaAcademico` pela IDE.
 
-O domínio representa alunos, turmas, ofertas de disciplinas e matrículas. As regras permanecem nos próprios objetos, sem frameworks ou camadas adicionais.
+## Atividade 02 - 2BIM: Primeiros Endpoints com Spring Boot
 
-## Executando a API
+Esta atividade está resolvida no projeto-base: HTTP → Controller → domínio → armazenamento em memória → JSON.
 
-No diretório `projects/academico`, execute:
+Com JDK 26 e Maven no PATH, execute a partir de `projects/academico`:
 
 ```bash
+mvn clean test
 mvn spring-boot:run
 ```
 
-O banco persistente é criado em `database/sistema-academico.db`. A estrutura e os dados iniciais são aplicados a partir de `src/main/resources/database/` toda vez que a aplicação inicia, sem apagar registros existentes.
+A API inicia em `http://localhost:8080`. Os dados são reiniciados a cada execução; SQLite não é utilizado pelos Controllers.
 
-## Endpoints
+| Método e rota | Exemplo / resultado |
+| --- | --- |
+| `GET /api/alunos/{registroAcademico}` | `RA2026001` ou `RA2026002` — 200 |
+| `GET /api/matriculas/{codigo}` | `MAT-001` — 200 |
+| `POST /api/matriculas` | Cria matrícula — 201 e cabeçalho `Location` |
 
-| Método | Endpoint | Resultado |
-| --- | --- | --- |
-| POST | `/api/alunos` | Cria um aluno (`201`) |
-| GET | `/api/alunos/{registroAcademico}` | Consulta aluno (`200` ou `404`) |
-| POST | `/api/disciplinas` | Cria uma disciplina (`201`) |
-| GET | `/api/disciplinas/{codigo}` | Consulta disciplina (`200` ou `404`) |
-
-Exemplo de aluno:
+Exemplo de corpo para criar uma matrícula:
 
 ```json
-{
-  "registroAcademico": "RA2026999",
-  "nome": "Ana Silva",
-  "email": "ana.silva@email.com"
-}
+{"registroAcademico":"RA2026002","ofertaId":"POO-2026-2"}
 ```
 
-Exemplo de disciplina:
+Ofertas de exemplo: `POO-2026-2` e `BD-2026-2`, ambas da turma `ESOFT4S-NA`, período 2026/2. `ofertaId` é a chave em memória da oferta; o código da matrícula é gerado pela aplicação. `MAT-001` já vincula `RA2026001` à oferta de POO.
 
-```json
-{
-  "codigo": "ENG",
-  "nome": "Engenharia de Software",
-  "cargaHoraria": 80
-}
-```
+Recurso inexistente retorna 404; JSON/campos inválidos ou matrícula duplicada na oferta retornam 400; impedimento por estado do domínio (como aprovação anterior) retorna 409. Erros retornam JSON com `mensagem`. As regras de matrícula permanecem nas classes do domínio.
 
-Registros duplicados retornam `409 Conflict`; dados inválidos retornam `422 Unprocessable Entity`.
+No Postman, use **Import** e selecione `postman/sistema-academico.postman_collection.json`. A variável `baseUrl` aponta para `http://localhost:8080`. Execute a Collection na ordem, com a aplicação recém-iniciada; reinicie para repetir o cenário de criação. A Collection verifica status e campos das respostas, incluindo consulta da matrícula criada e casos inválidos.
 
-## Organização da persistência
+## Atividade 03 - 2BIM: Persistência com JDBC e SQLite
 
-Os comandos SQL ficam exclusivamente nas implementações `AlunoJdbcRepository` e `DisciplinaJdbcRepository`. Os controllers apenas recebem a requisição e produzem a resposta HTTP; a interface Repository desacopla a API da tecnologia de persistência. Para trocar SQLite por outra tecnologia, basta fornecer novas implementações dessas interfaces e ajustar a configuração/inicialização do banco.
+Esta implementação persiste Aluno e Disciplina em SQLite por meio de JDBC. Os comandos SQL estão nas implementações JDBC dos Repositories, mantendo Controllers e domínio separados do acesso ao banco.
 
-## Testes unitários
+O driver `org.xerial:sqlite-jdbc:3.53.4.0` está configurado no Maven. O banco é inicializado automaticamente quando a API inicia, a partir de `database/schema.sql` e `database/dados-iniciais.sql`, sem apagar registros existentes.
 
-Para executar todos os testes:
+- Estrutura: `src/main/resources/database/schema.sql`.
+- Dois alunos e duas disciplinas fictícias: `src/main/resources/database/dados-iniciais.sql`.
+- Banco local: `database/sistema-academico.db` (ignorado pelo Git).
+- URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`, somente para uso futuro.
 
-```bash
-mvn test
-```
+Os caminhos do banco são relativos a `projects/academico`; o arquivo gerado é ignorado pelo Git.
 
-Para executar apenas os testes de matrícula:
+`registro_academico` corresponde a `Aluno.registroAcademico`, e `carga_horaria` a `Disciplina.cargaHoraria`. O e-mail é obrigatório, mas não é único no domínio. Matrículas e demais relacionamentos ainda não possuem tabelas.
 
-```bash
-mvn -Dtest=MatriculaTest test
-```
+Fluxo conceitual: **Connection → PreparedStatement → ResultSet**.
 
-Para executar os testes e verificar a cobertura de código:
+- `Connection` representa a conexão com o banco, obtida por meio do `DriverManager`.
+- `PreparedStatement` representa um comando SQL parametrizado a ser executado.
+- `ResultSet` permite percorrer os registros retornados por uma consulta.
 
-```bash
-mvn verify
-```
+A implementação JDBC transforma cada `ResultSet` em um objeto Java. Os endpoints disponíveis são `POST` e `GET` para `/api/alunos` e `/api/disciplinas`; cadastro duplicado retorna `409`, dado inválido retorna `422` e registro inexistente retorna `404`.
 
-O JaCoCo exige no mínimo 80% de cobertura de linhas das classes de domínio. O relatório HTML é gerado em `target/site/jacoco/index.html`. A classe `SistemaAcademico` não entra nessa métrica porque representa o fluxo de demonstração da aplicação.
+Referências:
 
-Os testes ficam em `src/test/java` e cobrem oferta de disciplinas, proteção das coleções, matrículas, mudanças de estado e as regras de aprovação e reprovação do histórico acadêmico.
+- [JDBC Basics](https://docs.oracle.com/javase/tutorial/jdbc/basics/)
+- [DriverManager — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/DriverManager.html)
+- [PreparedStatement — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/PreparedStatement.html)
+- [ResultSet — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/ResultSet.html)
+- [SQLite JDBC](https://github.com/xerial/sqlite-jdbc)
 
-O workflow **Java Tests** do GitHub Actions executa os testes e verifica a cobertura a cada `push` e `pull_request`.
+## Testes e cobertura
+
+`mvn clean test` executa os testes de domínio e os testes HTTP com servidor real em porta aleatória. `mvn -Dtest=MatriculaTest test` executa apenas os testes de matrícula.
+
+`mvn verify` verifica também a cobertura mínima de 80% de linhas do domínio, com relatório em `target/site/jacoco/index.html`. A demonstração `SistemaAcademico` permanece excluída do relatório. O workflow **Java Tests** mantém Java 26, executa `mvn --batch-mode clean test` e verifica a cobertura sem repetir os testes.

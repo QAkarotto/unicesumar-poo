@@ -30,6 +30,9 @@ replay_pid*
 # Exception: Do not ignore the root .gitignore file
 !/.gitignore
 
+projects/academico/database/*.db
+projects/academico/database/*.db-*
+
 target/
 projects/academico/database/*.db
 !.mvn/wrapper/maven-wrapper.jar
