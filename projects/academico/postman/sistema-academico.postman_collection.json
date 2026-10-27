@@ -1,202 +1,316 @@
 {
   "info": {
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "name": "Sistema Acadêmico — Atividade 02"
+    "name": "Sistema Acadêmico - API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
-      "value": "http://localhost:8080",
-      "key": "baseUrl"
-    },
-    {
-      "value": "MAT-002",
-      "key": "codigoMatricula"
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
     }
   ],
   "item": [
     {
-      "event": [
+      "name": "Válidos",
+      "item": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().registroAcademico).to.eql('RA2026001'));"
-            ]
-          }
-        }
-      ],
-      "name": "Consultar aluno",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/alunos/RA2026001",
-        "header": []
-      }
-    },
-    {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().codigo).to.eql('MAT-001'));"
-            ]
-          }
-        }
-      ],
-      "name": "Consultar matrícula inicial",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/matriculas/MAT-001",
-        "header": []
-      }
-    },
-    {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(201));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().situacao).to.eql('ATIVA'));",
-              "pm.collectionVariables.set('codigoMatricula', pm.response.json().codigo);",
-              "pm.test('Location', () => pm.expect(pm.response.headers.get('Location')).to.eql('/api/matriculas/' + pm.response.json().codigo));"
-            ]
-          }
-        }
-      ],
-      "name": "Criar matrícula",
-      "request": {
-        "method": "POST",
-        "body": {
-          "options": {
-            "raw": {
-              "language": "json"
+          "name": "Consultar matrícula existente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
             }
-          },
-          "mode": "raw",
-          "raw": "{\"registroAcademico\":\"RA2026002\",\"ofertaId\":\"POO-2026-2\"}"
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/matriculas/MAT2026001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matriculas",
+                "MAT2026001"
+              ]
+            },
+            "description": ""
+          }
         },
-        "url": "{{baseUrl}}/api/matriculas",
-        "header": [
-          {
-            "value": "application/json",
-            "key": "Content-Type"
-          }
-        ]
-      }
-    },
-    {
-      "event": [
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().situacao).to.eql('ATIVA'));"
-            ]
-          }
-        }
-      ],
-      "name": "Consultar matrícula criada",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/matriculas/{{codigoMatricula}}",
-        "header": []
-      }
-    },
-    {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(404));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().mensagem).to.eql('Aluno não encontrado.'));"
-            ]
-          }
-        }
-      ],
-      "name": "Aluno inexistente",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/alunos/INEXISTENTE",
-        "header": []
-      }
-    },
-    {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(400));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().mensagem).to.eql('O aluno já está matriculado nesta oferta.'));"
-            ]
-          }
-        }
-      ],
-      "name": "Matrícula duplicada",
-      "request": {
-        "method": "POST",
-        "body": {
-          "options": {
-            "raw": {
-              "language": "json"
+          "name": "Consultar aluno existente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
             }
-          },
-          "mode": "raw",
-          "raw": "{\"registroAcademico\":\"RA2026001\",\"ofertaId\":\"POO-2026-2\"}"
-        },
-        "url": "{{baseUrl}}/api/matriculas",
-        "header": [
-          {
-            "value": "application/json",
-            "key": "Content-Type"
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos/RA2026001",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alunos",
+                "RA2026001"
+              ]
+            },
+            "description": ""
           }
-        ]
-      }
-    },
-    {
-      "event": [
+        },
         {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(400));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().mensagem).to.eql('Informe registroAcademico e ofertaId.'));"
-            ]
+          "name": "Criar matrícula (Bruno em BD - ESOFT4S-NB)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matriculas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matriculas"
+              ]
+            },
+            "description": "Rode uma vez por execução do app. Rodando de novo, o código MAT2026005 já existe e a API responde 422.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"MAT2026005\",\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"BD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
           }
         }
-      ],
-      "name": "Campos ausentes",
-      "request": {
-        "method": "POST",
-        "body": {
-          "options": {
-            "raw": {
-              "language": "json"
+      ]
+    },
+    {
+      "name": "Inválidos",
+      "item": [
+        {
+          "name": "Matrícula inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', function () { pm.response.to.have.status(404); });"
+                ]
+              }
             }
-          },
-          "mode": "raw",
-          "raw": "{}"
-        },
-        "url": "{{baseUrl}}/api/matriculas",
-        "header": [
-          {
-            "value": "application/json",
-            "key": "Content-Type"
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/matriculas/MAT9999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matriculas",
+                "MAT9999"
+              ]
+            },
+            "description": ""
           }
-        ]
-      }
+        },
+        {
+          "name": "Aluno inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos/RA0000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alunos",
+                "RA0000000"
+              ]
+            },
+            "description": ""
+          }
+        },
+        {
+          "name": "Regra: aluno já aprovado na disciplina",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 422', function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matriculas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matriculas"
+              ]
+            },
+            "description": "Paola já foi aprovada em POO (MAT2026001).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"MAT2026006\",\n  \"registroAcademico\": \"RA2026001\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"POO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Regra: matrícula duplicada na mesma oferta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 422', function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matriculas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matriculas"
+              ]
+            },
+            "description": "Bruno já está matriculado em POO na ESOFT4S-NB.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"MAT2026007\",\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"POO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "JSON incompleto (sem registroAcademico)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/matriculas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "matriculas"
+              ]
+            },
+            "description": "",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"MAT2026008\",\n  \"turma\": \"ESOFT4S-NB\",\n  \"disciplina\": \"BD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }
