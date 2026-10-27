@@ -1,0 +1,175 @@
+{
+  "info": {
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "name": "Sistema Acadêmico — Atividade 03 (JDBC + SQLite)"
+  },
+  "variable": [
+    {
+      "value": "http://localhost:8080",
+      "key": "baseUrl"
+    }
+  ],
+  "item": [
+    {
+      "name": "Alunos",
+      "item": [
+        {
+          "name": "Cadastrar aluno (201)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "options": { "raw": { "language": "json" } },
+              "mode": "raw",
+              "raw": "{\"identificadorAcademico\":\"RA2026100\",\"nome\":\"Maria Souza\",\"email\":\"maria@email.com\"}"
+            },
+            "url": "{{baseUrl}}/api/alunos",
+            "header": [
+              { "value": "application/json", "key": "Content-Type" }
+            ]
+          }
+        },
+        {
+          "name": "Cadastrar aluno duplicado (409)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "options": { "raw": { "language": "json" } },
+              "mode": "raw",
+              "raw": "{\"identificadorAcademico\":\"RA2026100\",\"nome\":\"Maria Souza\",\"email\":\"maria@email.com\"}"
+            },
+            "url": "{{baseUrl}}/api/alunos",
+            "header": [
+              { "value": "application/json", "key": "Content-Type" }
+            ]
+          }
+        },
+        {
+          "name": "Cadastrar aluno inválido (400)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "options": { "raw": { "language": "json" } },
+              "mode": "raw",
+              "raw": "{\"identificadorAcademico\":\"RA2026101\",\"nome\":\"Sem Email\"}"
+            },
+            "url": "{{baseUrl}}/api/alunos",
+            "header": [
+              { "value": "application/json", "key": "Content-Type" }
+            ]
+          }
+        },
+        {
+          "name": "Consultar aluno (200)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA2026100",
+            "header": []
+          }
+        },
+        {
+          "name": "Consultar aluno inicial (200)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA2026001",
+            "header": []
+          }
+        },
+        {
+          "name": "Consultar aluno inexistente (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/NAOEXISTE",
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Disciplinas",
+      "item": [
+        {
+          "name": "Cadastrar disciplina (201)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "options": { "raw": { "language": "json" } },
+              "mode": "raw",
+              "raw": "{\"codigo\":\"ES\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":60}"
+            },
+            "url": "{{baseUrl}}/api/disciplinas",
+            "header": [
+              { "value": "application/json", "key": "Content-Type" }
+            ]
+          }
+        },
+        {
+          "name": "Cadastrar disciplina duplicada (409)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "options": { "raw": { "language": "json" } },
+              "mode": "raw",
+              "raw": "{\"codigo\":\"ES\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":60}"
+            },
+            "url": "{{baseUrl}}/api/disciplinas",
+            "header": [
+              { "value": "application/json", "key": "Content-Type" }
+            ]
+          }
+        },
+        {
+          "name": "Cadastrar disciplina inválida (400)",
+          "request": {
+            "method": "POST",
+            "body": {
+              "options": { "raw": { "language": "json" } },
+              "mode": "raw",
+              "raw": "{\"codigo\":\"ES2\",\"nome\":\"Invalida\",\"cargaHoraria\":0}"
+            },
+            "url": "{{baseUrl}}/api/disciplinas",
+            "header": [
+              { "value": "application/json", "key": "Content-Type" }
+            ]
+          }
+        },
+        {
+          "name": "Consultar disciplina (200)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/ES",
+            "header": []
+          }
+        },
+        {
+          "name": "Consultar disciplina inicial (200)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/POO",
+            "header": []
+          }
+        },
+        {
+          "name": "Consultar disciplina inexistente (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/NAOEXISTE",
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Persistência",
+      "item": [
+        {
+          "name": "Consultar após reiniciar a aplicação (200)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA2026100",
+            "header": []
+          }
+        }
+      ]
+    }
+  ]
+}

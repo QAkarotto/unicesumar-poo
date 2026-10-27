@@ -1,1 +1,21 @@
+# Arquivos gerados pelo Maven
 /target/
+
+# Banco de dados SQLite local
+/database/*.db
+/database/*.db-journal
+/database/*.db-shm
+/database/*.db-wal
+
+# Arquivos e pastas locais do IntelliJ IDEA
+/.idea/
+*.iml
+
+# Arquivos locais do Eclipse
+/.classpath
+/.project
+/.settings/
+
+# Arquivos temporários do sistema operacional
+.DS_Store
+Thumbs.db
