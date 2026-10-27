@@ -69,3 +69,4 @@ build/
 
 ### Mac OS ###
 .DS_Store
+database/academico.db
