@@ -19,26 +19,17 @@ import java.util.UUID;
 @Repository
 public class DadosAcademicos {
 
-    private final Map<String, Aluno> alunos = new HashMap<>();
-    private final Map<String, Matricula> matriculas = new HashMap<>();
-    private final Map<String, OfertaDisciplina> ofertas = new HashMap<>();
+    private final AlunoRepository alunoRepository;
 
-    public DadosAcademicos() {
+    private final Map<String, Matricula> matriculas =
+            new HashMap<>();
 
-        Aluno paola = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola.oliveira@email.com"
-        );
+    private final Map<String, OfertaDisciplina> ofertas =
+            new HashMap<>();
 
-        Aluno bruno = new Aluno(
-                "RA2026002",
-                "Bruno Santos",
-                "bruno.santos@email.com"
-        );
+    public DadosAcademicos(AlunoRepository alunoRepository) {
 
-        alunos.put(paola.getRegistroAcademico(), paola);
-        alunos.put(bruno.getRegistroAcademico(), bruno);
+        this.alunoRepository = alunoRepository;
 
         Disciplina poo = new Disciplina(
                 "POO",
@@ -56,30 +47,38 @@ public class DadosAcademicos {
                 periodo
         );
 
-        OfertaDisciplina ofertaPoo = turma.ofertarDisciplina(poo);
+        OfertaDisciplina ofertaPoo =
+                turma.ofertarDisciplina(poo);
 
         ofertas.put("POO-ADSIS4S", ofertaPoo);
     }
 
     public Optional<Aluno> buscarAluno(String ra) {
-        return Optional.ofNullable(alunos.get(ra));
+        return alunoRepository.buscarPorRa(ra);
     }
 
-    public Optional<Matricula> buscarMatricula(String codigo) {
-        return Optional.ofNullable(matriculas.get(codigo));
+    public Optional<Matricula> buscarMatricula(
+            String codigo) {
+
+        return Optional.ofNullable(
+                matriculas.get(codigo));
     }
 
-    public Optional<OfertaDisciplina> buscarOferta(String codigo) {
-        return Optional.ofNullable(ofertas.get(codigo));
+    public Optional<OfertaDisciplina> buscarOferta(
+            String codigo) {
+
+        return Optional.ofNullable(
+                ofertas.get(codigo));
     }
 
     public Matricula cadastrarMatricula(
             Aluno aluno,
-            OfertaDisciplina oferta
-    ) {
+            OfertaDisciplina oferta) {
+
         String codigo = "MAT-" + UUID.randomUUID();
 
-        Matricula matricula = oferta.matricular(codigo, aluno);
+        Matricula matricula =
+                oferta.matricular(codigo, aluno);
 
         matriculas.put(codigo, matricula);
 
