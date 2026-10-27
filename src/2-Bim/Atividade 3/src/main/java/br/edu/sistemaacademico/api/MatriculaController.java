@@ -56,22 +56,23 @@ public class MatriculaController {
                 "nome", matricula.getAluno().getNome(),
                 "turma", matricula.getOfertaDisciplina().getTurma().getCodigo(),
                 "disciplina", matricula.getOfertaDisciplina().getDisciplina().getCodigo(),
-                "situacao", matricula.getResultado() == null ? "CURSANDO" : matricula.getResultado().name());
+                "situacao", matricula.getSituacao());
     }
 
     static class PonteApi {
 
         private static final Map<String, Aluno> alunos = new LinkedHashMap<>();
         private static final Map<String, Matricula> matriculas = new LinkedHashMap<>();
-        private static OfertaDisciplina oferta;
+        private static final Map<String, Turma> turmas = new LinkedHashMap<>();
         private static int seq = 11;
 
         static {
             Turma turma = new Turma("TI-2026-1", new PeriodoLetivo(2026, Semestre.PRIMEIRO));
-            oferta = turma.ofertarDisciplina(new Disciplina("BD", "Banco de Dados", 60));
+            turma.ofertarDisciplina(new Disciplina("BD", "Banco de Dados", 60));
+            turmas.put(turma.getCodigo(), turma);
             Aluno helena = new Aluno("RA2401", "Helena Prado", "helena.prado@exemplo.edu");
             alunos.put(helena.getIdentificadorAcademico(), helena);
-            Matricula matriculaInicial = oferta.matricular("MAT-001", helena);
+            Matricula matriculaInicial = turma.buscarOferta("BD").matricular("MAT-001", helena);
             matriculas.put(matriculaInicial.getCodigo(), matriculaInicial);
             alunos.put("RA2403", new Aluno("RA2403", "Lia Ferreira", "lia.ferreira@exemplo.edu"));
         }
@@ -89,9 +90,12 @@ public class MatriculaController {
                 throw new IllegalArgumentException("Informe o RA, a turma e a disciplina.");
             }
             Aluno aluno = alunos.get(ra);
-            if (aluno == null
-                    || !oferta.getTurma().getCodigo().equals(codigoTurma)
-                    || !oferta.getDisciplina().getCodigo().equals(codigoDisciplina)) {
+            Turma turma = turmas.get(codigoTurma);
+            if (aluno == null || turma == null) {
+                return null;
+            }
+            OfertaDisciplina oferta = turma.buscarOferta(codigoDisciplina);
+            if (oferta == null) {
                 return null;
             }
             Matricula matricula = oferta.matricular("MAT-" + seq++, aluno);

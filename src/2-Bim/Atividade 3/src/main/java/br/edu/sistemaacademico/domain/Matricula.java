@@ -38,6 +38,13 @@ public class Matricula {
         return resultado;
     }
 
+    public String getSituacao() {
+        if (resultado == null) {
+            return "CURSANDO";
+        }
+        return resultado.name();
+    }
+
     public void registrarResultado(ResultadoAcademico resultado) {
         if (resultado == null) {
             throw new IllegalArgumentException("Resultado não pode ser nulo");

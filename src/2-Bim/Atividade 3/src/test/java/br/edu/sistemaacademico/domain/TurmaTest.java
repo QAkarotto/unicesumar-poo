@@ -3,6 +3,7 @@ package br.edu.sistemaacademico.domain;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TurmaTest {
@@ -45,5 +46,24 @@ class TurmaTest {
         Turma turma = new Turma("T1", new PeriodoLetivo(2026, Semestre.PRIMEIRO));
 
         assertThrows(IllegalArgumentException.class, () -> turma.ofertarDisciplina(null));
+    }
+
+    @Test
+    void deveBuscarOfertaPeloCodigoDaDisciplina() {
+        Turma turma = new Turma("T1", new PeriodoLetivo(2026, Semestre.PRIMEIRO));
+        Disciplina disciplina = new Disciplina("POO01", "Programação Orientada a Objetos", 80);
+        OfertaDisciplina oferta = turma.ofertarDisciplina(disciplina);
+
+        assertEquals(oferta, turma.buscarOferta("POO01"));
+    }
+
+    @Test
+    void naoDeveEncontrarOfertaInexistente() {
+        Turma turma = new Turma("T1", new PeriodoLetivo(2026, Semestre.PRIMEIRO));
+        turma.ofertarDisciplina(new Disciplina("POO01", "Programação Orientada a Objetos", 80));
+
+        assertNull(turma.buscarOferta("BD"));
+        assertNull(turma.buscarOferta(null));
+        assertNull(turma.buscarOferta(" "));
     }
 }

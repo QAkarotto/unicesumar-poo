@@ -24,6 +24,14 @@ class MatriculaTest {
     @Test
     void deveIniciarSemResultado() {
         assertNull(matricula.getResultado());
+        assertEquals("CURSANDO", matricula.getSituacao());
+    }
+
+    @Test
+    void deveExporSituacaoDoResultadoRegistrado() {
+        matricula.registrarResultado(ResultadoAcademico.APROVADO);
+
+        assertEquals("APROVADO", matricula.getSituacao());
     }
 
     @Test

@@ -46,6 +46,16 @@ public class Turma {
         return oferta;
     }
 
+    public OfertaDisciplina buscarOferta(String codigoDisciplina) {
+        if (codigoDisciplina == null || codigoDisciplina.isBlank()) {
+            return null;
+        }
+        return ofertas.stream()
+                .filter(oferta -> oferta.getDisciplina().getCodigo().equals(codigoDisciplina))
+                .findFirst()
+                .orElse(null);
+    }
+
     private boolean possuiOferta(Disciplina disciplina) {
         return ofertas.stream().anyMatch(oferta -> oferta.getDisciplina().equals(disciplina));
     }
