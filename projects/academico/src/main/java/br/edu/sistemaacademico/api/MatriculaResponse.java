@@ -31,7 +31,7 @@ public record MatriculaResponse(
                 matricula.getOfertaDisciplina().getDisciplina().getCodigo(),
                 matricula.getOfertaDisciplina().getDisciplina().getNome(),
                 matricula.getSituacao(),
-                matricula.getResultadoAcademico()
+                matricula.getResultado()
         );
     }
 }
