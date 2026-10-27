@@ -14,11 +14,6 @@ public class AcademicoController {
         this.dados = dados;
     }
 
-    @GetMapping("/alunos/{registroAcademico}")
-    public AlunoResponse buscarAluno(@PathVariable("registroAcademico") String registroAcademico) {
-        return AlunoResponse.de(dados.buscarAluno(registroAcademico));
-    }
-
     @GetMapping("/matriculas/{codigo}")
     public MatriculaResponse buscarMatricula(@PathVariable("codigo") String codigo) {
         return MatriculaResponse.de(dados.buscarMatricula(codigo));
