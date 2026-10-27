@@ -25,4 +25,5 @@ Status usados: 201 (criado), 200 (encontrado), 404 (não encontrado), 409 (dupli
 
 ### Validação
 Collection do Postman em `projects/academico/postman/`.
-https://pbittencourt219-382892.postman.co/workspace/Pierre's-Workspace~e2e5aaa7-cf1c-44ac-8415-30ca1d071f5d/collection/58739882-baf4274d-1d36-4484-a3fb-bc9279f463fc?action=share&source=copy-link&creator=58739882.
+
+https://www.postman.com/pbittencourt219-382892/atividades-2bim-esoft-nb-pierre-bittencourt/collection/58739882-baf4274d-1d36-4484-a3fb-bc9279f463fc?action=share&source=copy-link&creator=58739882
