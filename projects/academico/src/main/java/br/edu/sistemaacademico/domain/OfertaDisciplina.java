@@ -13,11 +13,6 @@ public final class OfertaDisciplina {
         this.disciplina = disciplina;
     }
 
-    public Matricula matricular(Aluno aluno) {
-        var codigo = "MAT-" + (matriculas.size() + 1);
-        return matricular(codigo, aluno);
-    }
-
     public Matricula matricular(String codigo, Aluno aluno) {
         return new Matricula(codigo, aluno, this);
     }
