@@ -21,3 +21,7 @@ Repositório utilizado na disciplina de Programação Orientada a Objetos dos cu
 
 1. Heitor (ESOFT4S-NA)
 2. 
+
+## Sistema Acadêmico
+
+Consulte as instruções de execução e das atividades do segundo bimestre no [README do projeto](projects/academico/README.md).
