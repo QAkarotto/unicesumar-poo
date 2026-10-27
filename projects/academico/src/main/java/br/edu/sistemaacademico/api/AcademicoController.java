@@ -32,7 +32,8 @@ public class AcademicoController {
         Aluno aluno = alunoRepository
                 .buscarPorRegistroAcademico(registroAcademico)
                 .orElseThrow(() ->
-                        new RecursoNaoEncontradoException("Aluno não encontrado."));
+                        new RecursoNaoEncontradoException(
+                                "Aluno não encontrado."));
 
         return AlunoResponse.de(aluno);
     }
@@ -51,14 +52,15 @@ public class AcademicoController {
         }
 
         Aluno aluno = new Aluno(
-                request.registroAcademico(),
-                request.nome(),
-                request.email());
+                request.registroAcademico().trim(),
+                request.nome().trim(),
+                request.email().trim());
 
         alunoRepository.salvar(aluno);
 
         return ResponseEntity
-                .created(URI.create("/api/alunos/" + aluno.getRegistroAcademico()))
+                .created(URI.create(
+                        "/api/alunos/" + aluno.getRegistroAcademico()))
                 .body(AlunoResponse.de(aluno));
     }
 
@@ -80,20 +82,22 @@ public class AcademicoController {
         if (request.codigo() == null
                 || request.codigo().isBlank()
                 || request.nome() == null
-                || request.nome().isBlank()) {
+                || request.nome().isBlank()
+                || request.cargaHoraria() <= 0) {
             throw new IllegalArgumentException(
-                    "Informe codigo, nome e cargaHoraria.");
+                    "Informe codigo, nome e uma carga horaria valida.");
         }
 
         Disciplina disciplina = new Disciplina(
-                request.codigo(),
-                request.nome(),
+                request.codigo().trim(),
+                request.nome().trim(),
                 request.cargaHoraria());
 
         disciplinaRepository.salvar(disciplina);
 
         return ResponseEntity
-                .created(URI.create("/api/disciplinas/" + disciplina.getCodigo()))
+                .created(URI.create(
+                        "/api/disciplinas/" + disciplina.getCodigo()))
                 .body(DisciplinaResponse.de(disciplina));
     }
 
@@ -119,7 +123,8 @@ public class AcademicoController {
                 request.ofertaId().trim());
 
         return ResponseEntity
-                .created(URI.create("/api/matriculas/" + matricula.getCodigo()))
+                .created(URI.create(
+                        "/api/matriculas/" + matricula.getCodigo()))
                 .body(MatriculaResponse.de(matricula));
     }
 
