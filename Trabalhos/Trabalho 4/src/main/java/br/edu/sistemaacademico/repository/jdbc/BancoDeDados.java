@@ -27,13 +27,10 @@ public class BancoDeDados {
         inicializarSeNecessario();
     }
 
-    // Cada operação abre a sua própria conexão e fecha ao terminar (try-with-resources)
     public Connection abrirConexao() throws SQLException {
         return DriverManager.getConnection(url);
     }
 
-    // Só roda os scripts se a tabela ainda não existir: o schema.sql faz DROP TABLE,
-    // então rodar sempre apagaria os dados a cada reinício da aplicação
     private void inicializarSeNecessario() {
         if (!Files.isDirectory(PASTA_DATABASE)) {
             throw new IllegalStateException("Pasta 'database' não encontrada em "

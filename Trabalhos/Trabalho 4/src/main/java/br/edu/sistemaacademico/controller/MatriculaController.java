@@ -18,14 +18,15 @@ public class MatriculaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Matricula> buscarPorId(@PathVariable String id) {
+    public ResponseEntity<?> buscarPorId(@PathVariable String id) {
         Matricula matricula = dadosEmMemoria.buscarMatriculaPorId(id);
 
         if (matricula == null) {
-            return ResponseEntity.notFound().build(); // HTTP 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)  // ERRO
+                    .body("Matrícula não encontrada!!");
         }
 
-        return ResponseEntity.ok(matricula); // HTTP 200
+        return ResponseEntity.ok(matricula); //  OK
     }
 
     @PostMapping
@@ -36,11 +37,11 @@ public class MatriculaController {
                     request.getCodigoOferta()
             );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaMatricula); // HTTP 201
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaMatricula); // CREATED
 
         } catch (IllegalArgumentException | IllegalStateException e) {
-            // Repassa as exceções tratadas pelas regras de negócio do domínio
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // HTTP 400
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // ERRO
         }
     }
 }

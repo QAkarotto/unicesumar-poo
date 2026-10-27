@@ -2,6 +2,7 @@ package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Aluno {
     private String ra;
@@ -9,7 +10,6 @@ public class Aluno {
     private String email;
     private List<Matricula> matriculas = new ArrayList<>();
 
-    // Construtor flexível que mapeia os parâmetros corretamente
     public Aluno(String parametro1, String parametro2, String email) {
         if (ehRa(parametro1)) {
             this.ra = parametro1;
@@ -47,7 +47,7 @@ public class Aluno {
     public String getRa() { return ra; }
     public String getNome() { return nome; }
     public String getEmail() { return email; }
-    public List<Matricula> getMatriculas() { return matriculas; }
+    @JsonIgnore public List<Matricula> getMatriculas() { return matriculas; }
 
     @Override
     public String toString() {

@@ -2,6 +2,7 @@ package br.edu.sistemaacademico.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class OfertaDisciplina {
     private Turma turma;
@@ -20,7 +21,7 @@ public class OfertaDisciplina {
         return disciplina;
     }
 
-    public List<Matricula> getMatriculas() {
+    @JsonIgnore public List<Matricula> getMatriculas() {
         return matriculas;
     }
 
@@ -30,7 +31,7 @@ public class OfertaDisciplina {
             throw new IllegalStateException("Aluno " + aluno.getNome() + " já foi aprovado na disciplina " + disciplina.getNome() + ".");
         }
 
-        // Regra 2: Aluno não pode ter duas matrículas na MESMA oferta
+        // Regra 2: Aluno não pode ter duas matrículas na mesma oferta
         for (Matricula m : matriculas) {
             if (m.getAluno().equals(aluno)) {
                 throw new IllegalArgumentException("Aluno " + aluno.getNome() + " já está matriculado nesta oferta.");
