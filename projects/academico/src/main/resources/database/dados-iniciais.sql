@@ -1,0 +1,1 @@
+-- Os dados são cadastrados pelas requisições POST da API.
