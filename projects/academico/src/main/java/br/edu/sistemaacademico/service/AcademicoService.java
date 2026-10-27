@@ -8,6 +8,10 @@ import br.edu.sistemaacademico.domain.OfertaDisciplina;
 import br.edu.sistemaacademico.domain.PeriodoLetivo;
 import br.edu.sistemaacademico.domain.Semestre;
 import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.dto.AlunoRequest;
+import br.edu.sistemaacademico.dto.DisciplinaRequest;
+import br.edu.sistemaacademico.repository.AlunoRepository;
+import br.edu.sistemaacademico.repository.DisciplinaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,38 +21,25 @@ import java.util.Optional;
 @Service
 public class AcademicoService {
 
-    private final List<Aluno> alunos = new ArrayList<>();
+    private final AlunoRepository alunoRepository;
+    private final DisciplinaRepository disciplinaRepository;
     private final List<Turma> turmas = new ArrayList<>();
 
-    public AcademicoService() {
-        Aluno paola = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola.oliveira@email.com"
-        );
+    public AcademicoService(
+            AlunoRepository alunoRepository,
+            DisciplinaRepository disciplinaRepository) {
 
-        Aluno bruno = new Aluno(
-                "RA2026002",
-                "Bruno Santos",
-                "bruno.santos@email.com"
-        );
-
-        alunos.add(paola);
-        alunos.add(bruno);
+        this.alunoRepository = alunoRepository;
+        this.disciplinaRepository = disciplinaRepository;
 
         Disciplina poo = new Disciplina(
-                "POO",
-                "Programação Orientada a Objetos",
-                80
-        );
+                "POO", "Programação Orientada a Objetos", 80);
 
         Disciplina bancoDados = new Disciplina(
-                "BD",
-                "Banco de Dados",
-                80
-        );
+                "BD", "Banco de Dados", 80);
 
-        PeriodoLetivo periodo = new PeriodoLetivo(2026, Semestre.PRIMEIRO);
+        PeriodoLetivo periodo = new PeriodoLetivo(
+                2026, Semestre.PRIMEIRO);
 
         Turma turma = new Turma("ESOFT4S-NA", periodo);
         turma.ofertarDisciplina(poo);
@@ -58,23 +49,43 @@ public class AcademicoService {
     }
 
     public Optional<Aluno> buscarAluno(String identificador) {
-        return alunos.stream()
-                .filter(aluno -> aluno.getRegistroAcademico()
-                        .equalsIgnoreCase(identificador))
-                .findFirst();
+        return alunoRepository.buscarPorRegistroAcademico(identificador);
+    }
+
+    public Aluno cadastrarAluno(AlunoRequest request) {
+        Aluno aluno = new Aluno(
+                request.registroAcademico(),
+                request.nome(),
+                request.email()
+        );
+
+        return alunoRepository.salvar(aluno);
+    }
+
+    public Disciplina cadastrarDisciplina(DisciplinaRequest request) {
+        Disciplina disciplina = new Disciplina(
+                request.codigo(),
+                request.nome(),
+                request.cargaHoraria()
+        );
+
+        return disciplinaRepository.salvar(disciplina);
     }
 
     public Optional<Matricula> buscarMatricula(String codigo) {
         return turmas.stream()
                 .flatMap(turma -> turma.getOfertas().stream())
                 .flatMap(oferta -> oferta.getMatriculas().stream())
-                .filter(matricula -> matricula.getCodigo()
-                        .equalsIgnoreCase(codigo))
+                .filter(matricula ->
+                        matricula.getCodigo().equalsIgnoreCase(codigo))
                 .findFirst();
     }
 
-    public Matricula matricular(String identificadorAluno, String codigoTurma,
-                                String codigoDisciplina) {
+    public Matricula matricular(
+            String identificadorAluno,
+            String codigoTurma,
+            String codigoDisciplina) {
+
         Aluno aluno = buscarAluno(identificadorAluno)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Aluno não encontrado: " + identificadorAluno));
@@ -90,7 +101,8 @@ public class AcademicoService {
                         .equalsIgnoreCase(codigoDisciplina))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Disciplina não ofertada nesta turma: " + codigoDisciplina));
+                        "Disciplina não ofertada nesta turma: "
+                                + codigoDisciplina));
 
         return oferta.matricular(aluno);
     }
