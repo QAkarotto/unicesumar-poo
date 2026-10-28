@@ -9,10 +9,13 @@ import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import br.edu.sistemaacademico.domain.Semestre;
 import br.edu.sistemaacademico.domain.Turma;
 
+import br.edu.sistemaacademico.repository.AlunoRepository;
+
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class AcademicoMemoria {
@@ -20,8 +23,11 @@ public class AcademicoMemoria {
     private final Map<String, Aluno> alunos = new HashMap<>();
     private final Map<String, Matricula> matriculas = new HashMap<>();
     private final Map<String, OfertaDisciplina> ofertas = new HashMap<>();
+    private final AlunoRepository alunoRepository;
 
-    public AcademicoMemoria() {
+    public AcademicoMemoria(AlunoRepository alunoRepository) {
+        this.alunoRepository = alunoRepository;
+
         var paola = new Aluno(
                 "RA2026001",
                 "Paola Oliveira",
@@ -97,7 +103,14 @@ public class AcademicoMemoria {
     }
 
     public Aluno buscarAluno(String registroAcademico) {
-        return alunos.get(registroAcademico);
+        Aluno emMemoria = alunos.get(registroAcademico);
+        if (emMemoria != null) {
+            return emMemoria;
+        }
+
+        Optional<Aluno> doBanco = alunoRepository.buscarPorRa(registroAcademico);
+        doBanco.ifPresent(aluno -> alunos.put(aluno.getRegistroAcademico(), aluno));
+        return doBanco.orElse(null);
     }
 
     public Matricula buscarMatricula(String codigo) {

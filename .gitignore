@@ -69,3 +69,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Banco SQLite local do Sistema Academico ###
+projects/academico/database/*.db
+projects/academico/database/*.db-journal

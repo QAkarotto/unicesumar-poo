@@ -28,27 +28,7 @@ public class AcademicoController {
         this.memoria = memoria;
     }
 
-    @GetMapping(
-            value = "/alunos/{identificador}",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<?> consultarAluno(
-            @PathVariable("identificador") String identificador
-    ) {
-        Aluno aluno = memoria.buscarAluno(identificador);
-
-        if (aluno == null) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("erro", "Aluno não encontrado."));
-        }
-
-        return ResponseEntity.ok(Map.of(
-                "registroAcademico", aluno.getRegistroAcademico(),
-                "nome", aluno.getNome(),
-                "email", aluno.getEmail()
-        ));
-    }
+    // A consulta de alunos agora é feita pelo AlunoController (persistida em SQLite).
 
     @GetMapping(
             value = "/matriculas/{id}",
