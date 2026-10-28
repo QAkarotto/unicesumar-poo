@@ -7,10 +7,11 @@ import br.edu.sistemaacademico.dto.AlunoResponse;
 import br.edu.sistemaacademico.service.AcademicoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.context.annotation.Profile;
 import java.net.URI;
 import java.util.Map;
 
+@Profile("jdbc")
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {

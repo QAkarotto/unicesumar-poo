@@ -4,7 +4,9 @@ import br.edu.sistemaacademico.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
+import org.springframework.context.annotation.Profile;
 
+@Profile("!jdbc")
 @RestController
 @RequestMapping("/api")
 public class AcademicoController {

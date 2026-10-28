@@ -7,9 +7,10 @@ import br.edu.sistemaacademico.dto.MatriculaResponse;
 import br.edu.sistemaacademico.service.AcademicoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.context.annotation.Profile;
 import java.net.URI;
 
+@Profile("jdbc")
 @RestController
 @RequestMapping("/api/matriculas")
 public class MatriculaController {
