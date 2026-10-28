@@ -1,6 +1,7 @@
 package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.AplicacaoAcademica;
+import br.edu.sistemaacademico.BancoDeTeste;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.SpringApplication;
@@ -19,8 +20,9 @@ class AcademicoHttpTest {
     private static final ObjectMapper JSON = new ObjectMapper();
 
     @BeforeEach
-    void iniciar() {
-        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0");
+    void iniciar() throws Exception {
+        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0",
+                "--app.database.url=" + BancoDeTeste.criar());
         baseUrl = "http://localhost:" + ((WebServerApplicationContext) contexto).getWebServer().getPort();
     }
 
