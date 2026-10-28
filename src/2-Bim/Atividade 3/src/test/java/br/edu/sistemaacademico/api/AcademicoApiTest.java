@@ -133,4 +133,38 @@ class AcademicoApiTest {
                         .content("{\"ra\":\"RA2501\",\"nome\":\"Ana Souza\",\"email\":\"ana@exemplo.edu\"}"))
                 .andExpect(status().isConflict());
     }
+
+    @Test
+    @Order(12)
+    void cadastraDisciplina() throws Exception {
+        mockMvc.perform(post("/api/disciplinas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"codigo\":\"POO\",\"nome\":\"Programacao Orientada a Objetos\",\"cargaHoraria\":80}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codigo").value("POO"))
+                .andExpect(jsonPath("$.nome").value("Programacao Orientada a Objetos"));
+    }
+
+    @Test
+    @Order(13)
+    void consultaDisciplinaCadastrada() throws Exception {
+        mockMvc.perform(get("/api/disciplinas/POO"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.cargaHoraria").value("80"));
+    }
+
+    @Test
+    @Order(14)
+    void consultaDisciplinaInexistente() throws Exception {
+        mockMvc.perform(get("/api/disciplinas/XYZ")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(15)
+    void recusaDisciplinaDuplicada() throws Exception {
+        mockMvc.perform(post("/api/disciplinas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"codigo\":\"POO\",\"nome\":\"Programacao Orientada a Objetos\",\"cargaHoraria\":80}"))
+                .andExpect(status().isConflict());
+    }
 }

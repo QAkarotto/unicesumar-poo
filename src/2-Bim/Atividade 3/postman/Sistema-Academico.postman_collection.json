@@ -103,6 +103,50 @@
         },
         "url": "{{baseUrl}}/api/alunos"
       }
+    },
+    {
+      "name": "10. Cadastrar disciplina",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"POO\",\n  \"nome\": \"Programacao Orientada a Objetos\",\n  \"cargaHoraria\": 80\n}"
+        },
+        "url": "{{baseUrl}}/api/disciplinas"
+      }
+    },
+    {
+      "name": "11. Consultar disciplina cadastrada",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/disciplinas/POO"
+      }
+    },
+    {
+      "name": "12. Consultar disciplina inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/disciplinas/XYZ"
+      }
+    },
+    {
+      "name": "13. Cadastrar disciplina duplicada",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"POO\",\n  \"nome\": \"Programacao Orientada a Objetos\",\n  \"cargaHoraria\": 80\n}"
+        },
+        "url": "{{baseUrl}}/api/disciplinas"
+      }
     }
   ]
 }
