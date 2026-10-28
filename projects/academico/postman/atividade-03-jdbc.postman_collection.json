@@ -1,0 +1,376 @@
+{
+  "info": {
+    "name": "Atividade 03 - JDBC e SQLite",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Antes de reiniciar",
+      "item": [
+        {
+          "name": "1. Cadastrar aluno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Retorna o aluno cadastrado', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.identificadorAcademico).to.eql('RA2026010');",
+                  "    pm.expect(json.nome).to.eql('Maria Silva');",
+                  "    pm.expect(json.email).to.eql('maria.silva@email.com');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificadorAcademico\": \"RA2026010\",\n  \"nome\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alunos"]
+            }
+          }
+        },
+        {
+          "name": "2. Consultar aluno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Retorna os dados do aluno', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.identificadorAcademico).to.eql('RA2026010');",
+                  "    pm.expect(json.nome).to.eql('Maria Silva');",
+                  "    pm.expect(json.email).to.eql('maria.silva@email.com');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos/RA2026010",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alunos", "RA2026010"]
+            }
+          }
+        },
+        {
+          "name": "3. Cadastrar aluno duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test('Retorna mensagem de erro', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('erro');",
+                  "    pm.expect(json.erro).to.eql('Aluno ja cadastrado.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificadorAcademico\": \"RA2026010\",\n  \"nome\": \"Maria Silva\",\n  \"email\": \"maria.silva@email.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alunos"]
+            }
+          }
+        },
+        {
+          "name": "4. Consultar aluno inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Retorna mensagem de erro', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('erro');",
+                  "    pm.expect(json.erro).to.eql('Aluno nao encontrado.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos/RA9999999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alunos", "RA9999999"]
+            }
+          }
+        },
+        {
+          "name": "5. Cadastrar disciplina",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Retorna a disciplina cadastrada', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.codigo).to.eql('SO');",
+                  "    pm.expect(json.nome).to.eql('Sistemas Operacionais');",
+                  "    pm.expect(json.cargaHoraria).to.eql(80);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"SO\",\n  \"nome\": \"Sistemas Operacionais\",\n  \"cargaHoraria\": 80\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/disciplinas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "disciplinas"]
+            }
+          }
+        },
+        {
+          "name": "6. Consultar disciplina",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Retorna os dados da disciplina', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.codigo).to.eql('SO');",
+                  "    pm.expect(json.nome).to.eql('Sistemas Operacionais');",
+                  "    pm.expect(json.cargaHoraria).to.eql(80);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/disciplinas/SO",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "disciplinas", "SO"]
+            }
+          }
+        },
+        {
+          "name": "7. Cadastrar disciplina duplicada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test('Retorna mensagem de erro', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('erro');",
+                  "    pm.expect(json.erro).to.eql('Disciplina ja cadastrada.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"SO\",\n  \"nome\": \"Sistemas Operacionais\",\n  \"cargaHoraria\": 80\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/disciplinas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "disciplinas"]
+            }
+          }
+        },
+        {
+          "name": "8. Consultar disciplina inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Retorna mensagem de erro', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('erro');",
+                  "    pm.expect(json.erro).to.eql('Disciplina nao encontrada.');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/disciplinas/XYZ999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "disciplinas", "XYZ999"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Depois de reiniciar",
+      "item": [
+        {
+          "name": "9. Consultar aluno apos reiniciar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Aluno continua salvo no banco', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.identificadorAcademico).to.eql('RA2026010');",
+                  "    pm.expect(json.nome).to.eql('Maria Silva');",
+                  "    pm.expect(json.email).to.eql('maria.silva@email.com');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos/RA2026010",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "alunos", "RA2026010"]
+            }
+          }
+        },
+        {
+          "name": "10. Consultar disciplina apos reiniciar",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Disciplina continua salva no banco', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.codigo).to.eql('SO');",
+                  "    pm.expect(json.nome).to.eql('Sistemas Operacionais');",
+                  "    pm.expect(json.cargaHoraria).to.eql(80);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/disciplinas/SO",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "disciplinas", "SO"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
