@@ -1,0 +1,73 @@
+{
+  "info": {
+    "name": "Atividade 03 - Persistencia JDBC e SQLite",
+    "description": "Colecao de testes dos endpoints de alunos e disciplinas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Alunos",
+      "item": [
+        {
+          "name": "Cadastrar aluno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificadorAcademico\": \"RA2026999\",\n  \"nome\": \"Joao Guilherme Teste\",\n  \"email\": \"joao.teste999@email.com\"\n}"
+            },
+            "url": "{{baseUrl}}/api/alunos"
+          }
+        },
+        {
+          "name": "Listar alunos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Disciplinas",
+      "item": [
+        {
+          "name": "Cadastrar disciplina",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"ADS101\",\n  \"nome\": \"Programacao Orientada a Objetos\",\n  \"cargaHoraria\": 80\n}"
+            },
+            "url": "{{baseUrl}}/api/disciplinas"
+          }
+        },
+        {
+          "name": "Listar disciplinas",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas"
+          }
+        }
+      ]
+    }
+  ]
+}
