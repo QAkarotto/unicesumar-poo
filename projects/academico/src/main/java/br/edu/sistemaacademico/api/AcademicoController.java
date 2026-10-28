@@ -5,6 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
+/**
+ * Endpoints de matrícula. As matrículas continuam em memória nesta atividade
+ * (o schema ainda não possui tabela de matrícula). Alunos e disciplinas
+ * ficam em {@link AlunoController} e {@link DisciplinaController}.
+ */
 @RestController
 @RequestMapping("/api")
 public class AcademicoController {
@@ -12,11 +17,6 @@ public class AcademicoController {
 
     public AcademicoController(DadosEmMemoria dados) {
         this.dados = dados;
-    }
-
-    @GetMapping("/alunos/{registroAcademico}")
-    public AlunoResponse buscarAluno(@PathVariable("registroAcademico") String registroAcademico) {
-        return AlunoResponse.de(dados.buscarAluno(registroAcademico));
     }
 
     @GetMapping("/matriculas/{codigo}")
@@ -36,12 +36,6 @@ public class AcademicoController {
     }
 
     public record CriarMatriculaRequest(String registroAcademico, String ofertaId) {}
-
-    public record AlunoResponse(String registroAcademico, String nome, String email) {
-        static AlunoResponse de(Aluno aluno) {
-            return new AlunoResponse(aluno.getRegistroAcademico(), aluno.getNome(), aluno.getEmail());
-        }
-    }
 
     public record MatriculaResponse(String codigo, AlunoResponse aluno, String codigoDisciplina,
                                     String codigoTurma, int ano, Semestre semestre,
