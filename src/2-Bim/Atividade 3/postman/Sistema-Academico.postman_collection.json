@@ -59,6 +59,50 @@
         },
         "url": "{{baseUrl}}/api/matriculas"
       }
+    },
+    {
+      "name": "6. Cadastrar aluno",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ra\": \"RA2501\",\n  \"nome\": \"Ana Souza\",\n  \"email\": \"ana@exemplo.edu\"\n}"
+        },
+        "url": "{{baseUrl}}/api/alunos"
+      }
+    },
+    {
+      "name": "7. Consultar aluno cadastrado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/alunos/RA2501"
+      }
+    },
+    {
+      "name": "8. Consultar aluno inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/alunos/RA9999"
+      }
+    },
+    {
+      "name": "9. Cadastrar aluno duplicado",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ra\": \"RA2501\",\n  \"nome\": \"Ana Souza\",\n  \"email\": \"ana@exemplo.edu\"\n}"
+        },
+        "url": "{{baseUrl}}/api/alunos"
+      }
     }
   ]
 }

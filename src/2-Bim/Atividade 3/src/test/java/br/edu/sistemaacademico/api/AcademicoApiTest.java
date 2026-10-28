@@ -10,6 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,6 +23,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AcademicoApiTest {
+
+    static {
+        try {
+            Files.deleteIfExists(Path.of("database/academico-teste.db"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -92,5 +104,33 @@ class AcademicoApiTest {
     void consultaInexistente() throws Exception {
         mockMvc.perform(get("/api/alunos/RA9999")).andExpect(status().isNotFound());
         mockMvc.perform(get("/api/matriculas/MAT-999")).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(9)
+    void cadastraAluno() throws Exception {
+        mockMvc.perform(post("/api/alunos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"ra\":\"RA2501\",\"nome\":\"Ana Souza\",\"email\":\"ana@exemplo.edu\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.ra").value("RA2501"))
+                .andExpect(jsonPath("$.nome").value("Ana Souza"));
+    }
+
+    @Test
+    @Order(10)
+    void consultaAlunoCadastrado() throws Exception {
+        mockMvc.perform(get("/api/alunos/RA2501"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("ana@exemplo.edu"));
+    }
+
+    @Test
+    @Order(11)
+    void recusaAlunoDuplicado() throws Exception {
+        mockMvc.perform(post("/api/alunos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"ra\":\"RA2501\",\"nome\":\"Ana Souza\",\"email\":\"ana@exemplo.edu\"}"))
+                .andExpect(status().isConflict());
     }
 }

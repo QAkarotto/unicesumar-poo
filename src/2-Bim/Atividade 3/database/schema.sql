@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS aluno (
+    ra TEXT PRIMARY KEY,
+    nome TEXT NOT NULL,
+    email TEXT NOT NULL
+);
