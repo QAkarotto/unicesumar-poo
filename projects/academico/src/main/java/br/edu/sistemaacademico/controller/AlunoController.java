@@ -1,12 +1,10 @@
+
 package br.edu.sistemaacademico.controller;
 
 import br.edu.sistemaacademico.domain.Aluno;
 import br.edu.sistemaacademico.service.SistemaAcademicoService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/alunos")
@@ -29,5 +27,18 @@ public class AlunoController {
         }
 
         return ResponseEntity.ok(aluno);
+    }
+
+    @PostMapping
+    public ResponseEntity<Aluno> cadastrarAluno(
+            @RequestBody Aluno aluno) {
+
+        if (service.buscarAluno(aluno.getRa()) != null) {
+            return ResponseEntity.status(409).build();
+        }
+
+        Aluno alunoSalvo = service.salvarAluno(aluno);
+
+        return ResponseEntity.status(201).body(alunoSalvo);
     }
 }
