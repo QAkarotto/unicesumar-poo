@@ -1,6 +1,7 @@
 package br.edu.sistemaacademico.api;
 
 import org.springframework.http.ResponseEntity;
+import br.edu.sistemaacademico.repository.jdbc.FalhaPersistenciaException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,6 +23,11 @@ public class TratamentoErros {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErroResponse> conflito(IllegalStateException erro) {
         return ResponseEntity.status(409).body(new ErroResponse(erro.getMessage()));
+    }
+
+    @ExceptionHandler(FalhaPersistenciaException.class)
+    public ResponseEntity<ErroResponse> falhaPersistencia(FalhaPersistenciaException erro) {
+        return ResponseEntity.internalServerError().body(new ErroResponse(erro.getMessage()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
