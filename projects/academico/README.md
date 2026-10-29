@@ -13,7 +13,7 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-A API inicia em `http://localhost:8080`. Os dados são reiniciados a cada execução; SQLite não é utilizado pelos Controllers.
+A API inicia em `http://localhost:8080`. A partir da Atividade 03, alunos e disciplinas ficam no SQLite; matrículas continuam em memória.
 
 | Método e rota | Exemplo / resultado |
 | --- | --- |
@@ -35,41 +35,49 @@ No Postman, use **Import** e selecione `postman/sistema-academico.postman_collec
 
 ## Atividade 03 - 2BIM: Persistência com JDBC e SQLite
 
-Esta atividade está apenas preparada. Os alunos implementarão a persistência de Aluno e Disciplina, seus Repositories, operações JDBC e integração HTTP. Os endpoints de cadastro de alunos e disciplinas também fazem parte dessa evolução; não estão implementados nesta base.
+Alunos e disciplinas são salvos no SQLite usando JDBC.
 
-O driver `org.xerial:sqlite-jdbc:3.53.4.0` já está configurado no Maven. Não há Repository JDBC nem acesso ao banco na aplicação.
+| Método e rota | Resultado |
+| --- | --- |
+| `POST /api/alunos` | Cadastra aluno — 201 |
+| `GET /api/alunos/{registroAcademico}` | Consulta aluno — 200 |
+| `POST /api/disciplinas` | Cadastra disciplina — 201 |
+| `GET /api/disciplinas/{codigo}` | Consulta disciplina — 200 |
 
-- Estrutura: `database/schema.sql`.
-- Dois alunos e duas disciplinas fictícias: `database/dados-iniciais.sql`.
-- Banco local: `database/sistema-academico.db` (ignorado pelo Git).
-- URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`, somente para uso futuro.
+Exemplos de corpo:
 
-Os caminhos são relativos a `projects/academico`. Com o executável `sqlite3` instalado e disponível no PATH, execute nesse diretório (PowerShell, Bash ou terminal equivalente):
-
-```bash
-sqlite3 database/sistema-academico.db ".read database/schema.sql"
-sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
+```json
+{"registroAcademico":"RA2026003","nome":"Aluno Exemplo Três","email":"aluno3@example.com"}
 ```
 
-O primeiro comando recria as duas tabelas e apaga seus dados anteriores. O segundo deve ser executado uma vez após o schema. A inicialização é manual; iniciar a API não cria nem carrega o banco.
+```json
+{"codigo":"ES","nome":"Engenharia de Software","cargaHoraria":80}
+```
 
-`registro_academico` corresponde a `Aluno.registroAcademico`, e `carga_horaria` a `Disciplina.cargaHoraria`. O e-mail é obrigatório, mas não é único no domínio. Matrículas e demais relacionamentos ainda não possuem tabelas.
+Registro inexistente retorna 404, cadastro duplicado retorna 409 e dados inválidos retornam 400.
 
-Fluxo conceitual: **Connection → PreparedStatement → ResultSet**.
+Classes criadas (pacote `repository`):
 
-- `Connection` representa a conexão com o banco, obtida por meio do `DriverManager`.
-- `PreparedStatement` representa um comando SQL parametrizado a ser executado.
-- `ResultSet` permite percorrer os registros retornados por uma consulta.
+- `AlunoRepository` e `DisciplinaRepository`: interfaces.
+- `AlunoRepositoryJdbc` e `DisciplinaRepositoryJdbc`: implementações com JDBC, onde fica o SQL.
+- `InicializadorBanco`: cria o banco com `database/schema.sql` e `database/dados-iniciais.sql` quando ele ainda não existe.
 
-A implementação desse fluxo e a conversão entre registros e objetos são responsabilidade dos alunos.
+### Como executar
 
-Referências:
+Execute a partir de `projects/academico`:
 
-- [JDBC Basics](https://docs.oracle.com/javase/tutorial/jdbc/basics/)
-- [DriverManager — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/DriverManager.html)
-- [PreparedStatement — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/PreparedStatement.html)
-- [ResultSet — Java 26](https://docs.oracle.com/en/java/javase/26/docs/api/java.sql/java/sql/ResultSet.html)
-- [SQLite JDBC](https://github.com/xerial/sqlite-jdbc)
+```bash
+mvn spring-boot:run
+```
+
+Na primeira execução o arquivo `database/sistema-academico.db` é criado automaticamente. Nas próximas, os dados salvos são mantidos. Para voltar ao estado inicial, pare a aplicação e apague esse arquivo.
+
+### Validação no Postman
+
+1. Importe `postman/atividade-03-jdbc-sqlite.postman_collection.json`.
+2. Execute a Collection (com o banco no estado inicial).
+3. Pare e inicie a aplicação novamente.
+4. Envie de novo "Consultar aluno" e "Consultar disciplina": os dados continuam lá.
 
 ## Testes e cobertura
 
