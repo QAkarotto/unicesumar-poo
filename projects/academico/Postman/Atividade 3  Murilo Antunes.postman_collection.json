@@ -1,0 +1,153 @@
+{
+  "info": {
+    "_postman_id": "428ea89b-e052-4260-b8c5-d29e294fcee6",
+    "name": "Atividade 3  Murilo Antunes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58769720",
+    "_collection_link": "https://go.postman.co/collection/58769720-428ea89b-e052-4260-b8c5-d29e294fcee6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Consultar aluno pelo RA",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026003",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026003"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar disciplina pelo código",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/ENGSOFT",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "ENGSOFT"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar aluno",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"ra\": \"RA2026004\",\r\n  \"nome\": \"Ana Oliveira\",\r\n  \"email\": \"ana@email.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar disciplina",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"codigo\": \"BD2026\",\r\n  \"nome\": \"Banco de Dados\",\r\n  \"cargaHoraria\": 80\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar disciplina inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/NAOEXISTE",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "NAOEXISTE"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar Banco de Dados",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/BD2026",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "BD2026"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

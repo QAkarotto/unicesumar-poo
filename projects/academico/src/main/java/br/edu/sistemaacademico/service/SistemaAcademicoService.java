@@ -8,6 +8,8 @@ import br.edu.sistemaacademico.domain.OfertaDisciplina;
 import br.edu.sistemaacademico.domain.PeriodoLetivo;
 import br.edu.sistemaacademico.domain.Semestre;
 import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.repository.AlunoRepository;
+import br.edu.sistemaacademico.repository.DisciplinaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,28 +18,20 @@ import java.util.Map;
 @Service
 public class SistemaAcademicoService {
 
-    private final Map<String, Aluno> alunos = new HashMap<>();
+    private final AlunoRepository alunoRepository;
+    private final DisciplinaRepository disciplinaRepository;
+
     private final Map<Long, Matricula> matriculas = new HashMap<>();
     private final Map<String, OfertaDisciplina> ofertas = new HashMap<>();
 
     private long proximoIdMatricula = 1;
 
-    public SistemaAcademicoService() {
+    public SistemaAcademicoService(
+            AlunoRepository alunoRepository,
+            DisciplinaRepository disciplinaRepository) {
 
-        Aluno paola = new Aluno(
-                "RA2026001",
-                "Paola Oliveira",
-                "paola.oliveira@email.com"
-        );
-
-        Aluno bruno = new Aluno(
-                "RA2026002",
-                "Bruno Santos",
-                "bruno.santos@email.com"
-        );
-
-        alunos.put(paola.getRa(), paola);
-        alunos.put(bruno.getRa(), bruno);
+        this.alunoRepository = alunoRepository;
+        this.disciplinaRepository = disciplinaRepository;
 
         Disciplina poo = new Disciplina(
                 "POO",
@@ -61,7 +55,19 @@ public class SistemaAcademicoService {
     }
 
     public Aluno buscarAluno(String ra) {
-        return alunos.get(ra);
+        return alunoRepository.buscarPorRa(ra).orElse(null);
+    }
+
+    public Aluno salvarAluno(Aluno aluno) {
+        return alunoRepository.salvar(aluno);
+    }
+
+    public Disciplina buscarDisciplina(String codigo) {
+        return disciplinaRepository.buscarPorCodigo(codigo).orElse(null);
+    }
+
+    public Disciplina salvarDisciplina(Disciplina disciplina) {
+        return disciplinaRepository.salvar(disciplina);
     }
 
     public Matricula buscarMatricula(Long id) {
@@ -70,7 +76,7 @@ public class SistemaAcademicoService {
 
     public Long criarMatricula(String ra, String codigoDisciplina) {
 
-        Aluno aluno = alunos.get(ra);
+        Aluno aluno = buscarAluno(ra);
 
         if (aluno == null) {
             throw new IllegalArgumentException("Aluno não encontrado.");
