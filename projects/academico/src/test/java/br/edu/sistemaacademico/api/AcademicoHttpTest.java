@@ -99,6 +99,10 @@ class AcademicoHttpTest {
                 java.nio.file.Path.of("postman/sistema-academico.postman_collection.json")));
         String codigo = "";
         for (var item : collection.get("item")) {
+            // A coleção contém também os requests novos da Atividade 03; estes
+            // são executados manualmente no Postman, enquanto este teste legado
+            // valida os sete cenários originais de matrícula.
+            if (item.get("name").asText().startsWith("Atividade 03 -")) continue;
             var request = item.get("request");
             var rota = request.get("url").asText().replace("{{baseUrl}}", "")
                     .replace("{{codigoMatricula}}", codigo);
@@ -119,6 +123,58 @@ class AcademicoHttpTest {
             }
         }
     }
+
+    @Test
+    void cadastraEConsultaAlunoEDisciplinaPersistidos() throws Exception {
+        String sufixo = Long.toString(System.nanoTime());
+        String ra = "RA-TEST-" + sufixo;
+        String codigo = "DISC-TEST-" + sufixo;
+
+        var alunoCriado = postJson("/api/alunos", """
+                {"registroAcademico":"%s","nome":"Teste JDBC","email":"jdbc-%s@example.com"}
+                """.formatted(ra, sufixo));
+        assertEquals(201, alunoCriado.statusCode());
+        assertEquals(ra, json(alunoCriado).get("registroAcademico").asText());
+        assertEquals(200, get("/api/alunos/" + ra).statusCode());
+
+        var disciplinaCriada = postJson("/api/disciplinas", """
+                {"codigo":"%s","nome":"Disciplina de Teste","cargaHoraria":40}
+                """.formatted(codigo));
+        assertEquals(201, disciplinaCriada.statusCode());
+        assertEquals(codigo, json(disciplinaCriada).get("codigo").asText());
+        assertEquals(200, get("/api/disciplinas/" + codigo).statusCode());
+
+        // Reinicia a aplicação e confirma que os registros permanecem no arquivo SQLite.
+        contexto.close();
+        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0");
+        baseUrl = "http://localhost:" + ((WebServerApplicationContext) contexto).getWebServer().getPort();
+
+        var alunoDepoisDoReinicio = get("/api/alunos/" + ra);
+        System.out.println("ALUNO APÓS REINÍCIO: "
+                + alunoDepoisDoReinicio.statusCode() + " - " + alunoDepoisDoReinicio.body());
+        assertEquals(200, alunoDepoisDoReinicio.statusCode());
+
+        var disciplinaDepoisDoReinicio = get("/api/disciplinas/" + codigo);
+        System.out.println("DISCIPLINA APÓS REINÍCIO: "
+                + disciplinaDepoisDoReinicio.statusCode() + " - " + disciplinaDepoisDoReinicio.body());
+        assertEquals(200, disciplinaDepoisDoReinicio.statusCode());
+        assertEquals(409, postJson("/api/alunos", """
+                {"registroAcademico":"%s","nome":"Duplicado","email":"dup@example.com"}
+                """.formatted(ra)).statusCode());
+        assertEquals(409, postJson("/api/disciplinas", """
+                {"codigo":"%s","nome":"Duplicada","cargaHoraria":40}
+                """.formatted(codigo)).statusCode());
+        assertEquals(404, get("/api/alunos/RA-NAO-EXISTE-999").statusCode());
+        assertEquals(404, get("/api/disciplinas/DISC-NAO-EXISTE-999").statusCode());
+    }
+
+    private static HttpResponse<String> postJson(String rota, String corpo) throws Exception {
+        return CLIENTE.send(HttpRequest.newBuilder(URI.create(baseUrl + rota))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(corpo)).build(),
+                HttpResponse.BodyHandlers.ofString());
+    }
+
     private static HttpResponse<String> get(String rota) throws Exception {
         return CLIENTE.send(HttpRequest.newBuilder(URI.create(baseUrl + rota)).GET().build(), HttpResponse.BodyHandlers.ofString());
     }

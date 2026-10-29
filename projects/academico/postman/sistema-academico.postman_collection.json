@@ -1,7 +1,7 @@
 {
   "info": {
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "name": "Sistema Acadêmico — Atividade 02"
+    "name": "Sistema Acadêmico — Atividade 03 (JDBC + SQLite)"
   },
   "variable": [
     {
@@ -197,6 +197,240 @@
           }
         ]
       }
+    },
+    {
+      "name": "Atividade 03 - Cadastrar aluno",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/alunos",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"{{novoRA}}\",\"nome\":\"Aluno JDBC Teste\",\"email\":\"jdbc.teste@example.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('novoRA', 'RA-' + Date.now());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('Aluno retornado', () => pm.expect(pm.response.json().registroAcademico).to.eql(pm.collectionVariables.get('novoRA')));",
+              "pm.collectionVariables.set('raCadastrado', pm.response.json().registroAcademico);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividade 03 - Consultar aluno cadastrado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/alunos/{{raCadastrado}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('RA consultado', () => pm.expect(pm.response.json().registroAcademico).to.eql(pm.collectionVariables.get('raCadastrado')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividade 03 - Cadastrar disciplina",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/disciplinas",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"{{codigoDisciplinaTeste}}\",\"nome\":\"Disciplina JDBC Teste\",\"cargaHoraria\":40}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('codigoDisciplinaTeste', 'JDBC-' + Date.now());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201 Created', () => pm.response.to.have.status(201));",
+              "pm.test('Código retornado', () => pm.expect(pm.response.json().codigo).to.eql(pm.collectionVariables.get('codigoDisciplinaTeste')));",
+              "pm.collectionVariables.set('disciplinaCadastrada', pm.response.json().codigo);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividade 03 - Consultar disciplina cadastrada",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/disciplinas/{{disciplinaCadastrada}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('Código consultado', () => pm.expect(pm.response.json().codigo).to.eql(pm.collectionVariables.get('disciplinaCadastrada')));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividade 03 - Aluno inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/alunos/RA-INEXISTENTE-999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));",
+              "pm.test('Mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.eql('Aluno não encontrado.'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividade 03 - Disciplina inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/disciplinas/DISC-INEXISTENTE-999"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404 Not Found', () => pm.response.to.have.status(404));",
+              "pm.test('Mensagem de erro', () => pm.expect(pm.response.json().mensagem).to.eql('Disciplina não encontrada.'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividade 03 - Aluno duplicado (deve retornar 409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/alunos",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"RA2026001\",\"nome\":\"Duplicado\",\"email\":\"duplicado@example.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 409 Conflict', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividade 03 - Disciplina duplicada (deve retornar 409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/disciplinas",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"POO\",\"nome\":\"Duplicada\",\"cargaHoraria\":80}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 409 Conflict', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

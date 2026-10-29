@@ -1,6 +1,8 @@
 package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.domain.*;
+import br.edu.sistemaacademico.repository.AlunoRepository;
+import br.edu.sistemaacademico.repository.DisciplinaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
@@ -9,14 +11,52 @@ import java.net.URI;
 @RequestMapping("/api")
 public class AcademicoController {
     private final DadosEmMemoria dados;
+    private final AlunoRepository alunos;
+    private final DisciplinaRepository disciplinas;
 
-    public AcademicoController(DadosEmMemoria dados) {
+    public AcademicoController(DadosEmMemoria dados, AlunoRepository alunos, DisciplinaRepository disciplinas) {
         this.dados = dados;
+        this.alunos = alunos;
+        this.disciplinas = disciplinas;
+    }
+
+    @PostMapping("/alunos")
+    public ResponseEntity<AlunoResponse> cadastrarAluno(@RequestBody CriarAlunoRequest request) {
+        if (request.registroAcademico() == null || request.registroAcademico().isBlank()
+                || request.nome() == null || request.nome().isBlank()
+                || request.email() == null || request.email().isBlank()) {
+            throw new IllegalArgumentException("Informe registroAcademico, nome e email.");
+        }
+        Aluno aluno = alunos.salvar(new Aluno(request.registroAcademico().trim(), request.nome().trim(), request.email().trim()));
+        return ResponseEntity.created(URI.create("/api/alunos/" + aluno.getRegistroAcademico())).body(AlunoResponse.de(aluno));
     }
 
     @GetMapping("/alunos/{registroAcademico}")
     public AlunoResponse buscarAluno(@PathVariable("registroAcademico") String registroAcademico) {
-        return AlunoResponse.de(dados.buscarAluno(registroAcademico));
+        return AlunoResponse.de(alunos.buscarPorRegistroAcademico(registroAcademico)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Aluno não encontrado.")));
+    }
+
+    @PostMapping("/disciplinas")
+    public ResponseEntity<DisciplinaResponse> cadastrarDisciplina(@RequestBody CriarDisciplinaRequest request) {
+        if (request.codigo() == null || request.codigo().isBlank() || request.nome() == null || request.nome().isBlank()) {
+            throw new IllegalArgumentException("Informe codigo e nome.");
+        }
+        Disciplina disciplina = disciplinas.salvar(new Disciplina(request.codigo().trim(), request.nome().trim(), request.cargaHoraria()));
+        return ResponseEntity.created(URI.create("/api/disciplinas/" + disciplina.getCodigo())).body(DisciplinaResponse.de(disciplina));
+    }
+
+
+    @GetMapping("/disciplinas/{codigo}")
+    public DisciplinaResponse buscarDisciplina(@PathVariable("codigo") String codigo) {
+        return DisciplinaResponse.de(disciplinas.buscarPorCodigo(codigo)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Disciplina não encontrada.")));
+    }
+
+    public record CriarAlunoRequest(String registroAcademico, String nome, String email) {}
+    public record CriarDisciplinaRequest(String codigo, String nome, int cargaHoraria) {}
+    public record DisciplinaResponse(String codigo, String nome, int cargaHoraria) {
+        static DisciplinaResponse de(Disciplina d) { return new DisciplinaResponse(d.getCodigo(), d.getNome(), d.getCargaHoraria()); }
     }
 
     @GetMapping("/matriculas/{codigo}")
