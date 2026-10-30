@@ -40,26 +40,71 @@ Os testes ficam em `src/test/java` e cobrem oferta de disciplinas, proteção da
 
 O workflow **Java Tests** do GitHub Actions executa os testes e verifica a cobertura a cada `push` e `pull_request`.
 
-## API REST (Spring Boot)
+## API REST (Spring Boot) com persistência JDBC + SQLite
 
-Para subir a API em `http://localhost:8080`:
+Alunos e disciplinas são gravados em um banco SQLite (`database/academico.db`) com JDBC puro: `Connection`, `PreparedStatement` e `ResultSet`. Não há JPA, Hibernate, Spring Data nem H2. Turmas e matrículas ainda ficam em memória.
+
+### Preparando o banco
+
+Os scripts SQL ficam em `database/`:
+
+- `schema.sql`: cria as tabelas `aluno` e `disciplina`;
+- `dados-iniciais.sql`: insere os alunos `RA2026001` (Paola) e `RA2026002` (Bruno) e as disciplinas `POO` e `BD`.
+
+Ao subir a API, o `BancoDeDados` executa os dois scripts automaticamente. Eles podem rodar várias vezes sem apagar nem duplicar dados. O caminho do banco e dos scripts está em `src/main/resources/application.properties`, relativo a `projects/academico`.
+
+Para preparar o banco manualmente (opcional, exige o `sqlite3` instalado):
+
+```bash
+cd projects/academico
+sqlite3 database/academico.db < database/schema.sql
+sqlite3 database/academico.db < database/dados-iniciais.sql
+```
+
+Para recomeçar do zero, apague `database/academico.db`; ele é recriado na próxima execução.
+
+### Executando
+
+No diretório `projects/academico`, suba a API em `http://localhost:8080`:
 
 ```bash
 mvn spring-boot:run
 ```
 
-Os dados ficam apenas em memória e já vêm com os alunos `RA2026001` (Paola) e `RA2026002` (Bruno), a matrícula `MAT-001` e as turmas `ADSIS4S` (POO e BD) e `ESOFT4S-NA` (POO).
-
 | Método | Rota | Resposta |
 |--------|------|----------|
-| GET | `/api/matriculas/{id}` | 200, ou 404 se não existir |
+| POST | `/api/alunos` | 201, 400 (dados inválidos) ou 409 (RA já cadastrado) |
 | GET | `/api/alunos/{registroAcademico}` | 200, ou 404 se não existir |
+| POST | `/api/disciplinas` | 201, 400 (dados inválidos) ou 409 (código já cadastrado) |
+| GET | `/api/disciplinas/{codigo}` | 200, ou 404 se não existir |
+| GET | `/api/matriculas/{id}` | 200, ou 404 se não existir |
 | POST | `/api/matriculas` | 201, 400 (campos faltando), 404 (aluno, turma ou disciplina inexistente) ou 409 (regra do domínio) |
 
-Corpo do POST: `{"registroAcademico": "RA2026002", "turma": "ADSIS4S", "disciplina": "BD"}` (`codigo` é opcional).
+Exemplos de corpo:
+
+- `POST /api/alunos`: `{"registroAcademico": "RA2026010", "nome": "Ana Lima", "email": "ana@email.com"}`
+- `POST /api/disciplinas`: `{"codigo": "ALG", "nome": "Algoritmos", "cargaHoraria": 60}`
+- `POST /api/matriculas`: `{"registroAcademico": "RA2026002", "turma": "ADSIS4S", "disciplina": "BD"}` (`codigo` é opcional)
+
+### Verificando a persistência
+
+1. Suba a API e cadastre um aluno e uma disciplina pelo Postman.
+2. Encerre a aplicação (Ctrl+C) e suba de novo com `mvn spring-boot:run`.
+3. Consulte `GET /api/alunos/RA2026010` e `GET /api/disciplinas/ALG`: os dois continuam retornando 200.
+
+### Arquitetura
+
+```
+requisição HTTP → Controller → Repository (interface) → JDBC (Jdbc*Repository) → SQLite
+```
+
+- `api`: controllers, requests e responses. Só tratam HTTP.
+- `domain`: regras de negócio (`Aluno`, `Disciplina`, `Matricula`...).
+- `repository`: interfaces `AlunoRepository` e `DisciplinaRepository`.
+- `repository.jdbc`: `JdbcAlunoRepository`, `JdbcDisciplinaRepository` e `BancoDeDados`. É o único lugar com SQL no código Java, além dos scripts de `database/`.
 
 ### Collection do Postman
 
-Link da Collection: https://documenter.getpostman.com/view/58935716/2sBYHRW2FS
+Link da Collection: https://documenter.getpostman.com/view/58935716/2sBYHVxfbD
 
 O arquivo [`postman-collection.json`](postman-collection.json) pode ser importado no Postman.

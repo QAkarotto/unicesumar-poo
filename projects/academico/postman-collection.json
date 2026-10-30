@@ -1,38 +1,313 @@
 {
   "info": {
-    "name": "Sistema Acadêmico - Atividade 02 (Spring Boot)",
+    "name": "Sistema Acadêmico - Atividade 03 (JDBC + SQLite)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "variable": [{ "key": "baseUrl", "value": "http://localhost:8080" }],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
   "item": [
     {
-      "name": "Consultar matrícula existente (200)",
-      "request": { "method": "GET", "url": "{{baseUrl}}/api/matriculas/MAT-001" }
+      "name": "Atividade 03 - Persistência (rodar na ordem; reinicie a API e execute 2 e 7 de novo)",
+      "item": [
+        {
+          "name": "1. Cadastrar aluno (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/alunos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registroAcademico\": \"RA2026010\",\n  \"nome\": \"Ana Lima\",\n  \"email\": \"ana@email.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "2. Consultar aluno (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA2026010"
+          }
+        },
+        {
+          "name": "3. Aluno inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA9999999"
+          }
+        },
+        {
+          "name": "4. Aluno duplicado (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/alunos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registroAcademico\": \"RA2026010\",\n  \"nome\": \"Ana Lima\",\n  \"email\": \"ana@email.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "5. Aluno com e-mail inválido (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/alunos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registroAcademico\": \"RA2026011\",\n  \"nome\": \"Carlos\",\n  \"email\": \"invalido\"\n}"
+            }
+          }
+        },
+        {
+          "name": "6. Cadastrar disciplina (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/disciplinas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"ALG\",\n  \"nome\": \"Algoritmos\",\n  \"cargaHoraria\": 60\n}"
+            }
+          }
+        },
+        {
+          "name": "7. Consultar disciplina (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/ALG"
+          }
+        },
+        {
+          "name": "8. Disciplina inexistente (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 404', () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/XXX"
+          }
+        },
+        {
+          "name": "9. Disciplina duplicada (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 409', () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/disciplinas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"ALG\",\n  \"nome\": \"Algoritmos\",\n  \"cargaHoraria\": 60\n}"
+            }
+          }
+        },
+        {
+          "name": "10. Disciplina com carga horária inválida (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/disciplinas",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": \"EST\",\n  \"nome\": \"Estatística\",\n  \"cargaHoraria\": 0\n}"
+            }
+          }
+        }
+      ]
     },
     {
-      "name": "Consultar aluno existente (200)",
-      "request": { "method": "GET", "url": "{{baseUrl}}/api/alunos/RA2026001" }
-    },
-    {
-      "name": "Criar matrícula (201)",
+      "name": "Atividade 02 - Consultar matrícula existente (200)",
       "request": {
-        "method": "POST",
-        "header": [{ "key": "Content-Type", "value": "application/json" }],
-        "url": "{{baseUrl}}/api/matriculas",
-        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"BD\"\n}" }
+        "method": "GET",
+        "url": "{{baseUrl}}/api/matriculas/MAT-001"
       }
     },
     {
-      "name": "Matrícula inexistente (404)",
-      "request": { "method": "GET", "url": "{{baseUrl}}/api/matriculas/MAT-999" }
+      "name": "Atividade 02 - Consultar aluno existente (200)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/alunos/RA2026001"
+      }
     },
     {
-      "name": "Matrícula proibida pelo domínio - aluno já aprovado (409)",
+      "name": "Atividade 02 - Criar matrícula (201)",
       "request": {
         "method": "POST",
-        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "url": "{{baseUrl}}/api/matriculas",
-        "body": { "mode": "raw", "raw": "{\n  \"registroAcademico\": \"RA2026001\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"POO\"\n}" }
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"RA2026002\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"BD\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Atividade 02 - Matrícula inexistente (404)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/matriculas/MAT-999"
+      }
+    },
+    {
+      "name": "Atividade 02 - Matrícula proibida pelo domínio - aluno já aprovado (409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/api/matriculas",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"registroAcademico\": \"RA2026001\",\n  \"turma\": \"ADSIS4S\",\n  \"disciplina\": \"POO\"\n}"
+        }
       }
     }
   ]

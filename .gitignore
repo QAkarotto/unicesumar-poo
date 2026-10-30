@@ -69,3 +69,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Banco SQLite local (gerado ao subir a API)
+projects/academico/database/*.db

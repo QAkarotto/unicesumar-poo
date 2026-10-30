@@ -1,6 +1,7 @@
 package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.domain.Aluno;
+import br.edu.sistemaacademico.domain.Matricula;
 
 import java.util.List;
 
@@ -11,12 +12,12 @@ public record AlunoResponse(
         String email,
         List<MatriculaResponse> matriculas
 ) {
-    public static AlunoResponse de(Aluno aluno) {
+    public static AlunoResponse de(Aluno aluno, List<Matricula> matriculas) {
         return new AlunoResponse(
                 aluno.getRegistroAcademico(),
                 aluno.getNome(),
                 aluno.getEmail(),
-                aluno.getMatriculas().stream().map(MatriculaResponse::de).toList()
+                matriculas.stream().map(MatriculaResponse::de).toList()
         );
     }
 }

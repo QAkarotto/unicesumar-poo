@@ -1,39 +1,45 @@
 package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.domain.Aluno;
-import br.edu.sistemaacademico.domain.Disciplina;
 import br.edu.sistemaacademico.domain.Matricula;
 import br.edu.sistemaacademico.domain.PeriodoLetivo;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import br.edu.sistemaacademico.domain.Semestre;
 import br.edu.sistemaacademico.domain.Turma;
+import br.edu.sistemaacademico.repository.AlunoRepository;
+import br.edu.sistemaacademico.repository.DisciplinaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Guarda os objetos do domínio apenas em memória (sem banco de dados).
- * Os dados iniciais são carregados no construtor.
+ * Guarda em memória as turmas e matrículas. Alunos e disciplinas vêm do banco,
+ * por meio dos repositories (os dados iniciais ficam em database/dados-iniciais.sql).
  */
 @Component
 public class DadosEmMemoria {
 
+    private final AlunoRepository alunoRepository;
     private final Map<String, Aluno> alunos = new ConcurrentHashMap<>();
     private final Map<String, Turma> turmas = new ConcurrentHashMap<>();
     private final Map<String, Matricula> matriculas = new ConcurrentHashMap<>();
     private final AtomicInteger sequenciaMatricula = new AtomicInteger();
 
-    public DadosEmMemoria() {
-        var paola = new Aluno("RA2026001", "Paola Oliveira", "paola.oliveira@email.com");
-        var bruno = new Aluno("RA2026002", "Bruno Santos", "bruno.santos@email.com");
-        alunos.put(paola.getRegistroAcademico(), paola);
-        alunos.put(bruno.getRegistroAcademico(), bruno);
+    public DadosEmMemoria(AlunoRepository alunoRepository,
+                          DisciplinaRepository disciplinaRepository) {
+        this.alunoRepository = alunoRepository;
 
-        var poo = new Disciplina("POO", "Programação Orientada a Objetos", 80);
-        var bancoDados = new Disciplina("BD", "Banco de Dados", 80);
+        var paola = buscarAluno("RA2026001").orElseThrow(DadosEmMemoria::dadosIniciaisAusentes);
+        var bruno = buscarAluno("RA2026002").orElseThrow(DadosEmMemoria::dadosIniciaisAusentes);
+
+        var poo = disciplinaRepository.buscarPorCodigo("POO")
+                .orElseThrow(DadosEmMemoria::dadosIniciaisAusentes);
+        var bancoDados = disciplinaRepository.buscarPorCodigo("BD")
+                .orElseThrow(DadosEmMemoria::dadosIniciaisAusentes);
 
         var turma2025 = new Turma("ESOFT4S-NA", new PeriodoLetivo(2025, Semestre.SEGUNDO));
         var turma2026 = new Turma("ADSIS4S", new PeriodoLetivo(2026, Semestre.SEGUNDO));
@@ -54,8 +60,26 @@ public class DadosEmMemoria {
         salvar(aprovada);
     }
 
+    /**
+     * Devolve o aluno usado nas regras de matrícula. Como as matrículas ficam em memória
+     * e referenciam o objeto Aluno, o objeto lido do banco é reaproveitado enquanto a
+     * aplicação está no ar.
+     */
     public Optional<Aluno> buscarAluno(String registroAcademico) {
-        return Optional.ofNullable(alunos.get(registroAcademico));
+        var emMemoria = alunos.get(registroAcademico);
+        if (emMemoria != null) {
+            return Optional.of(emMemoria);
+        }
+        var doBanco = alunoRepository.buscarPorRa(registroAcademico);
+        doBanco.ifPresent(aluno -> alunos.putIfAbsent(aluno.getRegistroAcademico(), aluno));
+        return doBanco;
+    }
+
+    public List<Matricula> matriculasDoAluno(String registroAcademico) {
+        return matriculas.values().stream()
+                .filter(m -> m.getAluno().getRegistroAcademico().equals(registroAcademico))
+                .sorted(java.util.Comparator.comparing(Matricula::getCodigo))
+                .toList();
     }
 
     public Optional<Turma> buscarTurma(String codigo) {
@@ -76,5 +100,10 @@ public class DadosEmMemoria {
 
     public String proximoCodigo() {
         return String.format("MAT-%03d", sequenciaMatricula.incrementAndGet());
+    }
+
+    private static IllegalStateException dadosIniciaisAusentes() {
+        return new IllegalStateException(
+                "Dados iniciais ausentes no banco. Execute database/dados-iniciais.sql.");
     }
 }
