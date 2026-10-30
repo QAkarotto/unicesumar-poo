@@ -2,17 +2,6 @@
 
 API simples sobre o domínio acadêmico existente (`Aluno`, `Turma`, `OfertaDisciplina`, `Matricula`...). Dados apenas em memória.
 
-## Como rodar
-
-Requisitos: **JDK 21** e **Maven 3.9+**.
-
-```bash
-mvn test                # roda os testes
-mvn spring-boot:run     # sobe a API em http://localhost:8080
-```
-
-(Na IDE: execute `SistemaAcademicoApplication`. A classe `SistemaAcademico` original continua funcionando como demo de console.)
-
 ## Endpoints
 
 | Método | Rota | Sucesso | Erros |
@@ -48,4 +37,7 @@ Erros retornam JSON: `{ "status": 422, "erro": "Unprocessable Entity", "mensagem
 Importe `postman/sistema-academico.postman_collection.json` (variável `baseUrl` = `http://localhost:8080`).
 Cada requisição tem um teste de status. A requisição 3 só dá 201 uma vez por execução da API: reinicie a aplicação para repetir.
 
-**Link da Collection:** _cole aqui o link público/compartilhado da collection do Postman_
+<img width="1074" height="529" alt="image" src="https://github.com/user-attachments/assets/76790a1f-97ad-42f9-a0d9-a0103cbca1ce" />
+
+<img width="1080" height="786" alt="image" src="https://github.com/user-attachments/assets/e68fd6f5-bb9c-4cfa-af9c-aaa2db42688f" />
+
