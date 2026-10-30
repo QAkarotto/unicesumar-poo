@@ -1,0 +1,162 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico",
+    "description": "Consultas e criação de matrícula da API em memória. Na pasta sistema-academico, suba a aplicação com .\\mvnw.cmd spring-boot:run antes de executar. Os dados voltam ao estado inicial quando a aplicação reinicia.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Consultar matrícula existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/matriculas/MAT-001",
+        "description": "Marina Costa, matrícula em andamento em POO na turma ADS-2026-1."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('retorna 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('devolve a matrícula MAT-001', function () {",
+              "    var corpo = pm.response.json();",
+              "    pm.expect(corpo.codigo).to.eql('MAT-001');",
+              "    pm.expect(corpo.aluno.identificadorAcademico).to.eql('RA-1001');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultar aluno existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/alunos/RA-1001",
+        "description": "Identificador acadêmico (RA) já usado pelo domínio."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('retorna 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('devolve o aluno e o histórico', function () {",
+              "    var corpo = pm.response.json();",
+              "    pm.expect(corpo.identificadorAcademico).to.eql('RA-1001');",
+              "    pm.expect(corpo.historico[0].codigo).to.eql('MAT-001');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Criar matrícula",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"MAT-010\",\n  \"identificadorAluno\": \"RA-1003\",\n  \"codigoTurma\": \"ADS-2026-1\",\n  \"codigoDisciplina\": \"POO\"\n}\n"
+        },
+        "url": "{{baseUrl}}/api/matriculas",
+        "description": "Julia Nunes ainda não cursou POO. A regra de matrícula fica em OfertaDisciplina.matricular. Rode de novo só depois de reiniciar a aplicação, porque MAT-010 passa a existir em memória."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('retorna 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test('devolve a matrícula criada', function () {",
+              "    var corpo = pm.response.json();",
+              "    pm.expect(corpo.codigo).to.eql('MAT-010');",
+              "    pm.expect(corpo.aluno.identificadorAcademico).to.eql('RA-1003');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultar matrícula inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/matriculas/MAT-999",
+        "description": "Identificador que não existe no catálogo em memória."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('retorna 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Matrícula proibida para aluno já aprovado",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"codigo\": \"MAT-020\",\n  \"identificadorAluno\": \"RA-1002\",\n  \"codigoTurma\": \"ADS-2026-1\",\n  \"codigoDisciplina\": \"POO\"\n}\n"
+        },
+        "url": "{{baseUrl}}/api/matriculas",
+        "description": "Pedro Alves já foi aprovado em POO. OfertaDisciplina.matricular recusa a nova matrícula."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('retorna 409', function () {",
+              "    pm.response.to.have.status(409);",
+              "});",
+              "pm.test('preserva a mensagem do domínio', function () {",
+              "    var corpo = pm.response.json();",
+              "    pm.expect(corpo.mensagem).to.eql('Aluno já foi aprovado nesta disciplina e não pode se matricular novamente');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -72,3 +72,9 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### SQLite ###
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
