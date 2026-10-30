@@ -32,10 +32,6 @@ Erros retornam JSON: `{ "status": 422, "erro": "Unprocessable Entity", "mensagem
 - `api/Dtos` – records de entrada/saída (o domínio tem referências circulares Aluno <-> Matricula, o que quebraria o Jackson)
 - `api/TratadorDeErros` – converte exceções em status HTTP (`IllegalArgument/IllegalState` do domínio -> 422)
 
-## Postman
-
-Importe `postman/sistema-academico.postman_collection.json` (variável `baseUrl` = `http://localhost:8080`).
-Cada requisição tem um teste de status. A requisição 3 só dá 201 uma vez por execução da API: reinicie a aplicação para repetir.
 
 <img width="1074" height="529" alt="image" src="https://github.com/user-attachments/assets/76790a1f-97ad-42f9-a0d9-a0103cbca1ce" />
 
