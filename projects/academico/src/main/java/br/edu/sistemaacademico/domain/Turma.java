@@ -61,7 +61,7 @@ public final class Turma {
                     "A turma deve possuir uma única oferta para esta operação."
             );
         }
-        return ofertas.getFirst();
+        return ofertas.get(0);
     }
 
     @Override
