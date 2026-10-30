@@ -4,7 +4,8 @@ import br.edu.sistemaacademico.domain.Aluno;
 
 import java.util.Optional;
 
-public interface AlunoRepository {
+public interface
+AlunoRepository {
 
     Aluno salvar(Aluno aluno);
 

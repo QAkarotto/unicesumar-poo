@@ -22,11 +22,11 @@ public class MatriculaController {
         Matricula matricula = dadosEmMemoria.buscarMatriculaPorId(id);
 
         if (matricula == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)  // ERRO
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Matrícula não encontrada!!");
         }
 
-        return ResponseEntity.ok(matricula); //  OK
+        return ResponseEntity.ok(matricula);
     }
 
     @PostMapping
@@ -37,11 +37,11 @@ public class MatriculaController {
                     request.getCodigoOferta()
             );
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaMatricula); // CREATED
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaMatricula);
 
         } catch (IllegalArgumentException | IllegalStateException e) {
 
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // ERRO
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }

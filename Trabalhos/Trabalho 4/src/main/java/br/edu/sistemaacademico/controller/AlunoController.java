@@ -23,8 +23,8 @@ public class AlunoController {
     @GetMapping("/{identificador}")
     public ResponseEntity<Aluno> buscarPorIdentificador(@PathVariable String identificador) {
         return alunoRepository.buscarPorRa(identificador)
-                .map(ResponseEntity::ok) // HTTP 200
-                .orElse(ResponseEntity.notFound().build()); // HTTP 404
+                .map(ResponseEntity::ok) 
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -35,12 +35,12 @@ public class AlunoController {
 
             return ResponseEntity
                     .created(URI.create("/api/alunos/" + salvo.getRa()))
-                    .body(salvo); // HTTP 201
+                    .body(salvo);
 
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // HTTP 400
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (RegistroDuplicadoException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // HTTP 409
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 }

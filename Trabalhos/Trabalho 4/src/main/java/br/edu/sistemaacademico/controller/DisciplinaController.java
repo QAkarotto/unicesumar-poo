@@ -23,8 +23,8 @@ public class DisciplinaController {
     @GetMapping("/{codigo}")
     public ResponseEntity<Disciplina> buscarPorCodigo(@PathVariable String codigo) {
         return disciplinaRepository.buscarPorCodigo(codigo)
-                .map(ResponseEntity::ok) // HTTP 200
-                .orElse(ResponseEntity.notFound().build()); // HTTP 404
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
@@ -35,12 +35,12 @@ public class DisciplinaController {
 
             return ResponseEntity
                     .created(URI.create("/api/disciplinas/" + salva.getCodigo()))
-                    .body(salva); // HTTP 201
+                    .body(salva);
 
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage()); // HTTP 400
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (RegistroDuplicadoException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage()); // HTTP 409
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 }
