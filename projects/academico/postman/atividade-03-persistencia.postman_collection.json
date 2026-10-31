@@ -1,0 +1,373 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico — Atividade 03 (JDBC e SQLite)",
+    "description": "Pré-requisito: banco preparado (schema.sql + dados-iniciais.sql) e aplicação iniciada. Execute a pasta 1, encerre e inicie a aplicação novamente, e então execute a pasta 2. Para repetir do zero, prepare o banco outra vez.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "1 - Cadastro e consulta",
+      "description": "Execute com o banco recém-preparado.",
+      "item": [
+        {
+          "name": "Cadastrar aluno",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(201));",
+                  "pm.test('JSON esperado', () => pm.expect(pm.response.json().registroAcademico).to.eql('RA2026100'));",
+                  "pm.test('Location', () => pm.expect(pm.response.headers.get('Location')).to.eql('/api/alunos/RA2026100'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/alunos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"registroAcademico\":\"RA2026100\",\"nome\":\"Carla Mendes\",\"email\":\"carla.mendes@example.com\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultar aluno cadastrado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON esperado', () => pm.expect(pm.response.json().nome).to.eql('Carla Mendes'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA2026100",
+            "header": []
+          }
+        },
+        {
+          "name": "Cadastrar aluno duplicado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(409));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json()).to.have.property('mensagem'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/alunos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"registroAcademico\":\"RA2026100\",\"nome\":\"Carla Mendes\",\"email\":\"carla.mendes@example.com\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultar aluno inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(404));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json()).to.have.property('mensagem'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA9999999",
+            "header": []
+          }
+        },
+        {
+          "name": "Cadastrar aluno com e-mail inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json()).to.have.property('mensagem'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/alunos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"registroAcademico\":\"RA2026101\",\"nome\":\"Email Ruim\",\"email\":\"invalido\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Cadastrar disciplina",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(201));",
+                  "pm.test('JSON esperado', () => pm.expect(pm.response.json().codigo).to.eql('ES'));",
+                  "pm.test('Location', () => pm.expect(pm.response.headers.get('Location')).to.eql('/api/disciplinas/ES'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/disciplinas",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\":\"ES\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":60}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultar disciplina cadastrada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON esperado', () => pm.expect(pm.response.json().nome).to.eql('Engenharia de Software'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/ES",
+            "header": []
+          }
+        },
+        {
+          "name": "Cadastrar disciplina duplicada (dados iniciais)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(409));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json()).to.have.property('mensagem'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/disciplinas",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\":\"POO\",\"nome\":\"Programação Orientada a Objetos\",\"cargaHoraria\":80}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Consultar disciplina inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(404));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json()).to.have.property('mensagem'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/INEXISTENTE",
+            "header": []
+          }
+        },
+        {
+          "name": "Cadastrar disciplina com carga horária inválida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(400));",
+                  "pm.test('Mensagem de erro', () => pm.expect(pm.response.json()).to.have.property('mensagem'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/disciplinas",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"codigo\":\"X1\",\"nome\":\"Carga Zero\",\"cargaHoraria\":0}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Após reiniciar a aplicação",
+      "description": "Encerre a aplicação, inicie novamente e execute esta pasta.",
+      "item": [
+        {
+          "name": "Consultar aluno após reinício",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON esperado', () => pm.expect(pm.response.json().nome).to.eql('Carla Mendes'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA2026100",
+            "header": []
+          }
+        },
+        {
+          "name": "Consultar disciplina após reinício",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON esperado', () => pm.expect(pm.response.json().nome).to.eql('Engenharia de Software'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/disciplinas/ES",
+            "header": []
+          }
+        },
+        {
+          "name": "Consultar aluno dos dados iniciais",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON esperado', () => pm.expect(pm.response.json().nome).to.eql('Aluno Exemplo Um'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/alunos/RA2026001",
+            "header": []
+          }
+        }
+      ]
+    }
+  ]
+}
