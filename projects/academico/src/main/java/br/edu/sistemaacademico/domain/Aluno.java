@@ -5,6 +5,16 @@ public class Aluno {
     private String nome;
     private String email;
 
+
+    public String getIdentificadorAcademico() {
+        return identificadorAcademico;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+
     public Aluno(String identificadorAcademico, String nome, String email) {
         setIdentificadorAcademico(identificadorAcademico);
         setNome(nome);
