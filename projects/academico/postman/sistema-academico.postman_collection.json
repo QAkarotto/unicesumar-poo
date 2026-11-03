@@ -13,7 +13,17 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": ""
+          "raw": "http://localhost:8080/api/matriculas/MAT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-001"
+          ]
         }
       },
       "response": []
@@ -24,7 +34,17 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": ""
+          "raw": "http://localhost:8080/api/alunos/RA2026001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
         }
       },
       "response": []
@@ -35,7 +55,17 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": ""
+          "raw": "http://localhost:8080/api/disciplinas/POO",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "POO"
+          ]
         }
       },
       "response": []
@@ -102,7 +132,20 @@
       "name": "Consultar aluno inexistente",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA9999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA9999"
+          ]
+        }
       },
       "response": []
     },
@@ -110,7 +153,20 @@
       "name": "Consultar matricula inexistente",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-999"
+          ]
+        }
       },
       "response": []
     },
@@ -176,7 +232,20 @@
       "name": "Consultar aluno apos reinicio",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026003",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026003"
+          ]
+        }
       },
       "response": []
     },
@@ -185,6 +254,15 @@
       "request": {
         "method": "POST",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"ESOFT\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":80}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
           "raw": "http://localhost:8080/api/disciplinas",
           "protocol": "http",
@@ -233,7 +311,20 @@
       "name": "Consultar disciplina apos reinicio",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/ESOFT",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "ESOFT"
+          ]
+        }
       },
       "response": []
     }
