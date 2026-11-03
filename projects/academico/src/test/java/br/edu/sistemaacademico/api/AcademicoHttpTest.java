@@ -4,7 +4,6 @@ import br.edu.sistemaacademico.AplicacaoAcademica;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.web.server.context.WebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -21,7 +20,7 @@ class AcademicoHttpTest {
     @BeforeEach
     void iniciar() {
         contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0");
-        baseUrl = "http://localhost:" + ((WebServerApplicationContext) contexto).getWebServer().getPort();
+        baseUrl = "http://localhost:" + contexto.getEnvironment().getRequiredProperty("local.server.port");
     }
 
     @AfterEach

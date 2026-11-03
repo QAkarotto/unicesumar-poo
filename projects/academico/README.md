@@ -35,23 +35,16 @@ No Postman, use **Import** e selecione `postman/sistema-academico.postman_collec
 
 ## Atividade 03 - 2BIM: Persistência com JDBC e SQLite
 
-Esta atividade está apenas preparada. Os alunos implementarão a persistência de Aluno e Disciplina, seus Repositories, operações JDBC e integração HTTP. Os endpoints de cadastro de alunos e disciplinas também fazem parte dessa evolução; não estão implementados nesta base.
+Esta implementação persiste Aluno e Disciplina em SQLite por meio de JDBC. Os comandos SQL estão nas implementações JDBC dos Repositories, mantendo Controllers e domínio separados do acesso ao banco.
 
-O driver `org.xerial:sqlite-jdbc:3.53.4.0` já está configurado no Maven. Não há Repository JDBC nem acesso ao banco na aplicação.
+O driver `org.xerial:sqlite-jdbc:3.53.4.0` está configurado no Maven. O banco é inicializado automaticamente quando a API inicia, a partir de `database/schema.sql` e `database/dados-iniciais.sql`, sem apagar registros existentes.
 
-- Estrutura: `database/schema.sql`.
-- Dois alunos e duas disciplinas fictícias: `database/dados-iniciais.sql`.
+- Estrutura: `src/main/resources/database/schema.sql`.
+- Dois alunos e duas disciplinas fictícias: `src/main/resources/database/dados-iniciais.sql`.
 - Banco local: `database/sistema-academico.db` (ignorado pelo Git).
 - URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`, somente para uso futuro.
 
-Os caminhos são relativos a `projects/academico`. Com o executável `sqlite3` instalado e disponível no PATH, execute nesse diretório (PowerShell, Bash ou terminal equivalente):
-
-```bash
-sqlite3 database/sistema-academico.db ".read database/schema.sql"
-sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
-```
-
-O primeiro comando recria as duas tabelas e apaga seus dados anteriores. O segundo deve ser executado uma vez após o schema. A inicialização é manual; iniciar a API não cria nem carrega o banco.
+Os caminhos do banco são relativos a `projects/academico`; o arquivo gerado é ignorado pelo Git.
 
 `registro_academico` corresponde a `Aluno.registroAcademico`, e `carga_horaria` a `Disciplina.cargaHoraria`. O e-mail é obrigatório, mas não é único no domínio. Matrículas e demais relacionamentos ainda não possuem tabelas.
 
@@ -61,7 +54,7 @@ Fluxo conceitual: **Connection → PreparedStatement → ResultSet**.
 - `PreparedStatement` representa um comando SQL parametrizado a ser executado.
 - `ResultSet` permite percorrer os registros retornados por uma consulta.
 
-A implementação desse fluxo e a conversão entre registros e objetos são responsabilidade dos alunos.
+A implementação JDBC transforma cada `ResultSet` em um objeto Java. Os endpoints disponíveis são `POST` e `GET` para `/api/alunos` e `/api/disciplinas`; cadastro duplicado retorna `409`, dado inválido retorna `422` e registro inexistente retorna `404`.
 
 Referências:
 
