@@ -13,7 +13,7 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-A API inicia em `http://localhost:8080`. Os dados são reiniciados a cada execução; SQLite não é utilizado pelos Controllers.
+A API inicia em `http://localhost:8080`. Desde a Atividade 03, alunos e disciplinas são lidos do SQLite, então prepare o banco antes de subir a API (ver abaixo). Ofertas e matrículas continuam em memória e são reiniciadas a cada execução.
 
 | Método e rota | Exemplo / resultado |
 | --- | --- |
@@ -35,14 +35,26 @@ No Postman, use **Import** e selecione `postman/sistema-academico.postman_collec
 
 ## Atividade 03 - 2BIM: Persistência com JDBC e SQLite
 
-Esta atividade está apenas preparada. Os alunos implementarão a persistência de Aluno e Disciplina, seus Repositories, operações JDBC e integração HTTP. Os endpoints de cadastro de alunos e disciplinas também fazem parte dessa evolução; não estão implementados nesta base.
+Aluno e Disciplina são gravados no SQLite. As interfaces `AlunoRepository` e `DisciplinaRepository` ficam no pacote `persistencia`, junto das implementações com JDBC (`AlunoRepositoryJdbc` e `DisciplinaRepositoryJdbc`), que são as únicas classes com SQL. A conexão sai do `DriverManager` em `ConexaoBanco`.
 
-O driver `org.xerial:sqlite-jdbc:3.53.4.0` já está configurado no Maven. Não há Repository JDBC nem acesso ao banco na aplicação.
+| Método e rota | Resultado |
+| --- | --- |
+| `POST /api/alunos` | 201 e `Location`; RA repetido dá 409; dados inválidos, 400 |
+| `GET /api/alunos/{registroAcademico}` | 200, ou 404 se não existir |
+| `POST /api/disciplinas` | 201 e `Location`; código repetido dá 409; dados inválidos, 400 |
+| `GET /api/disciplinas/{codigo}` | 200, ou 404 se não existir |
+
+```json
+{"registroAcademico":"RA2026010","nome":"Carla Mendes","email":"carla.mendes@example.com"}
+{"codigo":"ED","nome":"Estrutura de Dados","cargaHoraria":60}
+```
+
+O driver `org.xerial:sqlite-jdbc:3.53.4.0` está configurado no Maven.
 
 - Estrutura: `database/schema.sql`.
 - Dois alunos e duas disciplinas fictícias: `database/dados-iniciais.sql`.
 - Banco local: `database/sistema-academico.db` (ignorado pelo Git).
-- URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`, somente para uso futuro.
+- URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`.
 
 Os caminhos são relativos a `projects/academico`. Com o executável `sqlite3` instalado e disponível no PATH, execute nesse diretório (PowerShell, Bash ou terminal equivalente):
 
@@ -51,7 +63,14 @@ sqlite3 database/sistema-academico.db ".read database/schema.sql"
 sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
 ```
 
-O primeiro comando recria as duas tabelas e apaga seus dados anteriores. O segundo deve ser executado uma vez após o schema. A inicialização é manual; iniciar a API não cria nem carrega o banco.
+O primeiro comando recria as duas tabelas e apaga seus dados anteriores. O segundo deve ser executado uma vez após o schema. A inicialização é manual; iniciar a API não cria nem carrega o banco. Sem o `sqlite3`, no Windows dá pra instalar com `winget install SQLite.SQLite`.
+
+Para validar a persistência pelo Postman, importe `postman/atividade-03-persistencia.postman_collection.json` e, com o banco recém-preparado:
+
+1. suba a API com `mvn spring-boot:run` e rode a pasta **1. Cadastro e consulta** (cadastros, consultas, inexistentes e duplicados);
+2. pare a API (Ctrl+C), suba de novo e rode a pasta **2. Depois de reiniciar a API**, que consulta o aluno e a disciplina cadastrados antes.
+
+Para repetir do zero, rode os dois comandos do `sqlite3` de novo.
 
 `registro_academico` corresponde a `Aluno.registroAcademico`, e `carga_horaria` a `Disciplina.cargaHoraria`. O e-mail é obrigatório, mas não é único no domínio. Matrículas e demais relacionamentos ainda não possuem tabelas.
 
