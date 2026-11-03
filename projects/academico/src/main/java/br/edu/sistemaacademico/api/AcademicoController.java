@@ -14,11 +14,6 @@ public class AcademicoController {
         this.dados = dados;
     }
 
-    @GetMapping("/alunos/{registroAcademico}")
-    public AlunoResponse buscarAluno(@PathVariable("registroAcademico") String registroAcademico) {
-        return AlunoResponse.de(dados.buscarAluno(registroAcademico));
-    }
-
     @GetMapping("/matriculas/{codigo}")
     public MatriculaResponse buscarMatricula(@PathVariable("codigo") String codigo) {
         return MatriculaResponse.de(dados.buscarMatricula(codigo));
@@ -37,18 +32,12 @@ public class AcademicoController {
 
     public record CriarMatriculaRequest(String registroAcademico, String ofertaId) {}
 
-    public record AlunoResponse(String registroAcademico, String nome, String email) {
-        static AlunoResponse de(Aluno aluno) {
-            return new AlunoResponse(aluno.getRegistroAcademico(), aluno.getNome(), aluno.getEmail());
-        }
-    }
-
-    public record MatriculaResponse(String codigo, AlunoResponse aluno, String codigoDisciplina,
+    public record MatriculaResponse(String codigo, AlunoController.AlunoResponse aluno, String codigoDisciplina,
                                     String codigoTurma, int ano, Semestre semestre,
                                     SituacaoMatricula situacao, ResultadoAcademico resultado) {
         static MatriculaResponse de(Matricula matricula) {
             var turma = matricula.getTurma();
-            return new MatriculaResponse(matricula.getCodigo(), AlunoResponse.de(matricula.getAluno()),
+            return new MatriculaResponse(matricula.getCodigo(), AlunoController.AlunoResponse.de(matricula.getAluno()),
                     matricula.getOfertaDisciplina().getDisciplina().getCodigo(), turma.getCodigo(),
                     turma.getPeriodoLetivo().getAno(), turma.getPeriodoLetivo().getSemestre(),
                     matricula.getSituacao(), matricula.getResultado());
