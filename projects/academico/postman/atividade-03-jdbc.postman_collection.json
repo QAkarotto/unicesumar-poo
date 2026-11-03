@@ -1,0 +1,330 @@
+{
+  "info": {
+    "name": "Sistema Academico - Atividade 03 (JDBC e SQLite)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "ra",
+      "value": ""
+    },
+    {
+      "key": "codigo",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Cadastrar aluno (201)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const n = String(Date.now()).slice(-7);",
+              "pm.collectionVariables.set('ra', 'RA' + n);",
+              "pm.collectionVariables.set('codigo', 'D' + n);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Retorna o RA cadastrado', () => pm.expect(pm.response.json().registroAcademico).to.eql(pm.collectionVariables.get('ra')));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "alunos"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"{{ra}}\",\"nome\":\"Aluno Postman\",\"email\":\"postman@example.com\"}"
+        }
+      }
+    },
+    {
+      "name": "2. Consultar aluno cadastrado (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Dados corretos', () => { const j = pm.response.json(); pm.expect(j.registroAcademico).to.eql(pm.collectionVariables.get('ra')); pm.expect(j.nome).to.eql('Aluno Postman'); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos/{{ra}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "alunos",
+            "{{ra}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Consultar aluno inexistente (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos/RA0000000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "alunos",
+            "RA0000000"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Cadastrar aluno duplicado (409)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "alunos"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"{{ra}}\",\"nome\":\"Aluno Postman\",\"email\":\"postman@example.com\"}"
+        }
+      }
+    },
+    {
+      "name": "5. Cadastrar disciplina (201)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', () => pm.response.to.have.status(201));",
+              "pm.test('Retorna o codigo cadastrado', () => pm.expect(pm.response.json().codigo).to.eql(pm.collectionVariables.get('codigo')));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/disciplinas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"{{codigo}}\",\"nome\":\"Disciplina Postman\",\"cargaHoraria\":60}"
+        }
+      }
+    },
+    {
+      "name": "6. Consultar disciplina cadastrada (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));",
+              "pm.test('Dados corretos', () => { const j = pm.response.json(); pm.expect(j.codigo).to.eql(pm.collectionVariables.get('codigo')); pm.expect(j.cargaHoraria).to.eql(60); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/disciplinas/{{codigo}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "disciplinas",
+            "{{codigo}}"
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Consultar disciplina inexistente (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 404', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/disciplinas/INEXISTENTE",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "disciplinas",
+            "INEXISTENTE"
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Cadastrar disciplina duplicada (409)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 409', () => pm.response.to.have.status(409));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/disciplinas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"{{codigo}}\",\"nome\":\"Disciplina Postman\",\"cargaHoraria\":60}"
+        }
+      }
+    },
+    {
+      "name": "9. Consultar aluno dos dados iniciais (200)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/alunos/RA2026001",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
+        }
+      }
+    }
+  ]
+}

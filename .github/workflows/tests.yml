@@ -3,7 +3,7 @@ name: Java Tests
 on:
   push:
   pull_request:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   test:
@@ -23,6 +23,12 @@ jobs:
           java-version: '26'
           cache: maven
           cache-dependency-path: projects/academico/pom.xml
+
+      - name: Prepare SQLite database
+        run: |
+          sudo apt-get install -y sqlite3
+          sqlite3 database/sistema-academico.db ".read database/schema.sql"
+          sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
 
       - name: Run tests
         run: mvn --batch-mode clean test
