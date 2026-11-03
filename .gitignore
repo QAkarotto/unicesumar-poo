@@ -72,3 +72,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### DataBase ###
+/database/
