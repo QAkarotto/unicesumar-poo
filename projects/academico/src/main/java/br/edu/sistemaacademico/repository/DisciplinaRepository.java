@@ -1,0 +1,21 @@
+package br.edu.sistemaacademico.repository;
+
+import br.edu.sistemaacademico.Disciplina;
+
+import java.util.Optional;
+
+/**
+ * Operações de acesso aos dados de Disciplina.
+ * A implementação concreta (JDBC + SQLite) fica em repository.jdbc.
+ */
+public interface DisciplinaRepository {
+
+    /**
+     * Grava uma nova disciplina.
+     *
+     * @throws RegistroDuplicadoException se já existir disciplina com o mesmo código
+     */
+    Disciplina salvar(Disciplina disciplina);
+
+    Optional<Disciplina> buscarPorCodigo(String codigo);
+}

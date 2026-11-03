@@ -1,0 +1,509 @@
+{
+  "info": {
+    "name": "Sistema Acadêmico - Atividade 03 (JDBC + SQLite)",
+    "description": "Rode a pasta 1 com o banco recém-criado (veja o README). Depois ENCERRE e INICIE a aplicação de novo e rode a pasta 2: os dados cadastrados na pasta 1 devem continuar lá.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "1 - Cadastros e consultas",
+      "item": [
+        {
+          "name": "Alunos",
+          "item": [
+            {
+              "name": "Cadastrar aluno (201)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                      "pm.test(\"identificadorAcademico = RA2026100\", () => pm.expect(pm.response.json().identificadorAcademico).to.eql(\"RA2026100\"));",
+                      "pm.test(\"nome = Maria Souza\", () => pm.expect(pm.response.json().nome).to.eql(\"Maria Souza\"));",
+                      "pm.test(\"Location aponta para o recurso\", () => pm.expect(pm.response.headers.get(\"Location\")).to.include(\"/api/alunos/RA2026100\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alunos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alunos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificadorAcademico\": \"RA2026100\",\n  \"nome\": \"Maria Souza\",\n  \"email\": \"maria.souza@email.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Consultar aluno cadastrado (200)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"identificadorAcademico = RA2026100\", () => pm.expect(pm.response.json().identificadorAcademico).to.eql(\"RA2026100\"));",
+                      "pm.test(\"email = maria.souza@email.com\", () => pm.expect(pm.response.json().email).to.eql(\"maria.souza@email.com\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alunos/RA2026100",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alunos",
+                    "RA2026100"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Consultar aluno dos dados iniciais (200)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"nome = Aluno Exemplo Um\", () => pm.expect(pm.response.json().nome).to.eql(\"Aluno Exemplo Um\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alunos/RA2026001",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alunos",
+                    "RA2026001"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Consultar aluno inexistente (404)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 404\", () => pm.response.to.have.status(404));",
+                      "pm.test(\"Erro tem mensagem\", () => pm.expect(pm.response.json().mensagem).to.be.a(\"string\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alunos/RA9999999",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alunos",
+                    "RA9999999"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Cadastrar aluno duplicado (409)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 409\", () => pm.response.to.have.status(409));",
+                      "pm.test(\"Erro tem mensagem\", () => pm.expect(pm.response.json().mensagem).to.be.a(\"string\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alunos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alunos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificadorAcademico\": \"RA2026100\",\n  \"nome\": \"Outra Pessoa\",\n  \"email\": \"outra@email.com\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Cadastrar aluno com e-mail inválido (400)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                      "pm.test(\"Erro tem mensagem\", () => pm.expect(pm.response.json().mensagem).to.be.a(\"string\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/alunos",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "alunos"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificadorAcademico\": \"RA2026101\",\n  \"nome\": \"Fulano\",\n  \"email\": \"email-invalido\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Disciplinas",
+          "item": [
+            {
+              "name": "Cadastrar disciplina (201)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 201\", () => pm.response.to.have.status(201));",
+                      "pm.test(\"codigo = ED\", () => pm.expect(pm.response.json().codigo).to.eql(\"ED\"));",
+                      "pm.test(\"cargaHoraria = 60\", () => pm.expect(pm.response.json().cargaHoraria).to.eql(60));",
+                      "pm.test(\"Location aponta para o recurso\", () => pm.expect(pm.response.headers.get(\"Location\")).to.include(\"/api/disciplinas/ED\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/disciplinas",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "disciplinas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"codigo\": \"ED\",\n  \"nome\": \"Estrutura de Dados\",\n  \"cargaHoraria\": 60\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Consultar disciplina cadastrada (200)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"nome = Estrutura de Dados\", () => pm.expect(pm.response.json().nome).to.eql(\"Estrutura de Dados\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/disciplinas/ED",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "disciplinas",
+                    "ED"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Consultar disciplina inexistente (404)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 404\", () => pm.response.to.have.status(404));",
+                      "pm.test(\"Erro tem mensagem\", () => pm.expect(pm.response.json().mensagem).to.be.a(\"string\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/disciplinas/XYZ",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "disciplinas",
+                    "XYZ"
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Cadastrar disciplina duplicada (409)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 409\", () => pm.response.to.have.status(409));",
+                      "pm.test(\"Erro tem mensagem\", () => pm.expect(pm.response.json().mensagem).to.be.a(\"string\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/disciplinas",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "disciplinas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"codigo\": \"POO\",\n  \"nome\": \"Outra POO\",\n  \"cargaHoraria\": 40\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "name": "Cadastrar disciplina com carga horária zero (400)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Status 400\", () => pm.response.to.have.status(400));",
+                      "pm.test(\"Erro tem mensagem\", () => pm.expect(pm.response.json().mensagem).to.be.a(\"string\"));"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/disciplinas",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "disciplinas"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"codigo\": \"XX\",\n  \"nome\": \"Inválida\",\n  \"cargaHoraria\": 0\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2 - Após reiniciar a aplicação",
+      "description": "Encerre a aplicação, inicie novamente e só então rode esta pasta.",
+      "item": [
+        {
+          "name": "Aluno continua cadastrado (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"nome = Maria Souza\", () => pm.expect(pm.response.json().nome).to.eql(\"Maria Souza\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/alunos/RA2026100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "alunos",
+                "RA2026100"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Disciplina continua cadastrada (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"nome = Estrutura de Dados\", () => pm.expect(pm.response.json().nome).to.eql(\"Estrutura de Dados\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/disciplinas/ED",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "disciplinas",
+                "ED"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

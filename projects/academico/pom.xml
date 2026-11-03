@@ -35,6 +35,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- NOVO (Atividade 03 - 2BIM): driver JDBC do SQLite -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.53.4.0</version>
+        </dependency>
+
         <!-- JUnit 5 (versão agora gerenciada pelo Spring Boot) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -72,7 +79,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- como já existe uma classe Main, indique qual sobe o Spring -->
-                    <mainClass>br.edu.sistemaacademico.SistemaAcademicoApplication</mainClass>
+                    <mainClass>br.edu.sistemaacademico.api.SistemaAcademicoApplication</mainClass>
                 </configuration>
             </plugin>
 
