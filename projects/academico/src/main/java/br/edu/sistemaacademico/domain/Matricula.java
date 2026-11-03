@@ -53,7 +53,7 @@ public final class Matricula {
         return situacao;
     }
 
-    public ResultadoAcademico getResultado() {
+    public ResultadoAcademico getResultadoAcademico() {
         return resultadoAcademico;
     }
 
