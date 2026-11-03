@@ -1,202 +1,332 @@
 {
   "info": {
+    "_postman_id": "1a3d5c85-74b4-40b6-b9d1-04cbb4e413a6",
+    "name": "Pedro - Sistema Academico",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "name": "Sistema Acadêmico — Atividade 02"
+    "_exporter_id": "58767412",
+    "_collection_link": "https://go.postman.co/collection/58767412-1a3d5c85-74b4-40b6-b9d1-04cbb4e413a6?source=collection_link"
   },
-  "variable": [
-    {
-      "value": "http://localhost:8080",
-      "key": "baseUrl"
-    },
-    {
-      "value": "MAT-002",
-      "key": "codigoMatricula"
-    }
-  ],
   "item": [
     {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().registroAcademico).to.eql('RA2026001'));"
-            ]
-          }
-        }
-      ],
-      "name": "Consultar aluno",
+      "name": "Consultar matricula existente",
       "request": {
         "method": "GET",
-        "url": "{{baseUrl}}/api/alunos/RA2026001",
-        "header": []
-      }
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-001"
+          ]
+        }
+      },
+      "response": []
     },
     {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().codigo).to.eql('MAT-001'));"
-            ]
-          }
-        }
-      ],
-      "name": "Consultar matrícula inicial",
+      "name": "Consultar aluno existente",
       "request": {
         "method": "GET",
-        "url": "{{baseUrl}}/api/matriculas/MAT-001",
-        "header": []
-      }
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026001",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026001"
+          ]
+        }
+      },
+      "response": []
     },
     {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(201));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().situacao).to.eql('ATIVA'));",
-              "pm.collectionVariables.set('codigoMatricula', pm.response.json().codigo);",
-              "pm.test('Location', () => pm.expect(pm.response.headers.get('Location')).to.eql('/api/matriculas/' + pm.response.json().codigo));"
-            ]
-          }
+      "name": "Consultar disciplina existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/POO",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "POO"
+          ]
         }
-      ],
-      "name": "Criar matrícula",
+      },
+      "response": []
+    },
+    {
+      "name": "Criar matricula",
       "request": {
         "method": "POST",
+        "header": [],
         "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"RA2026101\",\"codigoTurma\":\"BD-NB\"}",
           "options": {
             "raw": {
               "language": "json"
             }
-          },
-          "mode": "raw",
-          "raw": "{\"registroAcademico\":\"RA2026002\",\"ofertaId\":\"POO-2026-2\"}"
+          }
         },
-        "url": "{{baseUrl}}/api/matriculas",
-        "header": [
-          {
-            "value": "application/json",
-            "key": "Content-Type"
-          }
-        ]
-      }
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
     },
     {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(200));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().situacao).to.eql('ATIVA'));"
-            ]
-          }
-        }
-      ],
-      "name": "Consultar matrícula criada",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/matriculas/{{codigoMatricula}}",
-        "header": []
-      }
-    },
-    {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(404));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().mensagem).to.eql('Aluno não encontrado.'));"
-            ]
-          }
-        }
-      ],
-      "name": "Aluno inexistente",
-      "request": {
-        "method": "GET",
-        "url": "{{baseUrl}}/api/alunos/INEXISTENTE",
-        "header": []
-      }
-    },
-    {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(400));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().mensagem).to.eql('O aluno já está matriculado nesta oferta.'));"
-            ]
-          }
-        }
-      ],
-      "name": "Matrícula duplicada",
+      "name": "Criar matricula duplicada",
       "request": {
         "method": "POST",
+        "header": [],
         "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"RA2026101\",\"codigoTurma\":\"POO-NA\"}",
           "options": {
             "raw": {
               "language": "json"
             }
-          },
-          "mode": "raw",
-          "raw": "{\"registroAcademico\":\"RA2026001\",\"ofertaId\":\"POO-2026-2\"}"
-        },
-        "url": "{{baseUrl}}/api/matriculas",
-        "header": [
-          {
-            "value": "application/json",
-            "key": "Content-Type"
           }
-        ]
-      }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
+        }
+      },
+      "response": []
     },
     {
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "pm.test('Status HTTP', () => pm.response.to.have.status(400));",
-              "pm.test('JSON esperado', () => pm.expect(pm.response.json().mensagem).to.eql('Informe registroAcademico e ofertaId.'));"
-            ]
-          }
+      "name": "Consultar aluno inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA9999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA9999"
+          ]
         }
-      ],
-      "name": "Campos ausentes",
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar matricula inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/matriculas/MAT-999",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas",
+            "MAT-999"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar aluno",
       "request": {
         "method": "POST",
+        "header": [],
         "body": {
+          "mode": "raw",
+          "raw": "{\"ra\":\"RA2026003\",\"nome\":\"Teste\",\"email\":\"teste@example.com\"}",
           "options": {
             "raw": {
               "language": "json"
             }
-          },
-          "mode": "raw",
-          "raw": "{}"
-        },
-        "url": "{{baseUrl}}/api/matriculas",
-        "header": [
-          {
-            "value": "application/json",
-            "key": "Content-Type"
           }
-        ]
-      }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar aluno duplicado",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ra\":\"RA2026001\",\"nome\":\"Teste\",\"email\":\"teste@example.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar aluno apos reinicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/alunos/RA2026003",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos",
+            "RA2026003"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar disciplina",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"ESOFT\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":80}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar disciplina duplicada",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"ESOFT\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":80}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar disciplina apos reinicio",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas/ESOFT",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas",
+            "ESOFT"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }
