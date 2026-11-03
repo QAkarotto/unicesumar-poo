@@ -1,26 +1,22 @@
 package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.domain.Disciplina;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import br.edu.sistemaacademico.repository.DisciplinaRepository;
+import br.edu.sistemaacademico.repository.RegistroDuplicadoException;
 import java.net.URI;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/disciplinas")
 public class DisciplinaController {
 
-    private final DadosEmMemoria dados;
+    private final DisciplinaRepository disciplinas;
 
-    public DisciplinaController(DadosEmMemoria dados) {
-        this.dados = dados;
+    public DisciplinaController(DisciplinaRepository disciplinas) {
+        this.disciplinas = disciplinas;
     }
 
     @PostMapping
@@ -29,37 +25,38 @@ public class DisciplinaController {
         if (!(carga instanceof Integer cargaHoraria)) {
             return ResponseEntity.badRequest().build();
         }
-
         try {
             Disciplina disciplina = new Disciplina(
                     (String) corpo.get("codigo"),
                     (String) corpo.get("nome"),
                     cargaHoraria);
 
-            if (dados.buscarDisciplina(disciplina.getCodigo()).isPresent()) {
+            if (disciplinas.buscarPorCodigo(disciplina.getCodigo()).isPresent()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).build();
             }
 
-            dados.adicionarDisciplina(disciplina);
+            disciplinas.salvar(disciplina);
             return ResponseEntity
                     .created(URI.create("/api/disciplinas/" + disciplina.getCodigo()))
                     .body(resposta(disciplina));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
+        } catch (RegistroDuplicadoException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
 
     @GetMapping("/{codigo}")
     public ResponseEntity<?> buscar(@PathVariable("codigo") String codigo) {
-        return dados.buscarDisciplina(codigo)
-                .<ResponseEntity<?>>map(disciplina -> ResponseEntity.ok(resposta(disciplina)))
+        return disciplinas.buscarPorCodigo(codigo)
+                .<ResponseEntity<?>>map(d -> ResponseEntity.ok(resposta(d)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    private Map<String, Object> resposta(Disciplina disciplina) {
+    private Map<String, Object> resposta(Disciplina d) {
         return Map.of(
-                "codigo", disciplina.getCodigo(),
-                "nome", disciplina.getNome(),
-                "cargaHoraria", disciplina.getCargaHoraria());
+                "codigo", d.getCodigo(),
+                "nome", d.getNome(),
+                "cargaHoraria", d.getCargaHoraria());
     }
 }

@@ -43,10 +43,28 @@
     {
       "name": "Criar matricula",
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"RA2026101\",\"codigoTurma\":\"BD-NB\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": ""
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
         }
       },
       "response": []
@@ -54,10 +72,28 @@
     {
       "name": "Criar matricula duplicada",
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"registroAcademico\":\"RA2026101\",\"codigoTurma\":\"POO-NA\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": ""
+          "raw": "http://localhost:8080/api/matriculas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "matriculas"
+          ]
         }
       },
       "response": []
@@ -72,6 +108,129 @@
     },
     {
       "name": "Consultar matricula inexistente",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar aluno",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ra\":\"RA2026003\",\"nome\":\"Teste\",\"email\":\"teste@example.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar aluno duplicado",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ra\":\"RA2026001\",\"nome\":\"Teste\",\"email\":\"teste@example.com\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar aluno apos reinicio",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar disciplina",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cadastrar disciplina duplicada",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"codigo\":\"ESOFT\",\"nome\":\"Engenharia de Software\",\"cargaHoraria\":80}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/disciplinas",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "disciplinas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar disciplina apos reinicio",
       "request": {
         "method": "GET",
         "header": []
