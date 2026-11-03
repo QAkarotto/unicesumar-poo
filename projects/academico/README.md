@@ -13,7 +13,9 @@ mvn clean test
 mvn spring-boot:run
 ```
 
-A API inicia em `http://localhost:8080`. Os dados são reiniciados a cada execução; SQLite não é utilizado pelos Controllers.
+A API inicia em `http://localhost:8080`. Matrículas são reiniciadas a cada execução; Aluno e Disciplina ficam no SQLite (Atividade 03).
+
+Link Postman: https://www.postman.com/dmachadobaitel-4417484/workspace/atividade-03-2bim-poo/collection/58688141-8c147ae3-ea3e-43c7-a496-17c0cb9b13ba?action=share&creator=58688141
 
 | Método e rota | Exemplo / resultado |
 | --- | --- |
@@ -35,25 +37,32 @@ No Postman, use **Import** e selecione `postman/sistema-academico.postman_collec
 
 ## Atividade 03 - 2BIM: Persistência com JDBC e SQLite
 
-Esta atividade está apenas preparada. Os alunos implementarão a persistência de Aluno e Disciplina, seus Repositories, operações JDBC e integração HTTP. Os endpoints de cadastro de alunos e disciplinas também fazem parte dessa evolução; não estão implementados nesta base.
+Aluno e Disciplina agora são gravados no SQLite por meio de Repositories com JDBC (`Connection`, `PreparedStatement` e `ResultSet`). Matrículas continuam em memória.
 
-O driver `org.xerial:sqlite-jdbc:3.53.4.0` já está configurado no Maven. Não há Repository JDBC nem acesso ao banco na aplicação.
-
-- Estrutura: `database/schema.sql`.
-- Dois alunos e duas disciplinas fictícias: `database/dados-iniciais.sql`.
-- Banco local: `database/sistema-academico.db` (ignorado pelo Git).
-- URL: `jdbc:sqlite:database/sistema-academico.db`, declarada em `src/main/resources/application.properties` como `app.database.url`, somente para uso futuro.
-
-Os caminhos são relativos a `projects/academico`. Com o executável `sqlite3` instalado e disponível no PATH, execute nesse diretório (PowerShell, Bash ou terminal equivalente):
+Antes de iniciar a API, crie o banco (a partir de `projects/academico`, com `sqlite3` no PATH):
 
 ```bash
 sqlite3 database/sistema-academico.db ".read database/schema.sql"
 sqlite3 database/sistema-academico.db ".read database/dados-iniciais.sql"
 ```
 
-O primeiro comando recria as duas tabelas e apaga seus dados anteriores. O segundo deve ser executado uma vez após o schema. A inicialização é manual; iniciar a API não cria nem carrega o banco.
+O primeiro comando recria as tabelas e apaga os dados anteriores; o segundo deve ser executado uma vez após o schema. A URL do banco está em `src/main/resources/application.properties` (`app.database.url`).
 
-`registro_academico` corresponde a `Aluno.registroAcademico`, e `carga_horaria` a `Disciplina.cargaHoraria`. O e-mail é obrigatório, mas não é único no domínio. Matrículas e demais relacionamentos ainda não possuem tabelas.
+| Método e rota | Resultado |
+| --- | --- |
+| `POST /api/alunos` | 201 e `Location`; 409 se o RA já existir; 400 se os dados forem inválidos |
+| `GET /api/alunos/{registroAcademico}` | 200; 404 se não existir |
+| `POST /api/disciplinas` | 201 e `Location`; 409 se o código já existir; 400 se os dados forem inválidos |
+| `GET /api/disciplinas/{codigo}` | 200; 404 se não existir |
+
+Exemplos de corpo:
+
+```json
+{"registroAcademico":"RA2026003","nome":"Aluno Novo","email":"novo@example.com"}
+{"codigo":"ES","nome":"Engenharia de Software","cargaHoraria":60}
+```
+
+Estrutura: `AcademicoController` (HTTP) → `AlunoRepository` / `DisciplinaRepository` (interfaces) → `AlunoRepositoryJdbc` / `DisciplinaRepositoryJdbc` (SQL). Os SQLs ficam apenas nas implementações JDBC; as regras de validação permanecem no domínio. Falhas inesperadas do banco retornam 500.
 
 Fluxo conceitual: **Connection → PreparedStatement → ResultSet**.
 
@@ -73,6 +82,6 @@ Referências:
 
 ## Testes e cobertura
 
-`mvn clean test` executa os testes de domínio e os testes HTTP com servidor real em porta aleatória. `mvn -Dtest=MatriculaTest test` executa apenas os testes de matrícula.
+`mvn clean test` executa os testes de domínio e os testes HTTP com servidor real em porta aleatória.`mvn -Dtest=MatriculaTest test` executa apenas os testes de matrícula.
 
 `mvn verify` verifica também a cobertura mínima de 80% de linhas do domínio, com relatório em `target/site/jacoco/index.html`. A demonstração `SistemaAcademico` permanece excluída do relatório. O workflow **Java Tests** mantém Java 26, executa `mvn --batch-mode clean test` e verifica a cobertura sem repetir os testes.
