@@ -22,8 +22,14 @@ public class Disciplina {
         if (codigo == null || codigo.isBlank()) {
             throw new IllegalArgumentException("Código da disciplina é obrigatório");
         }
+        if (codigo.length() > 20) {
+            throw new IllegalArgumentException("Código da disciplina deve ter no máximo 20 caracteres");
+        }
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome da disciplina é obrigatório");
+        }
+        if (nome.length() > 100) {
+            throw new IllegalArgumentException("Nome da disciplina deve ter no máximo 100 caracteres");
         }
         if (cargaHoraria <= 0) {
             throw new IllegalArgumentException("Carga horária deve ser maior que zero");

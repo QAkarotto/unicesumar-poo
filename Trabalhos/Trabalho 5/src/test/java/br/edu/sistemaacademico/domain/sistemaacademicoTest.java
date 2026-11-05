@@ -180,4 +180,44 @@ class SistemaAcademicoTest {
                 () -> matricula.concluir(ResultadoAcademico.CURSANDO));
         assertEquals("O resultado da conclusão deve ser APROVADO ou REPROVADO.", e.getMessage());
     }
+
+    @Test
+    @DisplayName("Não deve aceitar RA com mais de 20 caracteres")
+    void naoDeveAceitarRaMuitoLongo() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> new Aluno("RA" + "1".repeat(19), "Ana", "ana@email.com"));
+        assertEquals("RA deve ter no máximo 20 caracteres", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Não deve aceitar nome de aluno com mais de 100 caracteres")
+    void naoDeveAceitarNomeDeAlunoMuitoLongo() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> new Aluno("RA1", "a".repeat(101), "ana@email.com"));
+        assertEquals("Nome do aluno deve ter no máximo 100 caracteres", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Não deve aceitar e-mail com mais de 100 caracteres")
+    void naoDeveAceitarEmailMuitoLongo() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> new Aluno("RA1", "Ana", "a".repeat(95) + "@e.com"));
+        assertEquals("E-mail do aluno deve ter no máximo 100 caracteres", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Não deve aceitar código de disciplina com mais de 20 caracteres")
+    void naoDeveAceitarCodigoDeDisciplinaMuitoLongo() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina("X".repeat(21), "Teste", 40));
+        assertEquals("Código da disciplina deve ter no máximo 20 caracteres", e.getMessage());
+    }
+
+    @Test
+    @DisplayName("Não deve aceitar nome de disciplina com mais de 100 caracteres")
+    void naoDeveAceitarNomeDeDisciplinaMuitoLongo() {
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> new Disciplina("TST", "a".repeat(101), 40));
+        assertEquals("Nome da disciplina deve ter no máximo 100 caracteres", e.getMessage());
+    }
 }

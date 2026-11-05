@@ -32,11 +32,20 @@ public class Aluno {
             throw new IllegalArgumentException("RA inválido: deve começar com \"RA\"");
         }
 
+        if (ra.length() > 20) {
+            throw new IllegalArgumentException("RA deve ter no máximo 20 caracteres");
+        }
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome do aluno é obrigatório");
         }
+        if (nome.length() > 100) {
+            throw new IllegalArgumentException("Nome do aluno deve ter no máximo 100 caracteres");
+        }
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("E-mail do aluno é obrigatório");
+        }
+        if (email.length() > 100) {
+            throw new IllegalArgumentException("E-mail do aluno deve ter no máximo 100 caracteres");
         }
         this.email = email;
     }
