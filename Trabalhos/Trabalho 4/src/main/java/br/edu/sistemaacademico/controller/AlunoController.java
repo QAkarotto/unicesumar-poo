@@ -23,7 +23,7 @@ public class AlunoController {
     @GetMapping("/{identificador}")
     public ResponseEntity<Aluno> buscarPorIdentificador(@PathVariable String identificador) {
         return alunoRepository.buscarPorRa(identificador)
-                .map(ResponseEntity::ok) 
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
