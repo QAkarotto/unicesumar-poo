@@ -1,0 +1,37 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+nav button {
+  margin-right: 8px;
+}
+
+button.ativo {
+  font-weight: bold;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: left;
+}
+
+.erro {
+  color: red;
+}
