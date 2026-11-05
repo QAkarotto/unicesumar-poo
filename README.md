@@ -1,27 +1,74 @@
-# unicesumar-poo
-Repositório utilizado na disciplina de Programação Orientada a Objetos dos cursos de Engenharia de Software e Análise e Desenvolvimento de Sistemas da Unicesumar Ponta Grossa
+# Sistema Acadêmico
 
-# Materiais
+Projeto didático em Java 26 para praticar orientação a objetos e testes unitários com JUnit 5.
 
-- ## [Mind Map](https://app.xmind.com/share/asCo0dHd) da Disciplina
+O domínio representa alunos, turmas, ofertas de disciplinas e matrículas. As regras permanecem nos próprios objetos, sem frameworks ou camadas adicionais.
 
-# Materiais Complementares
-- ## Curso de Git e GitHub do Goku
-    - [Instruções para configuração de ambiente e atividades das aulas](https://booming-blouse-e16.notion.site/390cf9ad8d508083ad3de85713c19a4a?v=390cf9ad8d5080349a8b000ccb843083&pvs=143)
-    - [Aulas gravadas](https://drive.google.com/drive/folders/1jcjCtkjueHFcE28LDyLnI9Dx-F3WBIlF?usp=sharing)
-    - [Formulário para ter acesso ao repositório do curso](https://docs.google.com/forms/d/e/1FAIpQLSetBGH_UzZEZFoJuQERJhLkpFImu__nDS-dW8UZHjtJruDnbw/viewform?usp=sharing&ouid=115907476640584517407)
+## Executando a aplicação
 
-- ## Curso do professor Gustavo Guanabara (Curso em Vídeo)
-    - [Java Básico](https://www.cursoemvideo.com/curso/java-basico/)
-    - [Java POO](https://www.cursoemvideo.com/curso/java-poo/)
+No diretório `projects/academico`, compile com:
 
-# Manifesto Oficial
+```bash
+mvn compile
+```
 
-## Lista de alunos que concordam que o Professor Goku é o melhor professor do universo (adicione seu nome e turma (ESOFT4S-NA, ESOFT4S-NB, ADSIS4S) em ordem alfabética:):
+Depois, execute `br.edu.sistemaacademico.SistemaAcademico` pela IDE.
 
-1. Aluno Exemplo (ESOFT3S-NA)
-2. 
+## Testes unitários
 
-## Sistema Acadêmico
+Para executar todos os testes:
 
-Consulte as instruções de execução e das atividades do segundo bimestre no [README do projeto](projects/academico/README.md).
+```bash
+mvn test
+```
+
+Para executar apenas os testes de matrícula:
+
+```bash
+mvn -Dtest=MatriculaTest test
+```
+
+Os testes ficam em `src/test/java` e cobrem oferta de disciplinas, proteção das coleções, matrículas, mudanças de estado e as regras de aprovação e reprovação do histórico acadêmico.
+
+Sugestão de demonstração em aula:
+
+1. Execute `mvn test` e observe todos os testes passando.
+2. Remova temporariamente a validação de matrícula duplicada em `OfertaDisciplina`.
+3. Execute `mvn test` novamente e observe a falha.
+4. Restaure a validação e confirme que os testes voltam a passar.
+
+O workflow **Java Tests** do GitHub Actions executa os mesmos testes a cada `push` e `pull_request`.
+
+
+## Atividade 03 - Persistência com JDBC e SQLite
+
+### Como executar
+No diretório `projects/academico`:
+
+```bash
+mvn spring-boot:run
+```
+
+Ao subir, o `InicializadorBanco` cria `database/academico.db` (se não existir), executa `database/schema.sql` e `database/dados-iniciais.sql`. Os scripts são idempotentes: reiniciar a aplicação **não apaga** os dados. Para zerar o banco, apague `database/academico.db`.
+
+O caminho do banco é configurado em `src/main/resources/application.properties` (`app.database.url`).
+
+### Rotas
+| Método | Rota | Sucesso | Erros |
+|---|---|---|---|
+| POST | `/api/alunos` | 201 | 400, 409 (RA duplicado), 422 |
+| GET | `/api/alunos/{ra}` | 200 | 404 |
+| POST | `/api/disciplinas` | 201 | 400, 409 (código duplicado), 422 |
+| GET | `/api/disciplinas/{codigo}` | 200 | 404 |
+
+Collection do Postman: `postman/atividade-03-persistencia.postman_collection.json`.
+Teste de persistência: execute 1, 2, 6 e 7, encerre a aplicação, execute-a de novo e rode 2 e 7 novamente (200).
+
+### Perguntas
+**Onde estão os comandos SQL?** Apenas em `repository/jdbc/JdbcAlunoRepository` e `JdbcDisciplinaRepository` (constantes `INSERT`/`SELECT_*`) e nos scripts de `database/`.
+
+**Por que o Controller não deve executar SQL?** Ele só deve cuidar de HTTP. Misturar SQL o acopla ao banco, impede reaproveitar a lógica, dificulta testes e espalha mudanças de schema pela API.
+
+**Qual o objetivo da interface de Repository?** Definir o contrato de acesso aos dados (`salvar`, `buscarPor...`) sem expor como são armazenados, de modo que Controller e domínio dependam da abstração e não do JDBC.
+
+**O que mudar para trocar o SQLite?** Criar uma nova implementação das interfaces (ex.: PostgreSQL ou JPA) e trocar a dependência/configuração. Controllers, domínio e interfaces permanecem iguais.
