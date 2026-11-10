@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { api } from './api';
 import './App.css';
 
@@ -8,8 +10,6 @@ const EMPRESTIMO_VAZIO = { leitorId: '', livroId: '' };
 
 function App() {
   const [aba, setAba] = useState('leitores');
-  const [erro, setErro] = useState('');
-  const [sucesso, setSucesso] = useState('');
 
   const [leitores, setLeitores] = useState([]);
   const [livros, setLivros] = useState([]);
@@ -27,7 +27,7 @@ function App() {
       setLivros(await api.listarLivros());
       setEmprestimos(await api.listarEmprestimos());
     } catch (e) {
-      setErro(e.message);
+      toast.error(e.message);
     }
   }
 
@@ -37,14 +37,12 @@ function App() {
 
   // roda a ação, mostra a mensagem e recarrega as listas
   async function executar(acao, mensagem) {
-    setErro('');
-    setSucesso('');
     try {
       await acao();
-      setSucesso(mensagem);
+      toast.success(mensagem);
       await carregarTudo();
     } catch (e) {
-      setErro(e.message);
+      toast.error(e.message);
     }
   }
 
@@ -112,8 +110,7 @@ function App() {
         </button>
       </nav>
 
-      {erro && <div className="alert erro">{erro}</div>}
-      {sucesso && <div className="alert sucesso">{sucesso}</div>}
+      <ToastContainer position="top-right" autoClose={3000} />
 
       {aba === 'leitores' && (
         <section className="painel">
