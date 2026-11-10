@@ -1,74 +1,101 @@
-# API REST do Sistema Acadêmico
+# Atividade Final - Biblioteca Universitária
 
-A aplicação sobe com Spring Boot e guarda os dados só em memória. As regras de matrícula continuam em `OfertaDisciplina` e `Aluno`.
+Aplicação full stack com **Spring Boot + JPA**, **React** e **MySQL**.
 
-## Como executar
+## Integrantes e responsabilidades
 
-O projeto Maven fica na pasta `sistema-academico`, junto com o `pom.xml` e o wrapper (`mvnw.cmd`). Comentários e mensagens do wrapper estão em português; o arquivo `.mvn/jvm.config` pede saída do Maven em pt-BR quando o JDK permitir. Detalhes em `sistema-academico/.mvn/wrapper/LEIA-ME.txt`. Entre na pasta e rode:
+- **Lucas**: Spring Boot, API REST, testes e frontend React
+- **Maria**: schema SQL, domínio, repositories e services (back)
 
-```powershell
-cd sistema-academico
-.\mvnw.cmd test
-.\mvnw.cmd spring-boot:run
+## Domínio
+
+- **Leitor**
+- **Livro**
+- **Empréstimo**
+
+### Regras de negócio (além do CRUD)
+
+1. Não empresta livro sem exemplares disponíveis
+2. Leitor não pode ter mais de **3** empréstimos ativos
+3. Leitor não pode ter dois empréstimos ativos do mesmo livro
+4. Empréstimo já devolvido não pode ser devolvido novamente
+
+## Estrutura
+
+```
+Atividade Final Boss/
+├── pom.xml
+├── database/schema.sql
+├── src/                  # backend Spring Boot
+└── biblioteca-web/       # frontend React (Create React App)
 ```
 
-A API fica em `http://localhost:8080`. Ao encerrar o processo, as matrículas criadas durante a execução deixam de existir.
+## Banco de dados
 
-## Collection do Postman
+Por padrão a aplicação sobe com **H2** (arquivo em `database/biblioteca.mv.db`), para rodar fácil no IntelliJ.
 
-Importe o arquivo local [`postman/Sistema-Academico.postman_collection.json`](postman/Sistema-Academico.postman_collection.json).
+O script oficial da entrega continua sendo MySQL: [database/schema.sql](database/schema.sql).
 
-No Postman: **Import**, **File**, e selecione esse JSON. A variável `baseUrl` já aponta para `http://localhost:8080`.
+### MySQL (profile)
 
-A collection cobre:
+1. Suba o MySQL e execute:
 
-- consulta da matrícula `MAT-001`;
-- consulta do aluno `RA-1001`;
-- criação da matrícula `MAT-010` para a aluna `RA-1003`;
-- consulta da matrícula inexistente `MAT-999`;
-- tentativa de matricular o aluno `RA-1002` de novo em POO, recusada pelo domínio.
-
-A criação usa o código `MAT-010`. Para repetir esse pedido com sucesso, reinicie a aplicação.
-
-## Dados iniciais
-
-| Identificador | Quem | Situação |
-| --- | --- | --- |
-| `RA-1001` | Marina Costa | matrícula `MAT-001` em andamento em POO, turma `ADS-2026-1` (2026/1) |
-| `RA-1002` | Pedro Alves | matrícula `MAT-000` com resultado `APROVADO` em POO, turma `ADS-2025-2` |
-| `RA-1003` | Julia Nunes | sem matrícula; pode cursar POO na turma `ADS-2026-1` |
-
-## Endpoints
-
-`GET /api/matriculas/{codigo}`
-
-Retorna a matrícula. Se o código não existir, responde `404`.
-
-`GET /api/alunos/{identificador}`
-
-O identificador é o RA (`identificadorAcademico`). Se não existir, responde `404`.
-
-`POST /api/matriculas`
-
-Corpo JSON:
-
-```json
-{
-  "codigo": "MAT-010",
-  "identificadorAluno": "RA-1003",
-  "codigoTurma": "ADS-2026-1",
-  "codigoDisciplina": "POO"
-}
+```sql
+CREATE DATABASE biblioteca;
 ```
 
-Sucesso: `201`, com o cabeçalho `Location` apontando para a matrícula criada.
+```bash
+mysql -u root -p biblioteca < database/schema.sql
+```
 
-| Situação | Status |
-| --- | --- |
-| Aluno, turma ou disciplina não encontrados | `404` |
-| Código de matrícula vazio ou outro dado obrigatório em branco | `400` |
-| Aluno já matriculado na oferta, já aprovado na disciplina, ou código de matrícula repetido | `409` |
+2. Ajuste usuário/senha em `src/main/resources/application-mysql.properties`
+3. No IntelliJ, em **Run Configuration → Program arguments**:
 
-## Onde ficam as regras
+```text
+--spring.profiles.active=mysql
+```
 
-A `PontedaApi` (ponte da API) localiza aluno e oferta e chama `OfertaDisciplina.matricular`. Essa classe é quem impede matrícula duplicada na mesma oferta e nova matrícula depois da aprovação. `Aluno.jaAprovadoEm` participa dessa segunda regra. O controller não reimplementa essas decisões.
+Não versionamos senhas reais.
+
+## Executar no IntelliJ
+
+Se você abrir o repositório inteiro, o IntelliJ pode não tratar esta pasta como projeto Java. Sem o Maven linkado, o `application.properties` não entra no classpath e a aplicação falha no DataSource.
+
+1. No painel **Project**, clique com o botão direito em [pom.xml](pom.xml)
+2. Escolha **Add as Maven Project** (ou **Link Maven Project**)
+3. No Maven tool window, clique em **Reload All Maven Projects**
+4. Use **JDK 21+** em **File → Project Structure → Project → SDK**
+5. Confira se `src/main/resources` está marcada como **Resources Root**
+6. Rode a classe `BibliotecaApplication` (Run ▶ ao lado do `main`)
+
+API em `http://localhost:8080`.
+
+### Endpoints principais
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/api/leitores` | Cadastrar leitor |
+| GET | `/api/leitores` | Listar leitores |
+| PUT | `/api/leitores/{id}` | Atualizar leitor |
+| DELETE | `/api/leitores/{id}` | Excluir leitor |
+| POST | `/api/livros` | Cadastrar livro |
+| GET | `/api/livros` | Listar livros |
+| PUT | `/api/livros/{id}` | Atualizar livro |
+| DELETE | `/api/livros/{id}` | Excluir livro |
+| POST | `/api/emprestimos` | Realizar empréstimo |
+| GET | `/api/emprestimos` | Listar empréstimos |
+| POST | `/api/emprestimos/{id}/devolucao` | Devolver livro |
+
+## Frontend (React)
+
+```bash
+cd biblioteca-web
+npm install
+npm start
+```
+
+Abra `http://localhost:3000`. O front consome `http://localhost:8080/api`.
+
+## Camadas
+
+Controller → Service → Domain/Entity → Repository → JPA/Hibernate → Banco (H2 local / MySQL)
