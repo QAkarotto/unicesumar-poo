@@ -20,6 +20,7 @@ function App() {
   const [livroForm, setLivroForm] = useState(LIVRO_VAZIO);
   const [livroEditando, setLivroEditando] = useState(null);
   const [emprestimoForm, setEmprestimoForm] = useState(EMPRESTIMO_VAZIO);
+  const [confirmacao, setConfirmacao] = useState(null);
 
   async function carregarTudo() {
     try {
@@ -46,6 +47,11 @@ function App() {
     }
   }
 
+  // abre o popup de confirmação; a ação só roda se o usuário clicar em Confirmar
+  function confirmar(mensagem, acao) {
+    setConfirmacao({ mensagem, acao });
+  }
+
   function cancelarLeitor() {
     setLeitorEditando(null);
     setLeitorForm(LEITOR_VAZIO);
@@ -58,37 +64,45 @@ function App() {
 
   function salvarLeitor(event) {
     event.preventDefault();
-    executar(async () => {
-      if (leitorEditando) {
-        await api.atualizarLeitor(leitorEditando, leitorForm);
-      } else {
-        await api.criarLeitor(leitorForm);
-      }
-      cancelarLeitor();
-    }, 'Leitor salvo.');
+    const verbo = leitorEditando ? 'atualizar' : 'cadastrar';
+    confirmar('Deseja mesmo ' + verbo + ' este leitor?', () =>
+      executar(async () => {
+        if (leitorEditando) {
+          await api.atualizarLeitor(leitorEditando, leitorForm);
+        } else {
+          await api.criarLeitor(leitorForm);
+        }
+        cancelarLeitor();
+      }, 'Leitor salvo.')
+    );
   }
 
   function salvarLivro(event) {
     event.preventDefault();
-    executar(async () => {
-      if (livroEditando) {
-        await api.atualizarLivro(livroEditando, { titulo: livroForm.titulo, autor: livroForm.autor });
-      } else {
-        await api.criarLivro({ ...livroForm, quantidadeTotal: Number(livroForm.quantidadeTotal) });
-      }
-      cancelarLivro();
-    }, 'Livro salvo.');
+    const verbo = livroEditando ? 'atualizar' : 'cadastrar';
+    confirmar('Deseja mesmo ' + verbo + ' este livro?', () =>
+      executar(async () => {
+        if (livroEditando) {
+          await api.atualizarLivro(livroEditando, { titulo: livroForm.titulo, autor: livroForm.autor });
+        } else {
+          await api.criarLivro({ ...livroForm, quantidadeTotal: Number(livroForm.quantidadeTotal) });
+        }
+        cancelarLivro();
+      }, 'Livro salvo.')
+    );
   }
 
   function salvarEmprestimo(event) {
     event.preventDefault();
-    executar(async () => {
-      await api.criarEmprestimo({
-        leitorId: Number(emprestimoForm.leitorId),
-        livroId: Number(emprestimoForm.livroId),
-      });
-      setEmprestimoForm(EMPRESTIMO_VAZIO);
-    }, 'Empréstimo realizado.');
+    confirmar('Deseja mesmo realizar este empréstimo?', () =>
+      executar(async () => {
+        await api.criarEmprestimo({
+          leitorId: Number(emprestimoForm.leitorId),
+          livroId: Number(emprestimoForm.livroId),
+        });
+        setEmprestimoForm(EMPRESTIMO_VAZIO);
+      }, 'Empréstimo realizado.')
+    );
   }
 
   return (
@@ -111,6 +125,28 @@ function App() {
       </nav>
 
       <ToastContainer position="top-right" autoClose={3000} />
+
+      {confirmacao && (
+        <div className="modal-fundo">
+          <div className="modal">
+            <p>{confirmacao.mensagem}</p>
+            <div className="acoes">
+              <button
+                type="button"
+                onClick={() => {
+                  confirmacao.acao();
+                  setConfirmacao(null);
+                }}
+              >
+                Confirmar
+              </button>
+              <button type="button" className="secundario" onClick={() => setConfirmacao(null)}>
+                Voltar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {aba === 'leitores' && (
         <section className="painel">
@@ -136,7 +172,7 @@ function App() {
             <div className="acoes">
               <button type="submit">{leitorEditando ? 'Atualizar' : 'Cadastrar'}</button>
               {leitorEditando && (
-                <button type="button" className="secundario" onClick={cancelarLeitor}>
+                <button type="button" className="secundario" onClick={() => confirmar('Deseja mesmo sair da edição? As alterações serão perdidas.', cancelarLeitor)}>
                   Cancelar
                 </button>
               )}
@@ -172,7 +208,11 @@ function App() {
                     <button
                       type="button"
                       className="perigo"
-                      onClick={() => executar(() => api.excluirLeitor(leitor.id), 'Leitor excluído.')}
+                      onClick={() =>
+                        confirmar('Deseja mesmo excluir este leitor?', () =>
+                          executar(() => api.excluirLeitor(leitor.id), 'Leitor excluído.')
+                        )
+                      }
                     >
                       Excluir
                     </button>
@@ -228,7 +268,7 @@ function App() {
             <div className="acoes">
               <button type="submit">{livroEditando ? 'Atualizar' : 'Cadastrar'}</button>
               {livroEditando && (
-                <button type="button" className="secundario" onClick={cancelarLivro}>
+                <button type="button" className="secundario" onClick={() => confirmar('Deseja mesmo sair da edição? As alterações serão perdidas.', cancelarLivro)}>
                   Cancelar
                 </button>
               )}
@@ -270,7 +310,11 @@ function App() {
                     <button
                       type="button"
                       className="perigo"
-                      onClick={() => executar(() => api.excluirLivro(livro.id), 'Livro excluído.')}
+                      onClick={() =>
+                        confirmar('Deseja mesmo excluir este livro?', () =>
+                          executar(() => api.excluirLivro(livro.id), 'Livro excluído.')
+                        )
+                      }
                     >
                       Excluir
                     </button>
@@ -347,7 +391,11 @@ function App() {
                     {item.situacao === 'ATIVO' && (
                       <button
                         type="button"
-                        onClick={() => executar(() => api.devolverEmprestimo(item.id), 'Devolução registrada.')}
+                        onClick={() =>
+                          confirmar('Deseja mesmo registrar a devolução?', () =>
+                            executar(() => api.devolverEmprestimo(item.id), 'Devolução registrada.')
+                          )
+                        }
                       >
                         Devolver
                       </button>
