@@ -1,0 +1,130 @@
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 2rem;
+}
+
+header p {
+  margin: 0 0 1.5rem;
+  color: #445;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.tab {
+  border: 1px solid #c9d2e0;
+  background: #fff;
+  color: #223;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #1f4b99;
+  border-color: #1f4b99;
+  color: #fff;
+}
+
+.painel {
+  background: #fff;
+  border: 1px solid #d7dee8;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.form {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 480px;
+  margin-bottom: 1.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+input,
+select {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #c9d2e0;
+  border-radius: 8px;
+}
+
+button {
+  border: none;
+  background: #1f4b99;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+}
+
+button.secundario {
+  background: #6b778a;
+}
+
+button.perigo {
+  background: #b42318;
+}
+
+.acoes,
+.acoes-linha {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e4ebf3;
+  text-align: left;
+  padding: 0.65rem 0.4rem;
+  vertical-align: top;
+}
+
+.alert {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+}
+
+.alert.erro {
+  background: #fde8e6;
+  color: #8a1c12;
+}
+
+.alert.sucesso {
+  background: #e7f6ed;
+  color: #146c2e;
+}
+
+@media (max-width: 720px) {
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}
