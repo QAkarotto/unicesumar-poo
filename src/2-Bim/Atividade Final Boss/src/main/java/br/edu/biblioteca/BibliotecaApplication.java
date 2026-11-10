@@ -1,12 +1,12 @@
-package br.edu.sistemaacademico;
+package br.edu.biblioteca;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SistemaAcademicoApplication {
+public class BibliotecaApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SistemaAcademicoApplication.class, args);
+        SpringApplication.run(BibliotecaApplication.class, args);
     }
 }
