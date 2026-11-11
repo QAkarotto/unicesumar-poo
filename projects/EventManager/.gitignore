@@ -1,0 +1,38 @@
+
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.war
+*.log
+
+# Node.js / React
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Arquivos de configuração local
+application-local.properties
+application-local.yml
+
+# VS Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
