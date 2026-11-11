@@ -21,6 +21,19 @@ function App() {
   const [livroEditando, setLivroEditando] = useState(null);
   const [emprestimoForm, setEmprestimoForm] = useState(EMPRESTIMO_VAZIO);
   const [confirmacao, setConfirmacao] = useState(null);
+  const [dicas, setDicas] = useState({});
+
+  // tooltip que aparece quando o campo é obrigatório
+  function obrigatorio(chave, mensagem) {
+    return {
+      onInvalid: (e) => {
+        e.preventDefault();
+        if (e.target.form.querySelector(':invalid') === e.target) e.target.focus();
+        setDicas((atual) => ({ ...atual, [chave]: mensagem }));
+      },
+      'data-dica': chave,
+    };
+  }
 
   async function carregarTudo() {
     try {
@@ -36,7 +49,7 @@ function App() {
     carregarTudo();
   }, []);
 
-  // roda a ação, mostra a mensagem e recarrega as listas
+  // executa a ação, mostra a mensagem e recarrega as listas
   async function executar(acao, mensagem) {
     try {
       await acao();
@@ -47,17 +60,30 @@ function App() {
     }
   }
 
-  // abre o popup de confirmação; a ação só roda se o usuário clicar em Confirmar
+  // Mostra o popup de confirmação; a ação só roda se o usuário clicar em Confirmar e/ou Cancelar
   function confirmar(mensagem, acao) {
     setConfirmacao({ mensagem, acao });
   }
 
+  // ajusta a dica quando o usuário digita no campo ou troca de aba ou abre um menu diferente
+  function limparDica(e) {
+    const chave = e.target.dataset.dica;
+    if (chave) setDicas((atual) => ({ ...atual, [chave]: '' }));
+  }
+
+  function trocarAba(nova) {
+    setDicas({});
+    setAba(nova);
+  }
+
   function cancelarLeitor() {
+    setDicas({});
     setLeitorEditando(null);
     setLeitorForm(LEITOR_VAZIO);
   }
 
   function cancelarLivro() {
+    setDicas({});
     setLivroEditando(null);
     setLivroForm(LIVRO_VAZIO);
   }
@@ -113,13 +139,13 @@ function App() {
       </header>
 
       <nav className="tabs">
-        <button type="button" className={aba === 'leitores' ? 'tab active' : 'tab'} onClick={() => setAba('leitores')}>
+        <button type="button" className={aba === 'leitores' ? 'tab active' : 'tab'} onClick={() => trocarAba('leitores')}>
           Leitores
         </button>
-        <button type="button" className={aba === 'livros' ? 'tab active' : 'tab'} onClick={() => setAba('livros')}>
+        <button type="button" className={aba === 'livros' ? 'tab active' : 'tab'} onClick={() => trocarAba('livros')}>
           Livros
         </button>
-        <button type="button" className={aba === 'emprestimos' ? 'tab active' : 'tab'} onClick={() => setAba('emprestimos')}>
+        <button type="button" className={aba === 'emprestimos' ? 'tab active' : 'tab'} onClick={() => trocarAba('emprestimos')}>
           Empréstimos
         </button>
       </nav>
@@ -151,14 +177,16 @@ function App() {
       {aba === 'leitores' && (
         <section className="painel">
           <h2>{leitorEditando ? 'Editar leitor' : 'Cadastrar leitor'}</h2>
-          <form onSubmit={salvarLeitor} className="form">
+          <form onSubmit={salvarLeitor} onChange={limparDica} className="form">
             <label>
               Nome
               <input
                 value={leitorForm.nome}
                 onChange={(e) => setLeitorForm({ ...leitorForm, nome: e.target.value })}
                 required
+                {...obrigatorio('leitorNome', 'Informe o nome do leitor.')}
               />
+              {dicas.leitorNome && <span className="dica">{dicas.leitorNome}</span>}
             </label>
             <label>
               E-mail
@@ -167,7 +195,9 @@ function App() {
                 value={leitorForm.email}
                 onChange={(e) => setLeitorForm({ ...leitorForm, email: e.target.value })}
                 required
+                {...obrigatorio('email', 'Informe um e-mail válido (ex: nome@email.com).')}
               />
+              {dicas.email && <span className="dica">{dicas.email}</span>}
             </label>
             <div className="acoes">
               <button type="submit">{leitorEditando ? 'Atualizar' : 'Cadastrar'}</button>
@@ -199,6 +229,7 @@ function App() {
                     <button
                       type="button"
                       onClick={() => {
+                        setDicas({});
                         setLeitorEditando(leitor.id);
                         setLeitorForm({ nome: leitor.nome, email: leitor.email });
                       }}
@@ -227,15 +258,17 @@ function App() {
       {aba === 'livros' && (
         <section className="painel">
           <h2>{livroEditando ? 'Editar livro' : 'Cadastrar livro'}</h2>
-          <form onSubmit={salvarLivro} className="form">
+          <form onSubmit={salvarLivro} onChange={limparDica} className="form">
             <label>
               ISBN
               <input
                 value={livroForm.isbn}
                 onChange={(e) => setLivroForm({ ...livroForm, isbn: e.target.value })}
                 required
+                {...obrigatorio('isbn', 'Informe o ISBN do livro.')}
                 disabled={livroEditando !== null}
               />
+              {dicas.isbn && <span className="dica">{dicas.isbn}</span>}
             </label>
             <label>
               Título
@@ -243,7 +276,9 @@ function App() {
                 value={livroForm.titulo}
                 onChange={(e) => setLivroForm({ ...livroForm, titulo: e.target.value })}
                 required
+                {...obrigatorio('titulo', 'Informe o título do livro.')}
               />
+              {dicas.titulo && <span className="dica">{dicas.titulo}</span>}
             </label>
             <label>
               Autor
@@ -251,7 +286,9 @@ function App() {
                 value={livroForm.autor}
                 onChange={(e) => setLivroForm({ ...livroForm, autor: e.target.value })}
                 required
+                {...obrigatorio('autor', 'Informe o autor do livro.')}
               />
+              {dicas.autor && <span className="dica">{dicas.autor}</span>}
             </label>
             {!livroEditando && (
               <label>
@@ -262,8 +299,10 @@ function App() {
                   value={livroForm.quantidadeTotal}
                   onChange={(e) => setLivroForm({ ...livroForm, quantidadeTotal: e.target.value })}
                   required
+                  {...obrigatorio('quantidade', 'Informe a quantidade (mínimo 1).')}
                 />
-              </label>
+                {dicas.quantidade && <span className="dica">{dicas.quantidade}</span>}
+            </label>
             )}
             <div className="acoes">
               <button type="submit">{livroEditando ? 'Atualizar' : 'Cadastrar'}</button>
@@ -301,6 +340,7 @@ function App() {
                     <button
                       type="button"
                       onClick={() => {
+                        setDicas({});
                         setLivroEditando(livro.id);
                         setLivroForm(livro);
                       }}
@@ -329,13 +369,14 @@ function App() {
       {aba === 'emprestimos' && (
         <section className="painel">
           <h2>Novo empréstimo</h2>
-          <form onSubmit={salvarEmprestimo} className="form">
+          <form onSubmit={salvarEmprestimo} onChange={limparDica} className="form">
             <label>
               Leitor
               <select
                 value={emprestimoForm.leitorId}
                 onChange={(e) => setEmprestimoForm({ ...emprestimoForm, leitorId: e.target.value })}
                 required
+                {...obrigatorio('leitorId', 'Selecione um leitor.')}
               >
                 <option value="">Selecione</option>
                 {leitores.map((leitor) => (
@@ -344,6 +385,7 @@ function App() {
                   </option>
                 ))}
               </select>
+              {dicas.leitorId && <span className="dica">{dicas.leitorId}</span>}
             </label>
             <label>
               Livro
@@ -351,6 +393,7 @@ function App() {
                 value={emprestimoForm.livroId}
                 onChange={(e) => setEmprestimoForm({ ...emprestimoForm, livroId: e.target.value })}
                 required
+                {...obrigatorio('livroId', 'Selecione um livro.')}
               >
                 <option value="">Selecione</option>
                 {livros.map((livro) => (
@@ -359,6 +402,7 @@ function App() {
                   </option>
                 ))}
               </select>
+              {dicas.livroId && <span className="dica">{dicas.livroId}</span>}
             </label>
             <button type="submit">Emprestar</button>
           </form>
