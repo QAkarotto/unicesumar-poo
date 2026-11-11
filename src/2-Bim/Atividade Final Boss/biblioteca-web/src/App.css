@@ -29,6 +29,14 @@ header p {
   cursor: pointer;
 }
 
+.tab:hover {
+  background: #e8eefa;
+}
+
+.tab.active:hover {
+  background: #163a78;
+}
+
 .tab.active {
   background: #1f4b99;
   border-color: #1f4b99;
@@ -75,14 +83,27 @@ button {
   border-radius: 8px;
   padding: 0.55rem 0.9rem;
   cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #163a78;
 }
 
 button.secundario {
   background: #6b778a;
 }
 
+button.secundario:hover {
+  background: #4d5766;
+}
+
 button.perigo {
   background: #b42318;
+}
+
+button.perigo:hover {
+  background: #8a1a11;
 }
 
 .acoes,
@@ -124,9 +145,24 @@ td {
 }
 
 .modal {
-  max-width: 360px;
-  padding: 1.5rem;
+  width: 90%;
+  max-width: 380px;
+  padding: 1.75rem 1.5rem;
+  text-align: center;
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.modal p {
+  margin: 0 0 1.25rem;
+  font-size: 1.05rem;
+}
+
+.modal .acoes {
+  justify-content: center;
+}
+
+.modal button {
+  min-width: 110px;
 }
