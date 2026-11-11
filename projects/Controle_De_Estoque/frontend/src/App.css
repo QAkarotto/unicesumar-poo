@@ -1,0 +1,283 @@
+.botao {
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--raio);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botao--primario {
+  background: var(--cor-primaria);
+  color: #fff;
+}
+
+.botao--primario:hover {
+  background: var(--cor-primaria-escura);
+}
+
+.botao--secundario {
+  background: #fff;
+  border-color: var(--cor-borda);
+  color: var(--cor-texto);
+}
+
+.botao--secundario:hover {
+  background: var(--cor-fundo);
+}
+
+.botao--perigo {
+  background: var(--cor-perigo);
+  color: #fff;
+}
+
+.botao--perigo:hover {
+  background: var(--cor-perigo-escura);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  flex: 1;
+}
+
+.campo__rotulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.campo__controle {
+  padding: 8px 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  font: inherit;
+  background: #fff;
+}
+
+.campo__controle:focus {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: -1px;
+}
+
+.campo__controle:disabled {
+  background: var(--cor-fundo);
+  color: var(--cor-texto-suave);
+}
+
+.formulario__campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.formulario__acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.tabela__rolagem {
+  overflow-x: auto;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela th,
+.tabela td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--cor-borda);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabela th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+.tabela__vazia {
+  padding: 16px 0;
+  color: var(--cor-texto-suave);
+}
+
+.tabela__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* número e etiqueta na mesma linha, alinhados ao centro */
+.tabela__saldo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirmacao {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 10;
+}
+
+.confirmacao__caixa {
+  width: min(420px, 90vw);
+  padding: 24px;
+  background: #fff;
+  border-radius: var(--raio);
+}
+
+.confirmacao__titulo {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.confirmacao__pergunta {
+  margin-bottom: 20px;
+}
+
+.confirmacao__acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Etiqueta de status: estática (não anima, é só leitura). Fundo branco 2% mais escuro e borda 6% mais escura;
+   a cor da variante fica só no ponto, para ler o estado sem depender do fundo */
+.etiqueta {
+  --etiqueta-cor: #7a8696;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 8px;
+  border: 1px solid #f0f0f0; /* branco 6% mais escuro */
+  border-radius: 999px;
+  background: #fafafa; /* branco 2% mais escuro */
+  color: var(--cor-texto);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.etiqueta::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--etiqueta-cor);
+}
+
+.etiqueta--sucesso {
+  --etiqueta-cor: #2e9e57;
+}
+
+.etiqueta--alerta {
+  --etiqueta-cor: #d9920b;
+}
+
+.etiqueta--perigo {
+  --etiqueta-cor: #c93a3a;
+}
+
+.secao {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+}
+
+.secao__titulo {
+  margin-bottom: 16px;
+  font-size: 1.05rem;
+}
+
+.navegacao {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--cor-borda);
+}
+
+.navegacao__item {
+  padding: 10px 16px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.navegacao__item:hover {
+  color: var(--cor-texto);
+}
+
+.navegacao__item--ativo {
+  border-bottom-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+.logs__nota {
+  margin-bottom: 12px;
+  color: var(--cor-texto-suave);
+}
+
+/* Toast (react-toastify): card limpo, sem ícone, cor do tipo na faixa lateral e na barra de progresso */
+.Toastify__toast {
+  --toast-cor: var(--cor-texto-suave);
+  min-height: 0;
+  padding: 4px 0 4px 4px;
+  background: #fff;
+  color: var(--cor-texto);
+  font-family: inherit;
+  font-size: 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  box-shadow:
+    inset 3px 0 0 var(--toast-cor),
+    0 4px 12px rgb(28 36 48 / 0.1),
+    0 1px 3px rgb(28 36 48 / 0.08);
+}
+
+.Toastify__toast--success {
+  --toast-cor: #2e9e57;
+}
+
+.Toastify__toast--error {
+  --toast-cor: var(--cor-perigo);
+}
+
+.Toastify__toast-icon {
+  display: none;
+}
+
+.Toastify__close-button {
+  color: var(--cor-texto-suave);
+  opacity: 0.6;
+  transition: opacity 150ms ease;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
+}
+
+.Toastify__toast .Toastify__progress-bar {
+  height: 2px;
+  background: var(--toast-cor);
+  opacity: 0.45;
+}
