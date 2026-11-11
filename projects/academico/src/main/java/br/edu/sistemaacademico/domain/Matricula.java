@@ -1,11 +1,36 @@
 package br.edu.sistemaacademico.domain;
 
-public final class Matricula {
-    private final String codigo;
-    private final Aluno aluno;
-    private final OfertaDisciplina ofertaDisciplina;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "matricula")
+public class Matricula {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "codigo", length = 50, nullable = false, unique = true)
+    private String codigo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "aluno_ra", nullable = false)
+    private Aluno aluno;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "oferta_id", nullable = false)
+    private OfertaDisciplina ofertaDisciplina;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "situacao", length = 30, nullable = false)
     private SituacaoMatricula situacao = SituacaoMatricula.ATIVA;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "resultado", length = 30)
     private ResultadoAcademico resultadoAcademico;
+
+    protected Matricula() {
+    }
 
     public Matricula(String codigo, Aluno aluno, Turma turma) {
         this(codigo, aluno, obterOfertaDaTurma(turma));
@@ -33,6 +58,10 @@ public final class Matricula {
         aluno.registrarMatricula(this);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getCodigo() {
         return codigo;
     }
@@ -42,6 +71,10 @@ public final class Matricula {
     }
 
     public OfertaDisciplina getOfertaDisciplina() {
+        return ofertaDisciplina;
+    }
+
+    public OfertaDisciplina getOferta() {
         return ofertaDisciplina;
     }
 
@@ -77,7 +110,7 @@ public final class Matricula {
         situacao = SituacaoMatricula.CANCELADA;
     }
 
-    boolean foiAprovadoEm(Disciplina disciplina) {
+    public boolean foiAprovadoEm(Disciplina disciplina) {
         return resultadoAcademico == ResultadoAcademico.APROVADO
                 && ofertaDisciplina.getDisciplina().equals(disciplina);
     }

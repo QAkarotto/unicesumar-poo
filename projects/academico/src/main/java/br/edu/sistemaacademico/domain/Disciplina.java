@@ -1,11 +1,27 @@
 package br.edu.sistemaacademico.domain;
 
+import jakarta.persistence.*;
 import java.util.Objects;
 
-public final class Disciplina {
-    private final String codigo;
-    private final String nome;
-    private final int cargaHoraria;
+@Entity
+@Table(name = "disciplina")
+public class Disciplina {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "codigo", length = 30, nullable = false, unique = true)
+    private String codigo;
+
+    @Column(name = "nome", length = 150, nullable = false)
+    private String nome;
+
+    @Column(name = "carga_horaria", nullable = false)
+    private int cargaHoraria;
+
+    protected Disciplina() {
+    }
 
     public Disciplina(String codigo, String nome, int cargaHoraria) {
         this.codigo = validarTexto(codigo, "O código da disciplina é obrigatório.");
@@ -14,6 +30,10 @@ public final class Disciplina {
             throw new IllegalArgumentException("A carga horária deve ser positiva.");
         }
         this.cargaHoraria = cargaHoraria;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getCodigo() {
@@ -43,7 +63,7 @@ public final class Disciplina {
         if (!(outro instanceof Disciplina disciplina)) {
             return false;
         }
-        return codigo.equals(disciplina.codigo);
+        return Objects.equals(codigo, disciplina.codigo);
     }
 
     @Override

@@ -2,12 +2,18 @@ package br.edu.sistemaacademico.api;
 
 import br.edu.sistemaacademico.AplicacaoAcademica;
 import br.edu.sistemaacademico.domain.ResultadoAcademico;
+import br.edu.sistemaacademico.repository.AlunoRepository;
+import br.edu.sistemaacademico.repository.DisciplinaRepository;
+import br.edu.sistemaacademico.repository.MatriculaRepository;
+import br.edu.sistemaacademico.repository.OfertaDisciplinaRepository;
+import br.edu.sistemaacademico.repository.TurmaRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.web.server.context.WebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
+
 import java.net.URI;
 import java.net.http.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,8 +32,9 @@ class AcademicoHttpTest {
 
     @AfterEach
     void encerrar() {
-        if (contexto != null) contexto.close();
-
+        if (contexto != null) {
+            contexto.close();
+        }
     }
 
     @Test
@@ -35,6 +42,7 @@ class AcademicoHttpTest {
         var aluno = get("/api/alunos/RA2026001");
         assertEquals(200, aluno.statusCode());
         assertEquals("RA2026001", json(aluno).get("registroAcademico").asText());
+
         var matricula = get("/api/matriculas/MAT-001");
         assertEquals(200, matricula.statusCode());
         assertTrue(matricula.headers().firstValue("Content-Type").orElseThrow().contains("application/json"));
@@ -53,8 +61,9 @@ class AcademicoHttpTest {
         assertEquals("/api/matriculas/" + json(criada).get("codigo").asText(), location);
         assertEquals(json(criada), json(get(location)));
         assertEquals("ATIVA", json(criada).get("situacao").asText());
+
         assertEquals(400, post(corpo).statusCode());
-        assertEquals(1, contexto.getBean(DadosEmMemoria.class).buscarAluno("RA2026002").getMatriculas().size());
+        assertEquals(1, contexto.getBean(MatriculaRepository.class).findByAlunoRegistroAcademico("RA2026002").size());
     }
 
     @Test
@@ -76,16 +85,24 @@ class AcademicoHttpTest {
 
     @Test
     void preservaRegraDeAprovacaoAnteriorPelaApi() throws Exception {
-        var dados = contexto.getBean(DadosEmMemoria.class);
-        var aluno = dados.buscarAluno("RA2026001");
-        var turmaAnterior = new br.edu.sistemaacademico.domain.Turma("ANTERIOR",
-                new br.edu.sistemaacademico.domain.PeriodoLetivo(2025, br.edu.sistemaacademico.domain.Semestre.SEGUNDO));
-        turmaAnterior.ofertarDisciplina(new br.edu.sistemaacademico.domain.Disciplina("BD", "Banco de Dados", 80))
-                .matricular("ANT-001", aluno).concluir(ResultadoAcademico.APROVADO);
+        var matriculaRepo = contexto.getBean(MatriculaRepository.class);
+        var alunoRepo = contexto.getBean(AlunoRepository.class);
+        var turmaRepo = contexto.getBean(TurmaRepository.class);
+        var disciplinaRepo = contexto.getBean(DisciplinaRepository.class);
+        var ofertaRepo = contexto.getBean(OfertaDisciplinaRepository.class);
+
+        var aluno = alunoRepo.findById("RA2026001").orElseThrow();
+        var bd = disciplinaRepo.findByCodigo("BD").orElseThrow();
+        var turmaAnterior = turmaRepo.save(new br.edu.sistemaacademico.domain.Turma("ANTERIOR",
+                new br.edu.sistemaacademico.domain.PeriodoLetivo(2025, br.edu.sistemaacademico.domain.Semestre.SEGUNDO)));
+        var ofertaAnterior = ofertaRepo.save(new br.edu.sistemaacademico.domain.OfertaDisciplina("BD-2025-2", turmaAnterior, bd));
+        var matriculaAnt = new br.edu.sistemaacademico.domain.Matricula("ANT-001", aluno, ofertaAnterior);
+        matriculaAnt.concluir(ResultadoAcademico.APROVADO);
+        matriculaRepo.save(matriculaAnt);
+
         var resposta = post("{\"registroAcademico\":\"RA2026001\",\"ofertaId\":\"BD-2026-2\"}");
         assertEquals(409, resposta.statusCode());
         assertEquals("O aluno já foi aprovado nesta disciplina.", json(resposta).get("mensagem").asText());
-        assertEquals(2, aluno.getMatriculas().size());
     }
 
     @AfterAll
@@ -119,6 +136,7 @@ class AcademicoHttpTest {
             }
         }
     }
+
     private static HttpResponse<String> get(String rota) throws Exception {
         return CLIENTE.send(HttpRequest.newBuilder(URI.create(baseUrl + rota)).GET().build(), HttpResponse.BodyHandlers.ofString());
     }

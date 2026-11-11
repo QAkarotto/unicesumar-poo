@@ -1,10 +1,23 @@
 package br.edu.sistemaacademico.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import java.util.Objects;
 
-public final class PeriodoLetivo {
-    private final int ano;
-    private final Semestre semestre;
+@Embeddable
+public class PeriodoLetivo {
+
+    @Column(name = "ano", nullable = false)
+    private int ano;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "semestre", nullable = false, length = 20)
+    private Semestre semestre;
+
+    protected PeriodoLetivo() {
+    }
 
     public PeriodoLetivo(int ano, Semestre semestre) {
         if (ano <= 0) {
@@ -44,6 +57,6 @@ public final class PeriodoLetivo {
 
     @Override
     public String toString() {
-        return ano + "/" + semestre.getNumero();
+        return ano + "/" + (semestre != null ? semestre.getNumero() : "");
     }
 }

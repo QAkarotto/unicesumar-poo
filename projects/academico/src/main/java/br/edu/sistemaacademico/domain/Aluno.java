@@ -1,14 +1,29 @@
 package br.edu.sistemaacademico.domain;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class Aluno {
-    private final String registroAcademico;
-    private final String nome;
+@Entity
+@Table(name = "aluno")
+public class Aluno {
+
+    @Id
+    @Column(name = "registro_academico", length = 30, nullable = false)
+    private String registroAcademico;
+
+    @Column(name = "nome", length = 150, nullable = false)
+    private String nome;
+
+    @Column(name = "email", length = 150, nullable = false)
     private String email;
-    private final List<Matricula> matriculas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "aluno", fetch = FetchType.EAGER)
+    private List<Matricula> matriculas = new ArrayList<>();
+
+    protected Aluno() {
+    }
 
     public Aluno(String registroAcademico, String nome, String email) {
         this.registroAcademico = validarTexto(
@@ -39,7 +54,7 @@ public final class Aluno {
         return List.copyOf(matriculas);
     }
 
-    void validarNovaMatricula(OfertaDisciplina oferta) {
+    public void validarNovaMatricula(OfertaDisciplina oferta) {
         boolean jaAprovado = matriculas.stream()
                 .anyMatch(matricula -> matricula.foiAprovadoEm(oferta.getDisciplina()));
 
@@ -50,8 +65,12 @@ public final class Aluno {
         }
     }
 
-    void registrarMatricula(Matricula matricula) {
+    public void registrarMatricula(Matricula matricula) {
         matriculas.add(matricula);
+    }
+
+    public void removerMatricula(Matricula matricula) {
+        matriculas.remove(matricula);
     }
 
     private void alterarEmail(String email) {
@@ -76,7 +95,7 @@ public final class Aluno {
         if (!(outro instanceof Aluno aluno)) {
             return false;
         }
-        return registroAcademico.equals(aluno.registroAcademico);
+        return Objects.equals(registroAcademico, aluno.registroAcademico);
     }
 
     @Override

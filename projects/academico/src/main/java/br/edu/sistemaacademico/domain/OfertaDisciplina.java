@@ -1,25 +1,68 @@
 package br.edu.sistemaacademico.domain;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class OfertaDisciplina {
-    private final Turma turma;
-    private final Disciplina disciplina;
-    private final List<Matricula> matriculas = new ArrayList<>();
+@Entity
+@Table(name = "oferta_disciplina")
+public class OfertaDisciplina {
 
-    OfertaDisciplina(Turma turma, Disciplina disciplina) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "codigo", length = 50, nullable = false, unique = true)
+    private String codigo;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "turma_id", nullable = false)
+    private Turma turma;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "disciplina_id", nullable = false)
+    private Disciplina disciplina;
+
+    @OneToMany(mappedBy = "ofertaDisciplina", fetch = FetchType.EAGER)
+    private List<Matricula> matriculas = new ArrayList<>();
+
+    protected OfertaDisciplina() {
+    }
+
+    public OfertaDisciplina(Turma turma, Disciplina disciplina) {
+        this(disciplina.getCodigo() + "-" + turma.getPeriodoLetivo().getAno() + "-" + turma.getPeriodoLetivo().getSemestre().getNumero(), turma, disciplina);
+    }
+
+    public OfertaDisciplina(String codigo, Turma turma, Disciplina disciplina) {
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException("O código da oferta é obrigatório.");
+        }
+        if (turma == null) {
+            throw new IllegalArgumentException("A turma é obrigatória.");
+        }
+        if (disciplina == null) {
+            throw new IllegalArgumentException("A disciplina é obrigatória.");
+        }
+        this.codigo = codigo.trim();
         this.turma = turma;
         this.disciplina = disciplina;
     }
 
-    public Matricula matricular(Aluno aluno) {
-        var codigo = "MAT-" + (matriculas.size() + 1);
-        return matricular(codigo, aluno);
+    public Long getId() {
+        return id;
     }
 
-    public Matricula matricular(String codigo, Aluno aluno) {
-        return new Matricula(codigo, aluno, this);
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public Matricula matricular(Aluno aluno) {
+        var codigoMatricula = "MAT-" + (matriculas.size() + 1);
+        return matricular(codigoMatricula, aluno);
+    }
+
+    public Matricula matricular(String codigoMatricula, Aluno aluno) {
+        return new Matricula(codigoMatricula, aluno, this);
     }
 
     public Turma getTurma() {
@@ -34,7 +77,15 @@ public final class OfertaDisciplina {
         return List.copyOf(matriculas);
     }
 
-    void validarNovaMatricula(Aluno aluno) {
+    public void registrarMatricula(Matricula matricula) {
+        matriculas.add(matricula);
+    }
+
+    public void removerMatricula(Matricula matricula) {
+        matriculas.remove(matricula);
+    }
+
+    public void validarNovaMatricula(Aluno aluno) {
         boolean alunoJaMatriculado = matriculas.stream()
                 .anyMatch(matricula -> matricula.getAluno().equals(aluno));
 
@@ -45,12 +96,8 @@ public final class OfertaDisciplina {
         }
     }
 
-    void registrarMatricula(Matricula matricula) {
-        matriculas.add(matricula);
-    }
-
     @Override
     public String toString() {
-        return disciplina.getCodigo() + " - " + turma;
+        return (codigo != null ? codigo : disciplina.getCodigo()) + " - " + turma;
     }
 }

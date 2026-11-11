@@ -1,12 +1,28 @@
 package br.edu.sistemaacademico.domain;
 
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Turma {
-    private final String codigo;
-    private final PeriodoLetivo periodoLetivo;
-    private final List<OfertaDisciplina> ofertas = new ArrayList<>();
+@Entity
+@Table(name = "turma")
+public class Turma {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "codigo", length = 50, nullable = false)
+    private String codigo;
+
+    @Embedded
+    private PeriodoLetivo periodoLetivo;
+
+    @OneToMany(mappedBy = "turma", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<OfertaDisciplina> ofertas = new ArrayList<>();
+
+    protected Turma() {
+    }
 
     public Turma(String codigo, PeriodoLetivo periodoLetivo) {
         if (codigo == null || codigo.isBlank()) {
@@ -23,6 +39,10 @@ public final class Turma {
     public Turma(String codigo, Disciplina disciplina, PeriodoLetivo periodoLetivo) {
         this(codigo, periodoLetivo);
         ofertarDisciplina(disciplina);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public OfertaDisciplina ofertarDisciplina(Disciplina disciplina) {
@@ -55,7 +75,7 @@ public final class Turma {
         return List.copyOf(ofertas);
     }
 
-    OfertaDisciplina obterUnicaOferta() {
+    public OfertaDisciplina obterUnicaOferta() {
         if (ofertas.size() != 1) {
             throw new IllegalStateException(
                     "A turma deve possuir uma única oferta para esta operação."
