@@ -5,9 +5,8 @@ Aplicação full stack de e-commerce de jogos: **ReactJS → API REST (Spring Bo
 ## Integrantes
 
 - Arthur Pacher Santos (ESOFT4S-NA)
-- [nome da colega] (ESOFT4S-NA)
+- Ketely Horns (ESOFT4S-NA)
 
-> Atividade feita em dupla, com autorização do professor.
 
 ## Tema e objetivo
 
