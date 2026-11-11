@@ -22,9 +22,18 @@ public class Livro {
     protected Livro() {}
 
     public Livro(String titulo, String autor, String isbn) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.isbn = isbn;
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException("O título do livro é obrigatório.");
+        }
+        if (autor == null || autor.isBlank()) {
+            throw new IllegalArgumentException("O autor do livro é obrigatório.");
+        }
+        if (isbn == null || isbn.isBlank()) {
+            throw new IllegalArgumentException("O ISBN do livro é obrigatório.");
+        }
+        this.titulo = titulo.trim();
+        this.autor = autor.trim();
+        this.isbn = isbn.trim();
     }
 
     public Long getId() { return id; }

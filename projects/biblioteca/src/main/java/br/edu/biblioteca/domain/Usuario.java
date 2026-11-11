@@ -19,8 +19,14 @@ public class Usuario {
     protected Usuario() {}
 
     public Usuario(String nome, String email) {
-        this.nome = nome;
-        this.email = email;
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("O nome do usuário é obrigatório.");
+        }
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("O e-mail do usuário é inválido.");
+        }
+        this.nome = nome.trim();
+        this.email = email.trim();
     }
 
     public Long getId() { return id; }

@@ -1,3 +1,4 @@
+
 package br.edu.biblioteca.service;
 
 import br.edu.biblioteca.domain.Emprestimo;
@@ -8,7 +9,10 @@ import br.edu.biblioteca.exception.RecursoNaoEncontradoException;
 import br.edu.biblioteca.repository.EmprestimoRepository;
 import br.edu.biblioteca.repository.LivroRepository;
 import br.edu.biblioteca.repository.UsuarioRepository;
+
 import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,8 +43,11 @@ public class EmprestimoService {
         Livro livro = livros.findById(livroId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado: " + livroId));
 
-        long ativosDoUsuario = emprestimos.countByUsuarioIdAndSituacao(usuarioId, SituacaoEmprestimo.ATIVO);
-        boolean livroEmprestado = emprestimos.existsByLivroIdAndSituacao(livroId, SituacaoEmprestimo.ATIVO);
+        long ativosDoUsuario = emprestimos.countByUsuarioIdAndSituacao(
+                usuarioId, SituacaoEmprestimo.ATIVO);
+
+        boolean livroEmprestado = emprestimos.existsByLivroIdAndSituacao(
+                livroId, SituacaoEmprestimo.ATIVO);
 
         Emprestimo.validarNovo(ativosDoUsuario, livroEmprestado);
 
@@ -58,5 +65,10 @@ public class EmprestimoService {
     public Emprestimo buscar(Long id) {
         return emprestimos.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Empréstimo não encontrado: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Emprestimo> listar() {
+        return emprestimos.findAll();
     }
 }
