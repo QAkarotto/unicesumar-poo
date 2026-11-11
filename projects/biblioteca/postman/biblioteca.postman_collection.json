@@ -1,0 +1,141 @@
+{
+  "info": {
+    "_postman_id": "4a1f18bd-4c4b-450f-95f9-ee83b9a79ca4",
+    "name": "Biblioteca - Emprestimos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58767412",
+    "_collection_link": "https://go.postman.co/collection/58767412-4a1f18bd-4c4b-450f-95f9-ee83b9a79ca4?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Criar emprestimo",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"usuarioId\":1,\"livroId\":1}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/emprestimos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "emprestimos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar emprestimo usuario inexistente",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"usuarioId\":99,\"livroId\":2}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/emprestimos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "emprestimos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Devolver emprestimo",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/emprestimos/1/devolucao",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "emprestimos",
+            "1",
+            "devolucao"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Consultar emprestimo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/emprestimos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "emprestimos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Criar emprestimo dados invalidos",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"usuarioId\":null,\"livroId\":1}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/emprestimos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "emprestimos"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
