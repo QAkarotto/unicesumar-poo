@@ -1,0 +1,32 @@
+const paths = {
+  home: 'm3 10 9-7 9 7M5 9v12h14V9M9 21v-8h6v8',
+  menu: 'M4 6h16M4 12h16M4 18h16',
+  close: 'M5 5l14 14M19 5 5 19',
+  trophy: 'M8 3h8v6a4 4 0 0 1-8 0V3ZM8 5H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4m-4 1v7m-5 1h10',
+  plus: 'M12 4v16M4 12h16',
+  user: 'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM4 21v-2a8 8 0 0 1 16 0v2',
+  users: 'M14 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM2 21v-2a8 8 0 0 1 16 0v2m0-17a4 4 0 0 1 0 8m2 3a6 6 0 0 1 2 5',
+  logout: 'M9 3H3v18h6m6-14 5 5-5 5M8 12h12',
+  search: 'M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Zm-2 5 6 6',
+  calendar: 'M4 5h16v16H4V5Zm3-3v6m10-6v6M4 11h16',
+  table: 'M3 4h18v16H3V4Zm0 5h18M3 14h18M9 4v16',
+  bracket: 'M4 3v5h6v8H4v5m16-18v5h-6v8h6v5M10 12h4',
+  play: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM10 8l6 4-6 4V8Z',
+  flag: 'M5 21V3m0 0h14l-2 4 2 4H5',
+  eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Zm13 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
+  eyeOff: 'm3 3 18 18M10 5h2c6 0 10 7 10 7a21 21 0 0 1-4 4M6 6a21 21 0 0 0-4 6s4 7 10 7c2 0 4-1 5-2',
+  edit: 'm15 4 5 5M4 20l5-1L21 7l-5-5L4 14v6Z',
+  trash: 'M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7',
+  back: 'm10 5-7 7 7 7M3 12h18',
+  check: 'm4 12 5 5L20 6',
+  lock: 'M6 10h12v11H6V10Zm3 0V6a3 3 0 0 1 6 0v4',
+  info: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 11v6m0-10v1',
+  refresh: 'M20 7v5h-5M4 17v-5h5m10-5a8 8 0 0 0-14-2m0 14a8 8 0 0 0 14-2',
+  save: 'M4 3h13l4 4v14H3V3Zm3 0v7h10V3M7 21v-7h10v7',
+  shuffle: 'M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 4-3 5-6m3-3c1-2 3-3 4-3h3m-4-4 4 4-4 4',
+  clock: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM12 7v5l3 2',
+  chevron: 'm9 5 7 7-7 7',
+}
+export default function Icon({ name, className = '' }) {
+  return <i className={`icon ${className}`} aria-hidden="true"><svg viewBox="0 0 24 24"><path d={paths[name] || paths.info} /></svg></i>
+}
