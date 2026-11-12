@@ -1,0 +1,33 @@
+# Configuração local e segredos
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+
+# Java / Maven
+**/target/
+*.class
+
+# Node / Vite
+**/node_modules/
+**/dist/
+**/.vite/
+coverage/
+
+# IDEs e sistema operacional
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs e evidências locais
+*.log
+playwright-report/
+test-results/
+
+# Instâncias MySQL descartáveis (os executores usam o diretório temporário do SO)
+**/seugame-jpa-*/
+**/seugame-web-*/
