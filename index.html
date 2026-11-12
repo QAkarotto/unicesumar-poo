@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo/logominianiva1.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANiVA</title>
+    <script>
+      try {
+        const savedTheme = localStorage.getItem('aniva:tema')
+        document.documentElement.dataset.theme = savedTheme === 'light' || savedTheme === 'dark'
+          ? savedTheme
+          : 'light'
+        localStorage.removeItem('aniva:tamanho-texto')
+      } catch {
+        document.documentElement.dataset.theme = 'light'
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
