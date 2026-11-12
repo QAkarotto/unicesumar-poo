@@ -19,8 +19,10 @@ class AcademicoHttpTest {
     private static final ObjectMapper JSON = new ObjectMapper();
 
     @BeforeEach
-    void iniciar() {
-        contexto = SpringApplication.run(AplicacaoAcademica.class, "--server.port=0");
+    void iniciar() throws Exception {
+        BancoTest.recriar();
+        contexto = SpringApplication.run(AplicacaoAcademica.class,
+                "--server.port=0", "--app.database.url=" + BancoTest.URL);
         baseUrl = "http://localhost:" + ((WebServerApplicationContext) contexto).getWebServer().getPort();
     }
 
@@ -125,7 +127,7 @@ class AcademicoHttpTest {
 
     private static HttpResponse<String> post(String corpo) throws Exception {
         return CLIENTE.send(HttpRequest.newBuilder(URI.create(baseUrl + "/api/matriculas"))
-                .header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(corpo)).build(),
+                        .header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(corpo)).build(),
                 HttpResponse.BodyHandlers.ofString());
     }
 

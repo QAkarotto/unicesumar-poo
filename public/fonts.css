@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url('/fonts/archivo-0.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/instrument-sans.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/instrument-sans-italic.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Noto Serif JP';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/noto-serif-jp.woff2') format('woff2');
+  unicode-range: U+3099, U+30a2, U+30ab-30ac, U+30cb, U+30de, U+30e1, U+30f3, U+5c0f, U+6f2b, U+753b, U+8aac;
+}
+
+@font-face {
+  font-family: 'Noto Serif KR';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/noto-serif-kr.woff2') format('woff2');
+  unicode-range: U+1106, U+1112, U+1161, U+116a, U+11ab, U+b9c8, U+b9cc, U+bac4, U+bac8, U+d558, U+d55c, U+d654, U+d658;
+}

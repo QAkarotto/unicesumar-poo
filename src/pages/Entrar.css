@@ -1,0 +1,28 @@
+.account-page { min-height: calc(100vh - 70px); }
+.account-main { max-width: 600px; margin: 0 auto; padding: 44px 40px 72px; }
+.account-heading { max-width: 520px; margin: 0 auto 24px; }
+.account-heading h1 { margin: 0; font: 900 clamp(3rem, 8vw, 5rem)/.95 'Archivo', sans-serif; font-stretch: 62%; text-transform: uppercase; }
+.account-heading > p:last-child { margin: 14px 0 0; color: var(--muted); font-size: 1.05rem; font-style: italic; }
+.account-form { display: flex; flex-direction: column; gap: 16px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper-raised); }
+.account-field { display: flex; flex-direction: column; gap: 5px; }
+.account-field > span,
+.account-field > label { color: var(--muted); font: 500 .68rem/1.4 'Archivo', sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.account-field input { min-height: 46px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); font: 400 .95rem/1.4 'Instrument Sans', system-ui, sans-serif; transition: background-color .16s, color .16s, border-color .16s; }
+.account-field input:focus { border-color: var(--ink); }
+.account-layout { max-width: 520px; margin: 0 auto; }
+.account-form { width: 100%; padding: 24px; }
+.account-submit { min-height: 46px; padding: 8px 20px; border: 1px solid var(--red); border-radius: 999px; background: var(--red); color: var(--red-text); cursor: pointer; font: 700 .74rem/1.3 'Archivo', sans-serif; text-transform: uppercase; transition: background-color .16s, color .16s, border-color .16s; }
+.account-submit:disabled { cursor: wait; opacity: .7; }
+.account-error { margin: 0; color: var(--red); font-size: .9rem; animation: menu-abre .2s ease-out; }
+.account-mode { display: flex; overflow: hidden; border: 1px solid var(--line); border-radius: 999px; }
+.account-mode button { min-height: 44px; flex: 1; border: 0; background: transparent; color: var(--ink); cursor: pointer; font: 700 .72rem/1.3 'Archivo', sans-serif; text-transform: uppercase; transition: background-color .16s, color .16s, border-color .16s; }
+.account-mode button + button { border-left: 1px solid var(--line); }
+.account-mode button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+.account-password-toggle { justify-self: start; min-height: 44px; padding: 4px 0; border: 0; background: transparent; color: var(--red); cursor: pointer; font: 600 .68rem/1.4 'Archivo', sans-serif; }
+.account-back { display: flex; width: fit-content; min-height: 44px; align-items: center; margin: 8px auto 0; color: var(--muted); font: 500 .72rem/1.4 'Archivo', sans-serif; text-transform: uppercase; }
+.account-back:hover { color: var(--red); }
+
+@media (max-width: 760px) {
+  .account-main { padding: 28px 20px 52px; }
+  .account-form { padding: 18px; }
+}
