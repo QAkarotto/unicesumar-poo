@@ -32,6 +32,10 @@ replay_pid*
 
 projects/academico/database/*.db
 projects/academico/database/*.db-*
+projects/Controle_De_Estoque/backend/database/*.db
+
+# Node
+node_modules/
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
