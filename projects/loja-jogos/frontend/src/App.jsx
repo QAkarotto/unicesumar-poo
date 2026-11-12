@@ -12,7 +12,7 @@ export default function App() {
   const [precoMaximo, setPrecoMaximo] = useState('');
 
   const [novoJogo, setNovoJogo] = useState({ titulo: '', plataforma: '', preco: '', estoque: '' });
-  const [novoCliente, setNovoCliente] = useState({ nome: '', email: '' });
+  const [editandoJogoId, setEditandoJogoId] = useState(null);  const [novoCliente, setNovoCliente] = useState({ nome: '', email: '' });
   const [novoPedido, setNovoPedido] = useState({ clienteId: '', jogoId: '', quantidade: '' });
   
   const [mensagemSucesso, setMensagemSucesso] = useState('');
@@ -26,27 +26,23 @@ export default function App() {
   }, [aba]);
 
   const carregarDados = () => {
-    if (aba === 'jogos') {
-      fetch(API_JOGOS).then(res => res.json()).then(setJogos).catch(console.error);
-    } else if (aba === 'clientes') {
-      fetch(API_CLIENTES).then(res => res.json()).then(setClientes).catch(console.error);
-    } else if (aba === 'pedidos') {
-      fetch(API_PEDIDOS).then(res => res.json()).then(setPedidos).catch(console.error);
-    }
+    fetch(API_JOGOS).then(res => res.json()).then(setJogos).catch(console.error);
+    fetch(API_CLIENTES).then(res => res.json()).then(setClientes).catch(console.error);
+    fetch(API_PEDIDOS).then(res => res.json()).then(setPedidos).catch(console.error);
   };
-
   const mostrarAlertaSucesso = (msg) => {
     setMensagemSucesso(msg);
     setTimeout(() => setMensagemSucesso(''), 3500);
   };
 
-  const cadastrarJogo = (e) => {
+  const salvarJogo = (e) => {
     e.preventDefault();
-    fetch(API_JOGOS, {
-      method: 'POST',
+    const url = editandoJogoId ? `${API_JOGOS}/${editandoJogoId}` : API_JOGOS;
+    const metodo = editandoJogoId ? 'PUT' : 'POST';
+    fetch(url, {
+      method: metodo,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        titulo: novoJogo.titulo,
+      body: JSON.stringify({       titulo: novoJogo.titulo,
         plataforma: novoJogo.plataforma,
         preco: Number(novoJogo.preco),
         estoque: Number(novoJogo.estoque)
@@ -59,14 +55,24 @@ export default function App() {
       }
       return res.json().catch(() => ({}));
     })
-    .then(() => { 
-      setNovoJogo({ titulo: '', plataforma: '', preco: '', estoque: '' }); 
-      carregarDados(); 
-      mostrarAlertaSucesso('✨ Jogo adicionado com sucesso!');
-    })
-    .catch(err => alert(err.message));
+        .then(() => {
+          mostrarAlertaSucesso(editandoJogoId ? '✏️ Jogo atualizado com sucesso!' : '✨ Jogo adicionado com sucesso!');
+          limparFormJogo();
+          carregarDados();
+        })
+        .catch(err => alert(err.message));
   };
 
+  const editarJogo = (j) => {
+    setEditandoJogoId(j.id);
+    setNovoJogo({ titulo: j.titulo, plataforma: j.plataforma, preco: j.preco, estoque: j.estoque });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const limparFormJogo = () => {
+    setEditandoJogoId(null);
+    setNovoJogo({ titulo: '', plataforma: '', preco: '', estoque: '' });
+  };
   const cadastrarCliente = (e) => {
     e.preventDefault();
     fetch(API_CLIENTES, {
@@ -117,12 +123,15 @@ export default function App() {
 
   const cancelarPedido = (id) => {
     fetch(`${API_PEDIDOS}/${id}/cancelamento`, { method: 'PATCH' })
-      .then(() => {
-        carregarDados();
-        mostrarAlertaSucesso('🚫 Pedido cancelado.');
-      })
-      .catch(err => console.error('Erro ao cancelar pedido:', err));
-  };
+        .then(async res => {
+          if (!res.ok) {
+            const erro = await res.json().catch(() => ({}));
+            throw new Error(erro.mensagem || 'Erro ao cancelar pedido');
+          }
+          carregarDados();
+          mostrarAlertaSucesso('🚫 Pedido cancelado. Estoque devolvido.');
+        })
+        .catch(err => alert(err.message));  };
 
   // Filtragem dos jogos por título, plataforma e preço máximo
   const jogosFiltrados = jogos.filter(j => {
@@ -175,7 +184,7 @@ export default function App() {
           <div>
             <h2 style={styles.sectionTitle}>Biblioteca de Jogos</h2>
             
-            <form onSubmit={cadastrarJogo} style={styles.formGrid}>
+            <form onSubmit={salvarJogo} style={styles.formGrid}>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Título do Jogo</label>
                 <input style={styles.input} type="text" placeholder="Ex: Cyberpunk 2077" value={novoJogo.titulo} onChange={e => setNovoJogo({...novoJogo, titulo: e.target.value})} required />
@@ -193,8 +202,14 @@ export default function App() {
                 <input style={styles.input} type="number" placeholder="0" value={novoJogo.estoque} onChange={e => setNovoJogo({...novoJogo, estoque: e.target.value})} required />
               </div>
               <div style={styles.fullWidth}>
-                <button style={styles.submitButton} type="submit">+ Adicionar Jogo à Loja</button>
-              </div>
+                <button style={styles.submitButton} type="submit">
+                  {editandoJogoId ? '💾 Salvar Alterações' : '+ Adicionar Jogo à Loja'}
+                </button>
+                {editandoJogoId && (
+                    <button type="button" onClick={limparFormJogo} style={{ ...styles.cancelButton, width: '100%', marginTop: '10px' }}>
+                      Cancelar edição
+                    </button>
+                )}              </div>
             </form>
 
             <div style={styles.filterContainer}>
@@ -229,7 +244,7 @@ export default function App() {
                 jogosFiltrados.map(j => {
                   const estoqueBaixo = Number(j.estoque) < 3;
                   return (
-                    <div key={j.id || Math.random()} style={styles.listItem}>
+                      <div key={j.id} style={styles.listItem}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                         <div style={styles.coverContainer}>
                           <span style={{ fontSize: '22px' }}>🎮</span>
@@ -245,7 +260,10 @@ export default function App() {
                           </p>
                         </div>
                       </div>
-                      <span style={styles.badge}>R$ {Number(j.preco || 0).toFixed(2)}</span>
+                      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <span style={styles.badge}>R$ {Number(j.preco || 0).toFixed(2)}</span>
+                        <button onClick={() => editarJogo(j)} style={styles.editButton}>Editar</button>
+                      </div>
                     </div>
                   );
                 })
@@ -276,7 +294,7 @@ export default function App() {
                 <p style={styles.emptyText}>Nenhum cliente registado no momento.</p>
               ) : (
                 clientes.map(c => (
-                  <div key={c.id || Math.random()} style={styles.listItem}>
+                    <div key={c.id} style={styles.listItem}>
                     <div>
                       <strong style={{ color: '#fff', fontSize: '17px' }}>{c.nome}</strong>
                       <p style={{ color: '#94a3b8', margin: '4px 0 0', fontSize: '14px' }}>{c.email}</p>
@@ -294,12 +312,20 @@ export default function App() {
             <h2 style={styles.sectionTitle}>Gestão de Pedidos</h2>
             <form onSubmit={cadastrarPedido} style={styles.formGrid}>
               <div style={styles.inputGroup}>
-                <label style={styles.label}>ID do Cliente</label>
-                <input style={styles.input} type="number" placeholder="Ex: 1" value={novoPedido.clienteId} onChange={e => setNovoPedido({...novoPedido, clienteId: e.target.value})} required />
-              </div>
+                <label style={styles.label}>Cliente</label>
+                <select style={styles.input} value={novoPedido.clienteId} onChange={e => setNovoPedido({...novoPedido, clienteId: e.target.value})} required>
+                  <option value="">Selecione o cliente...</option>
+                  {clientes.map(c => (
+                      <option key={c.id} value={c.id}>{c.nome} ({c.email})</option>
+                  ))}
+                </select>              </div>
               <div style={styles.inputGroup}>
-                <label style={styles.label}>ID do Jogo</label>
-                <input style={styles.input} type="number" placeholder="Ex: 1" value={novoPedido.jogoId} onChange={e => setNovoPedido({...novoPedido, jogoId: e.target.value})} required />
+                <label style={styles.label}>Jogo</label>
+                <select style={styles.input} value={novoPedido.jogoId} onChange={e => setNovoPedido({...novoPedido, jogoId: e.target.value})} required>
+                  <option value="">Selecione o jogo...</option>
+                  {jogos.map(j => (
+                      <option key={j.id} value={j.id}>{j.titulo} ({j.plataforma}) | estoque: {j.estoque}</option>                  ))}
+                </select>
               </div>
               <div style={styles.inputGroup}>
                 <label style={styles.label}>Quantidade</label>
@@ -314,15 +340,21 @@ export default function App() {
               {pedidos.length === 0 ? (
                 <p style={styles.emptyText}>Nenhum pedido efetuado no momento.</p>
               ) : (
-                pedidos.map(p => (
-                  <div key={p.id || Math.random()} style={styles.listItem}>
-                    <div>
-                      <strong style={{ color: '#fff', fontSize: '17px' }}>Pedido #{p.id}</strong>
-                      <p style={{ color: '#94a3b8', margin: '4px 0 0', fontSize: '14px' }}>Cliente ID: {p.clienteId} | Jogo ID: {p.jogoId} | Qtd: {p.quantidade}</p>
-                    </div>
+                  pedidos.map(p => (
+                      <div key={p.id} style={styles.listItem}>
+                        <div>
+                          <strong style={{ color: '#fff', fontSize: '17px' }}>Pedido #{p.id}</strong>
+                          <p style={{ color: '#94a3b8', margin: '4px 0 0', fontSize: '14px' }}>
+                            {p.cliente} | {p.jogo} | Qtd: {p.quantidade} | Total: R$ {Number(p.valorTotal || 0).toFixed(2)}
+                          </p>
+                        </div>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <span style={styles.badgeSuccess}>Ativo</span>
-                      <button onClick={() => cancelarPedido(p.id)} style={styles.cancelButton}>Cancelar</button>
+                      <span style={p.status === 'CONFIRMADO' ? styles.badgeSuccess : styles.badgeCancelado}>
+                        {p.status === 'CONFIRMADO' ? 'Confirmado' : 'Cancelado'}
+                      </span>
+                      {p.status === 'CONFIRMADO' && (
+                          <button onClick={() => cancelarPedido(p.id)} style={styles.cancelButton}>Cancelar</button>
+                      )}
                     </div>
                   </div>
                 ))
@@ -431,7 +463,7 @@ const styles = {
   },
   formGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
     gap: '20px',
     marginBottom: '24px',
   },
@@ -569,5 +601,24 @@ const styles = {
     fontWeight: '600',
     fontSize: '0.9rem',
     border: '1px solid rgba(16, 185, 129, 0.3)',
-  }
+  },
+    badgeCancelado: {
+      backgroundColor: 'rgba(239, 68, 68, 0.15)',
+      color: '#f87171',
+      padding: '8px 16px',
+      borderRadius: '20px',
+      fontWeight: '600',
+      fontSize: '0.9rem',
+      border: '1px solid rgba(239, 68, 68, 0.3)',
+    },
+    editButton: {
+      backgroundColor: 'rgba(99, 102, 241, 0.15)',
+      color: '#a5b4fc',
+      border: '1px solid rgba(99, 102, 241, 0.3)',
+      padding: '8px 16px',
+      borderRadius: '10px',
+      cursor: 'pointer',
+      fontWeight: '600',
+      fontSize: '0.85rem',
+    }
 };
