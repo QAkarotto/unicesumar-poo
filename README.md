@@ -1,3 +1,8 @@
+## Integrantes
+
+- Danilo Machado Baitel
+- Doris Daniella
+
 # ANiVA
 
 ANiVA organiza um catálogo de anime, mangá, manhwa e manhua. Você pode filtrar obras por formato, gênero, trope e disponibilidade, consultar fichas, avaliar títulos, comentar e manter uma lista pessoal (favoritos e pauta de "para ver/ler").
@@ -145,5 +150,13 @@ O Vite mostra no terminal o endereço do frontend. O backend precisa estar rodan
 - `/minha-lista`: favoritos e obras salvas.
 - `/entrar`: entrada e criação de conta.
 - `/favoritos` e `/para-ver-ler`: redirecionam para `/minha-lista`.
+
+## Principais funcionalidades
+
+- Cadastro e login de usuários.
+- Catálogo com busca e filtros por formato, gênero, trope e disponibilidade.
+- Ficha completa de cada obra.
+- Avaliação de 1 a 10 e comentários, com curtidas e marcação de spoiler.
+- Lista pessoal com favoritos e pauta de "para ver/ler", com situação e progresso.
 
 Os endpoints da API estão em [BACKEND.md](./BACKEND.md).
