@@ -1,154 +1,110 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { api } from './api';
+import { api } from './professor/api';
+import Logo from './componentes/Logo';
+import Inicio from './paginas/Inicio';
+import Estante from './paginas/Estante';
+import Sacola from './paginas/Sacola';
+import Admin from './paginas/Admin';
 import './App.css';
+import './Loja.css';
 
-const LEITOR_VAZIO = { nome: '', email: '' };
-const LIVRO_VAZIO = { isbn: '', titulo: '', autor: '', quantidadeTotal: 1 };
-const EMPRESTIMO_VAZIO = { leitorId: '', livroId: '' };
+const MENU = [
+  ['inicio', 'Início'],
+  ['estante', 'Estante'],
+  ['sacola', 'Sacola'],
+  ['admin', 'Admin'],
+];
+
+// rotas por hash (#/estante): sem servidor nem dependência de roteador
+function lerRota() {
+  const rota = window.location.hash.replace(/^#\/?/, '');
+  return MENU.some(([id]) => id === rota) ? rota : 'inicio';
+}
+
+function lerSacola() {
+  try {
+    return JSON.parse(localStorage.getItem('sacola')) || [];
+  } catch {
+    return [];
+  }
+}
 
 function App() {
-  const [aba, setAba] = useState('leitores');
-
-  const [leitores, setLeitores] = useState([]);
+  const [rota, setRota] = useState(lerRota);
   const [livros, setLivros] = useState([]);
-  const [emprestimos, setEmprestimos] = useState([]);
-
-  const [leitorForm, setLeitorForm] = useState(LEITOR_VAZIO);
-  const [leitorEditando, setLeitorEditando] = useState(null);
-  const [livroForm, setLivroForm] = useState(LIVRO_VAZIO);
-  const [livroEditando, setLivroEditando] = useState(null);
-  const [emprestimoForm, setEmprestimoForm] = useState(EMPRESTIMO_VAZIO);
+  const [leitores, setLeitores] = useState([]);
+  const [sacola, setSacola] = useState(lerSacola);
   const [confirmacao, setConfirmacao] = useState(null);
-  const [dicas, setDicas] = useState({});
-
-  // tooltip que aparece quando o campo é obrigatório
-  function obrigatorio(chave, mensagem) {
-    return {
-      onInvalid: (e) => {
-        e.preventDefault();
-        if (e.target.form.querySelector(':invalid') === e.target) e.target.focus();
-        setDicas((atual) => ({ ...atual, [chave]: mensagem }));
-      },
-      'data-dica': chave,
-    };
-  }
-
-  async function carregarTudo() {
-    try {
-      setLeitores(await api.listarLeitores());
-      setLivros(await api.listarLivros());
-      setEmprestimos(await api.listarEmprestimos());
-    } catch (e) {
-      toast.error(e.message);
-    }
-  }
 
   useEffect(() => {
-    carregarTudo();
+    const aoMudar = () => setRota(lerRota());
+    window.addEventListener('hashchange', aoMudar);
+    return () => window.removeEventListener('hashchange', aoMudar);
   }, []);
 
-  // executa a ação, mostra a mensagem e recarrega as listas
-  async function executar(acao, mensagem) {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [rota]);
+
+  useEffect(() => {
     try {
-      await acao();
-      toast.success(mensagem);
-      await carregarTudo();
+      localStorage.setItem('sacola', JSON.stringify(sacola));
+    } catch {
+      // sem localStorage a sacola só não sobrevive ao recarregar
+    }
+  }, [sacola]);
+
+  const carregarLoja = useCallback(async () => {
+    try {
+      const [listaLivros, listaLeitores] = await Promise.all([api.listarLivros(), api.listarLeitores()]);
+      setLivros(listaLivros);
+      setLeitores(listaLeitores);
     } catch (e) {
       toast.error(e.message);
     }
-  }
+  }, []);
 
-  // Mostra o popup de confirmação; a ação só roda se o usuário clicar em Confirmar e/ou Cancelar
+  // o admin carrega os próprios dados; a loja recarrega ao trocar de página
+  useEffect(() => {
+    if (rota !== 'admin') carregarLoja();
+  }, [rota, carregarLoja]);
+
+  // Mostra o popup de confirmação; a ação só roda se o usuário clicar em Confirmar
   function confirmar(mensagem, acao) {
     setConfirmacao({ mensagem, acao });
   }
 
-  // ajusta a dica quando o usuário digita no campo ou troca de aba ou abre um menu diferente
-  function limparDica(e) {
-    const chave = e.target.dataset.dica;
-    if (chave) setDicas((atual) => ({ ...atual, [chave]: '' }));
+  function alternarSacola(id) {
+    setSacola((atual) => (atual.includes(id) ? atual.filter((item) => item !== id) : [...atual, id]));
   }
 
-  function trocarAba(nova) {
-    setDicas({});
-    setAba(nova);
-  }
-
-  function cancelarLeitor() {
-    setDicas({});
-    setLeitorEditando(null);
-    setLeitorForm(LEITOR_VAZIO);
-  }
-
-  function cancelarLivro() {
-    setDicas({});
-    setLivroEditando(null);
-    setLivroForm(LIVRO_VAZIO);
-  }
-
-  function salvarLeitor(event) {
-    event.preventDefault();
-    const verbo = leitorEditando ? 'atualizar' : 'cadastrar';
-    confirmar('Deseja mesmo ' + verbo + ' este leitor?', () =>
-      executar(async () => {
-        if (leitorEditando) {
-          await api.atualizarLeitor(leitorEditando, leitorForm);
-        } else {
-          await api.criarLeitor(leitorForm);
-        }
-        cancelarLeitor();
-      }, 'Leitor salvo.')
-    );
-  }
-
-  function salvarLivro(event) {
-    event.preventDefault();
-    const verbo = livroEditando ? 'atualizar' : 'cadastrar';
-    confirmar('Deseja mesmo ' + verbo + ' este livro?', () =>
-      executar(async () => {
-        if (livroEditando) {
-          await api.atualizarLivro(livroEditando, { titulo: livroForm.titulo, autor: livroForm.autor });
-        } else {
-          await api.criarLivro({ ...livroForm, quantidadeTotal: Number(livroForm.quantidadeTotal) });
-        }
-        cancelarLivro();
-      }, 'Livro salvo.')
-    );
-  }
-
-  function salvarEmprestimo(event) {
-    event.preventDefault();
-    confirmar('Deseja mesmo realizar este empréstimo?', () =>
-      executar(async () => {
-        await api.criarEmprestimo({
-          leitorId: Number(emprestimoForm.leitorId),
-          livroId: Number(emprestimoForm.livroId),
-        });
-        setEmprestimoForm(EMPRESTIMO_VAZIO);
-      }, 'Empréstimo realizado.')
-    );
+  function tirarDaSacola(ids) {
+    setSacola((atual) => atual.filter((item) => !ids.includes(item)));
   }
 
   return (
-    <div className="app">
-      <header>
-        <h1>Biblioteca Universitária</h1>
-        <p>Cadastro de leitores, livros e controle de empréstimos</p>
-      </header>
-
-      <nav className="tabs">
-        <button type="button" className={aba === 'leitores' ? 'tab active' : 'tab'} onClick={() => trocarAba('leitores')}>
-          Leitores
-        </button>
-        <button type="button" className={aba === 'livros' ? 'tab active' : 'tab'} onClick={() => trocarAba('livros')}>
-          Livros
-        </button>
-        <button type="button" className={aba === 'emprestimos' ? 'tab active' : 'tab'} onClick={() => trocarAba('emprestimos')}>
-          Empréstimos
-        </button>
-      </nav>
+    <>
+      {/* na página inicial o hero traz o próprio menu */}
+      {rota !== 'inicio' && rota !== 'admin' && (
+        <header className="topo">
+          <div className="topo-conteudo">
+            <a className="marca" href="#/">
+              <Logo className="logo-marca" />
+              <span className="marca-nome">Biblioteca Universitária</span>
+            </a>
+            <nav className="menu">
+              {MENU.map(([id, rotulo]) => (
+                <a key={id} href={'#/' + (id === 'inicio' ? '' : id)} aria-current={rota === id ? 'page' : undefined}>
+                  {rotulo}
+                  {id === 'sacola' && sacola.length > 0 && <span className="menu-contagem">{sacola.length}</span>}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </header>
+      )}
 
       <ToastContainer position="top-right" autoClose={3000} />
 
@@ -174,284 +130,30 @@ function App() {
         </div>
       )}
 
-      {aba === 'leitores' && (
-        <section className="painel">
-          <h2>{leitorEditando ? 'Editar leitor' : 'Cadastrar leitor'}</h2>
-          <form onSubmit={salvarLeitor} onChange={limparDica} className="form">
-            <label>
-              Nome
-              <input
-                value={leitorForm.nome}
-                onChange={(e) => setLeitorForm({ ...leitorForm, nome: e.target.value })}
-                required
-                {...obrigatorio('leitorNome', 'Informe o nome do leitor.')}
-              />
-              {dicas.leitorNome && <span className="dica">{dicas.leitorNome}</span>}
-            </label>
-            <label>
-              E-mail
-              <input
-                type="email"
-                value={leitorForm.email}
-                onChange={(e) => setLeitorForm({ ...leitorForm, email: e.target.value })}
-                required
-                {...obrigatorio('email', 'Informe um e-mail válido (ex: nome@email.com).')}
-              />
-              {dicas.email && <span className="dica">{dicas.email}</span>}
-            </label>
-            <div className="acoes">
-              <button type="submit">{leitorEditando ? 'Atualizar' : 'Cadastrar'}</button>
-              {leitorEditando && (
-                <button type="button" className="secundario" onClick={() => confirmar('Deseja mesmo sair da edição? As alterações serão perdidas.', cancelarLeitor)}>
-                  Cancelar
-                </button>
-              )}
-            </div>
-          </form>
-
-          <h2>Leitores cadastrados</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leitores.map((leitor) => (
-                <tr key={leitor.id}>
-                  <td>{leitor.id}</td>
-                  <td>{leitor.nome}</td>
-                  <td>{leitor.email}</td>
-                  <td className="acoes-linha">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDicas({});
-                        setLeitorEditando(leitor.id);
-                        setLeitorForm({ nome: leitor.nome, email: leitor.email });
-                      }}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      className="perigo"
-                      onClick={() =>
-                        confirmar('Deseja mesmo excluir este leitor?', () =>
-                          executar(() => api.excluirLeitor(leitor.id), 'Leitor excluído.')
-                        )
-                      }
-                    >
-                      Excluir
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+      {rota === 'inicio' && <Inicio livros={livros} naSacola={sacola.length} />}
+      {rota === 'estante' && <Estante livros={livros} sacola={sacola} alternarSacola={alternarSacola} />}
+      {rota === 'sacola' && (
+        <Sacola
+          livros={livros}
+          leitores={leitores}
+          sacola={sacola}
+          alternarSacola={alternarSacola}
+          tirarDaSacola={tirarDaSacola}
+          recarregar={carregarLoja}
+          confirmar={confirmar}
+        />
       )}
+      {rota === 'admin' && <Admin confirmar={confirmar} />}
 
-      {aba === 'livros' && (
-        <section className="painel">
-          <h2>{livroEditando ? 'Editar livro' : 'Cadastrar livro'}</h2>
-          <form onSubmit={salvarLivro} onChange={limparDica} className="form">
-            <label>
-              ISBN
-              <input
-                value={livroForm.isbn}
-                onChange={(e) => setLivroForm({ ...livroForm, isbn: e.target.value })}
-                required
-                {...obrigatorio('isbn', 'Informe o ISBN do livro.')}
-                disabled={livroEditando !== null}
-              />
-              {dicas.isbn && <span className="dica">{dicas.isbn}</span>}
-            </label>
-            <label>
-              Título
-              <input
-                value={livroForm.titulo}
-                onChange={(e) => setLivroForm({ ...livroForm, titulo: e.target.value })}
-                required
-                {...obrigatorio('titulo', 'Informe o título do livro.')}
-              />
-              {dicas.titulo && <span className="dica">{dicas.titulo}</span>}
-            </label>
-            <label>
-              Autor
-              <input
-                value={livroForm.autor}
-                onChange={(e) => setLivroForm({ ...livroForm, autor: e.target.value })}
-                required
-                {...obrigatorio('autor', 'Informe o autor do livro.')}
-              />
-              {dicas.autor && <span className="dica">{dicas.autor}</span>}
-            </label>
-            {!livroEditando && (
-              <label>
-                Quantidade total
-                <input
-                  type="number"
-                  min="1"
-                  value={livroForm.quantidadeTotal}
-                  onChange={(e) => setLivroForm({ ...livroForm, quantidadeTotal: e.target.value })}
-                  required
-                  {...obrigatorio('quantidade', 'Informe a quantidade (mínimo 1).')}
-                />
-                {dicas.quantidade && <span className="dica">{dicas.quantidade}</span>}
-            </label>
-            )}
-            <div className="acoes">
-              <button type="submit">{livroEditando ? 'Atualizar' : 'Cadastrar'}</button>
-              {livroEditando && (
-                <button type="button" className="secundario" onClick={() => confirmar('Deseja mesmo sair da edição? As alterações serão perdidas.', cancelarLivro)}>
-                  Cancelar
-                </button>
-              )}
-            </div>
-          </form>
-
-          <h2>Acervo</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>ISBN</th>
-                <th>Título</th>
-                <th>Autor</th>
-                <th>Disponíveis</th>
-                <th>Total</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {livros.map((livro) => (
-                <tr key={livro.id}>
-                  <td>{livro.id}</td>
-                  <td>{livro.isbn}</td>
-                  <td>{livro.titulo}</td>
-                  <td>{livro.autor}</td>
-                  <td>{livro.quantidadeDisponivel}</td>
-                  <td>{livro.quantidadeTotal}</td>
-                  <td className="acoes-linha">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDicas({});
-                        setLivroEditando(livro.id);
-                        setLivroForm(livro);
-                      }}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      className="perigo"
-                      onClick={() =>
-                        confirmar('Deseja mesmo excluir este livro?', () =>
-                          executar(() => api.excluirLivro(livro.id), 'Livro excluído.')
-                        )
-                      }
-                    >
-                      Excluir
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+      {rota !== 'admin' && (
+        <footer className="rodape">
+          <div className="rodape-conteudo">
+            <span>Biblioteca Universitária</span>
+            <span>Empréstimo de até 3 livros por 14 dias</span>
+          </div>
+        </footer>
       )}
-
-      {aba === 'emprestimos' && (
-        <section className="painel">
-          <h2>Novo empréstimo</h2>
-          <form onSubmit={salvarEmprestimo} onChange={limparDica} className="form">
-            <label>
-              Leitor
-              <select
-                value={emprestimoForm.leitorId}
-                onChange={(e) => setEmprestimoForm({ ...emprestimoForm, leitorId: e.target.value })}
-                required
-                {...obrigatorio('leitorId', 'Selecione um leitor.')}
-              >
-                <option value="">Selecione</option>
-                {leitores.map((leitor) => (
-                  <option key={leitor.id} value={leitor.id}>
-                    {leitor.nome}
-                  </option>
-                ))}
-              </select>
-              {dicas.leitorId && <span className="dica">{dicas.leitorId}</span>}
-            </label>
-            <label>
-              Livro
-              <select
-                value={emprestimoForm.livroId}
-                onChange={(e) => setEmprestimoForm({ ...emprestimoForm, livroId: e.target.value })}
-                required
-                {...obrigatorio('livroId', 'Selecione um livro.')}
-              >
-                <option value="">Selecione</option>
-                {livros.map((livro) => (
-                  <option key={livro.id} value={livro.id}>
-                    {livro.titulo} ({livro.quantidadeDisponivel} disp.)
-                  </option>
-                ))}
-              </select>
-              {dicas.livroId && <span className="dica">{dicas.livroId}</span>}
-            </label>
-            <button type="submit">Emprestar</button>
-          </form>
-
-          <h2>Empréstimos</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Leitor</th>
-                <th>Livro</th>
-                <th>Empréstimo</th>
-                <th>Previsto</th>
-                <th>Devolução</th>
-                <th>Situação</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {emprestimos.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.leitorNome}</td>
-                  <td>{item.livroTitulo}</td>
-                  <td>{item.dataEmprestimo}</td>
-                  <td>{item.dataPrevistaDevolucao}</td>
-                  <td>{item.dataDevolucao || '-'}</td>
-                  <td>{item.situacao}</td>
-                  <td>
-                    {item.situacao === 'ATIVO' && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          confirmar('Deseja mesmo registrar a devolução?', () =>
-                            executar(() => api.devolverEmprestimo(item.id), 'Devolução registrada.')
-                          )
-                        }
-                      >
-                        Devolver
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      )}
-    </div>
+    </>
   );
 }
 

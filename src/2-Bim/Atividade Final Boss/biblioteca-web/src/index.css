@@ -1,17 +1,87 @@
-body {
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #1a2333;
-  background:
-    radial-gradient(circle at top left, #d9e7ff 0, transparent 40%),
-    linear-gradient(180deg, #eef3f9 0%, #f7f9fc 100%);
-  min-height: 100vh;
+/* Paleta 60/30/10: Ivory Cream (fundo) / Royal Navy (estrutura) / Flame Orange (ação) */
+:root {
+  /* 60% */
+  --cream: #000;
+  --cream-2: #141311;
+  --surface: #0c0b0a;
+  /* 30% */
+  --navy: #fff;
+  --navy-2: #e9e4da;
+  --ink: #fff;
+  --muted: rgba(255, 255, 255, 0.62);
+  --line: rgba(255, 255, 255, 0.14);
+  /* 10% */
+  --flame: #b8a58a;
+  /* tom do botão: texto branco precisa de 4.5:1, o #e25822 puro dá 3.7:1 */
+  --flame-strong: #fff;
+  --danger: #ff8a7a;
+
+  --r: 10px;
+  --r-sm: 6px;
+  --m-in: 140ms;
+  --m-out: 200ms;
+  --m-press: 90ms;
+  --m-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --font: 'Inter', 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --serif: 'Libre Caslon Display', Georgia, serif;
+  --mono: 'DM Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  --toastify-font-family: var(--font);
+  --toastify-color-light: #141311;
+  --toastify-text-color-light: #fff;
+  --toastify-color-success: var(--navy);
+  --toastify-color-error: var(--danger);
+  --toastify-color-progress-success: var(--flame);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--cream);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
 h2 {
   margin-top: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+:focus-visible {
+  outline: 2px solid var(--flame);
+  outline-offset: 2px;
+  animation: foco var(--m-out) var(--m-ease);
+}
+
+@keyframes foco {
+  from {
+    outline-offset: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
