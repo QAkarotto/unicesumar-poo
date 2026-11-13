@@ -1,0 +1,78 @@
+/* Paleta: preto profundo (fundo) / marfim (texto) / latão (acento) — superfícies opacas, sem vidro */
+:root {
+  --cream: #0a0a09;
+  --cream-2: #141311;
+  --surface: #0f0e0d;
+  --navy: #f3eee6;
+  --navy-2: #e9e4da;
+  --ink: #f3eee6;
+  --muted: rgba(243, 238, 230, 0.56);
+  --line: rgba(243, 238, 230, 0.1);
+  --line-2: rgba(243, 238, 230, 0.24);
+  --flame: #c4ae8b;
+  --flame-strong: #f3eee6;
+  --danger: #e38b7c;
+
+  --r: 12px;
+  --r-sm: 8px;
+  --m-in: 140ms;
+  --m-out: 200ms;
+  --m-press: 90ms;
+  /* ease-out forte para entrar/reagir; ease-in-out para o que se move na tela */
+  --m-ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --m-inout: cubic-bezier(0.77, 0, 0.175, 1);
+  --font: 'Inter', 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --serif: 'Libre Caslon Display', Georgia, serif;
+  --mono: 'DM Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  --toastify-font-family: var(--font);
+  --toastify-color-light: var(--cream-2);
+  --toastify-text-color-light: var(--ink);
+  --toastify-color-success: var(--flame);
+  --toastify-color-error: var(--danger);
+  --toastify-color-progress-success: var(--flame);
+  --toastify-color-progress-error: var(--danger);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--cream);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  margin-top: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--flame);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

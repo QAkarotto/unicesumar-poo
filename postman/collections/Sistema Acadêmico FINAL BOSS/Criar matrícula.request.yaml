@@ -1,0 +1,28 @@
+$kind: http-request
+description: Julia Nunes ainda não cursou POO. A regra de matrícula fica em OfertaDisciplina.matricular. Rode de novo só depois de reiniciar a aplicação, porque MAT-010 passa a existir em memória.
+url: "{{baseUrl}}/api/matriculas"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |
+    {
+      "codigo": "MAT-010",
+      "identificadorAluno": "RA-1003",
+      "codigoTurma": "ADS-2026-1",
+      "codigoDisciplina": "POO"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('retorna 201', function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test('devolve a matrícula criada', function () {
+          var corpo = pm.response.json();
+          pm.expect(corpo.codigo).to.eql('MAT-010');
+          pm.expect(corpo.aluno.identificadorAcademico).to.eql('RA-1003');
+      });
+    language: text/javascript
+order: 3000

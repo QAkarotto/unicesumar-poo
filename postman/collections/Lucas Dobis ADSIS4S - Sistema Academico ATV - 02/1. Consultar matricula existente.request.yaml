@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/api/matriculas/MAT-001"
+method: GET
+order: 1000

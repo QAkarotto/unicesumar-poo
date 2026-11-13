@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{baseUrl}}/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "{{email}}",
+      "password": "{{senha}}"
+    }
+scripts:
+  - type: afterResponse
+    code: pm.collectionVariables.set('token', pm.response.json().authorization);
+    language: text/javascript
+order: 2000

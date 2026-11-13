@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{baseUrl}}/api/matriculas"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "ra": "RA2403",
+      "turma": "TI-2026-1",
+      "disciplina": "BD"
+    }
+order: 3000

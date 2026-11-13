@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{baseUrl}}/produtos"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: "{{token}}"
+body:
+  type: json
+  content: |-
+    {
+      "nome": "{{produto}}",
+      "preco": 15,
+      "descricao": "Teclado RAZER ULTRA FODÁSTICO",
+      "quantidade": 5
+    }
+scripts:
+  - type: beforeRequest
+    code: pm.collectionVariables.set('produto', 'Caderno Teste ' + Date.now());
+    language: text/javascript
+  - type: afterResponse
+    code: pm.collectionVariables.set('produtoId', pm.response.json()._id);
+    language: text/javascript
+order: 3000

@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{baseUrl}}/produtos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Produto Sem Token",
+      "preco": 10,
+      "descricao": "Teclado RAZER ULTRA FODÁSTICO",
+      "quantidade": 1
+    }
+order: 5000

@@ -1,0 +1,64 @@
+{
+  "info": {
+    "name": "Lucas Dobis ADSIS4S - Sistema Academico",
+    "description": "API local em http://localhost:8080. Suba SistemaAcademicoApplication antes de executar.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "1. Consultar matricula existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/matriculas/MAT-001"
+      }
+    },
+    {
+      "name": "2. Consultar aluno existente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/alunos/RA2401"
+      }
+    },
+    {
+      "name": "3. Criar matricula",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ra\": \"RA2403\",\n  \"turma\": \"TI-2026-1\",\n  \"disciplina\": \"BD\"\n}"
+        },
+        "url": "{{baseUrl}}/api/matriculas"
+      }
+    },
+    {
+      "name": "4. Consultar matricula inexistente",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/matriculas/MAT-999"
+      }
+    },
+    {
+      "name": "5. Matricula repetida na mesma oferta",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ra\": \"RA2403\",\n  \"turma\": \"TI-2026-1\",\n  \"disciplina\": \"BD\"\n}"
+        },
+        "url": "{{baseUrl}}/api/matriculas"
+      }
+    }
+  ]
+}

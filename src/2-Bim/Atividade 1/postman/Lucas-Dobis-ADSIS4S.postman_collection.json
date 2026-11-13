@@ -1,0 +1,124 @@
+{
+  "info": {
+    "name": "Lucas Dobis ADSIS4S - ServeRest",
+    "description": "Fluxo da atividade: cadastrar admin, login, cadastrar produto, consultar produto e um cenario invalido. Rode de cima para baixo.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://serverest.dev" },
+    { "key": "senha", "value": "senha123" },
+    { "key": "email", "value": "" },
+    { "key": "token", "value": "" },
+    { "key": "produto", "value": "" },
+    { "key": "produtoId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Cadastrar usuario administrador",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('email', 'admin.teste.' + Date.now() + '@exemplo.com');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Admin Teste\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{senha}}\",\n  \"administrador\": \"true\"\n}"
+        },
+        "url": "{{baseUrl}}/usuarios"
+      }
+    },
+    {
+      "name": "2. Realizar login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('token', pm.response.json().authorization);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{senha}}\"\n}"
+        },
+        "url": "{{baseUrl}}/login"
+      }
+    },
+    {
+      "name": "3. Cadastrar produto",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('produto', 'Caderno Teste ' + Date.now());"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('produtoId', pm.response.json()._id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "{{token}}" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"{{produto}}\",\n  \"preco\": 15,\n  \"descricao\": \"Teclado RAZER ULTRA FODÁSTICO\",\n  \"quantidade\": 5\n}"
+        },
+        "url": "{{baseUrl}}/produtos"
+      }
+    },
+    {
+      "name": "4. Consultar produto",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/produtos/{{produtoId}}"
+      }
+    },
+    {
+      "name": "5. Cadastrar produto sem autenticacao",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Produto Sem Token\",\n  \"preco\": 10,\n  \"descricao\": \"Teclado RAZER ULTRA FODÁSTICO\",\n  \"quantidade\": 1\n}"
+        },
+        "url": "{{baseUrl}}/produtos"
+      }
+    }
+  ]
+}

@@ -3,7 +3,10 @@ name: Java Tests
 on:
   push:
   pull_request:
+<<<<<<< HEAD
+=======
   workflow_dispatch: 
+>>>>>>> origin/master
 
 jobs:
   test:
