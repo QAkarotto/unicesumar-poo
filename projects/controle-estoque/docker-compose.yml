@@ -1,0 +1,21 @@
+# Opcional: sobe um MySQL 8 local já com o banco criado e o schema.sql + dados.sql executados.
+# Uso: docker compose up -d
+# Credenciais APENAS para desenvolvimento local (as mesmas do application.properties).
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: controle-estoque-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_dev
+      MYSQL_DATABASE: controle_estoque
+      MYSQL_USER: estoque_app
+      MYSQL_PASSWORD: estoque_dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/dados.sql:/docker-entrypoint-initdb.d/02-dados.sql:ro
+      - mysql-dados:/var/lib/mysql
+
+volumes:
+  mysql-dados:
