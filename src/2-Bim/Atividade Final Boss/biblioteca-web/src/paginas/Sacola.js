@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { Effect } from '@animate-ui/react/primitives/effects/effect';
+import { SlidingNumber } from '@animate-ui/react/primitives/texts/sliding-number';
 import { api } from '../professor/api';
 import { Capa } from '../componentes/Livro';
+import { Botao, Seletor } from '../componentes/ui';
 
 const PRAZO_DIAS = 14; // igual a Emprestimo.PRAZO_DIAS no backend
 export const LIMITE_SACOLA = 3; // igual a EmprestimoService.LIMITE_EMPRESTIMOS_ATIVOS
@@ -40,12 +43,12 @@ function Sacola({ livros, leitores, sacola, alternarSacola, tirarDaSacola, recar
         <div className="pagina-topo">
           <h1>Sacola</h1>
         </div>
-        <div className="sacola-vazia">
+        <Effect className="sacola-vazia" fade slide={{ offset: 12 }}>
           <p>Sua sacola está vazia.</p>
-          <a className="botao" href="#/estante">
-            Ir para a estante
-          </a>
-        </div>
+          <Botao asChild>
+            <a href="#/estante">Ir para a estante</a>
+          </Botao>
+        </Effect>
       </main>
     );
   }
@@ -58,51 +61,50 @@ function Sacola({ livros, leitores, sacola, alternarSacola, tirarDaSacola, recar
 
       <div className="sacola">
         <ul className="sacola-itens">
-          {itens.map((livro) => (
-            <li key={livro.id} className="sacola-item">
-              <Capa livro={livro} />
-              <div>
-                <h3>{livro.titulo}</h3>
-                <p>{livro.autor}</p>
-              </div>
-              <button type="button" className="perigo pequeno" onClick={() => alternarSacola(livro.id)}>
-                Remover
-              </button>
+          {itens.map((livro, i) => (
+            <li key={livro.id}>
+              <Effect className="sacola-item" fade slide={{ offset: 12 }} delay={i * 50}>
+                <Capa livro={livro} />
+                <div>
+                  <h3>{livro.titulo}</h3>
+                  <p>{livro.autor}</p>
+                </div>
+                <Botao className="perigo pequeno" onClick={() => alternarSacola(livro.id)}>
+                  Remover
+                </Botao>
+              </Effect>
             </li>
           ))}
         </ul>
 
-        <aside className="card card-form resumo-sacola">
+        <Effect className="card card-form resumo-sacola" fade slide={{ offset: 12 }} delay={120}>
           <h2>Resumo do empréstimo</h2>
           <label>
             Quem vai retirar
-            <select value={leitorId} onChange={(e) => setLeitorId(e.target.value)}>
-              <option value="">Selecione seu nome</option>
-              {leitores.map((leitor) => (
-                <option key={leitor.id} value={leitor.id}>
-                  {leitor.nome}
-                </option>
-              ))}
-            </select>
+            <Seletor
+              value={leitorId}
+              onValueChange={setLeitorId}
+              placeholder="Selecione seu nome"
+              opcoes={leitores.map((leitor) => [leitor.id, leitor.nome])}
+              aria-label="Quem vai retirar"
+            />
           </label>
           <dl>
             <div>
               <dt>Livros</dt>
-              <dd>{itens.length}</dd>
+              <dd>
+                <SlidingNumber number={itens.length} />
+              </dd>
             </div>
             <div>
               <dt>Devolver até</dt>
               <dd>{devolucao.toLocaleDateString('pt-BR')}</dd>
             </div>
           </dl>
-          <button
-            type="button"
-            disabled={!leitorId || enviando}
-            onClick={() => confirmar('Deseja mesmo realizar este empréstimo?', finalizar)}
-          >
+          <Botao disabled={!leitorId || enviando} onClick={() => confirmar('Deseja mesmo realizar este empréstimo?', finalizar)}>
             {enviando ? 'Enviando...' : 'Finalizar empréstimo'}
-          </button>
-        </aside>
+          </Botao>
+        </Effect>
       </div>
     </main>
   );

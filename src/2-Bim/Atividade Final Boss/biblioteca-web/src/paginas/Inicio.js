@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { Effect } from '@animate-ui/react/primitives/effects/effect';
+import { SplittingText } from '@animate-ui/react/primitives/texts/splitting';
 import { Capa } from '../componentes/Livro';
 import Logo from '../componentes/Logo';
 import HeroLivros from '../componentes/HeroLivros';
@@ -9,29 +10,10 @@ const PASSOS = [
   ['Finalize e retire', 'Confirme o empréstimo com seu nome e retire os livros no balcão.'],
 ];
 
-function Inicio({ livros, naSacola }) {
-  // ao rolar, as seções abaixo do hero descem de cima com blur até ficarem nítidas
-  useEffect(() => {
-    if (!('IntersectionObserver' in window)) return undefined;
-    const alvos = document.querySelectorAll('.secao-topo, .secao > h2, .passo, .estante-destaque .livro');
-    const observador = new IntersectionObserver(
-      (itens) =>
-        itens.forEach((item) => {
-          if (!item.isIntersecting) return;
-          item.target.classList.add('visivel');
-          observador.unobserve(item.target);
-        }),
-      { threshold: 0.15 },
-    );
-    alvos.forEach((el) => {
-      el.classList.add('revelar');
-      // atraso de 70ms por irmão: os 3 passos entram em cascata curta
-      el.style.setProperty('--d', Array.from(el.parentElement.children).indexOf(el) * 70 + 'ms');
-      observador.observe(el);
-    });
-    return () => observador.disconnect();
-  }, [livros.length]);
+// entrada das seções ao rolar: sobe um pouco e sai do desfoque, em cascata curta
+const ENTRADA = { inView: true, inViewMargin: '-10% 0px', fade: true, slide: { offset: 18 }, blur: { initialBlur: 6 } };
 
+function Inicio({ livros, naSacola }) {
   return (
     <main>
       <section className="hero">
@@ -55,7 +37,17 @@ function Inicio({ livros, naSacola }) {
             </a>
           </div>
         </nav>
-        <h1>Biblioteca</h1>
+        <h1>
+          <SplittingText
+            type="chars"
+            text="Biblioteca"
+            initial={{ opacity: 0, y: '0.18em', filter: 'blur(14px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}
+            stagger={0.035}
+            delay={150}
+          />
+        </h1>
         <div className="hero-links">
           <a href="#/estante">Acervo completo</a>
           <a href="#como-funciona">Como funciona</a>
@@ -68,13 +60,17 @@ function Inicio({ livros, naSacola }) {
       </section>
 
       <section className="secao" id="como-funciona">
-        <h2>Como funciona o empréstimo</h2>
+        <Effect {...ENTRADA}>
+          <h2>Como funciona o empréstimo</h2>
+        </Effect>
         <ol className="passos">
           {PASSOS.map(([titulo, texto], i) => (
-            <li key={titulo} className="passo">
-              <span className="passo-numero">{i + 1}</span>
-              <h3>{titulo}</h3>
-              <p>{texto}</p>
+            <li key={titulo}>
+              <Effect className="passo" {...ENTRADA} delay={i * 70}>
+                <span className="passo-numero">{i + 1}</span>
+                <h3>{titulo}</h3>
+                <p>{texto}</p>
+              </Effect>
             </li>
           ))}
         </ol>
@@ -82,20 +78,22 @@ function Inicio({ livros, naSacola }) {
 
       {livros.length > 0 && (
         <section className="secao" id="na-estante">
-          <div className="secao-topo">
+          <Effect className="secao-topo" {...ENTRADA}>
             <h2>Na estante agora</h2>
             <a className="link" href="#/estante">
               Ver todos os livros
             </a>
-          </div>
+          </Effect>
           <ul className="estante estante-destaque">
-            {livros.slice(0, 4).map((livro) => (
-              <li key={livro.id} className="livro">
-                <a className="livro-prateleira" href="#/estante">
-                  <Capa livro={livro} />
-                </a>
-                <h3>{livro.titulo}</h3>
-                <p>{livro.autor}</p>
+            {livros.slice(0, 4).map((livro, i) => (
+              <li key={livro.id}>
+                <Effect className="livro" {...ENTRADA} delay={i * 60}>
+                  <a className="livro-prateleira" href="#/estante">
+                    <Capa livro={livro} />
+                  </a>
+                  <h3>{livro.titulo}</h3>
+                  <p>{livro.autor}</p>
+                </Effect>
               </li>
             ))}
           </ul>

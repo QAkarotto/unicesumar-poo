@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AnimateUIProvider } from '@animate-ui/react/provider';
+import { TooltipProvider } from '@animate-ui/react/primitives/tooltip';
+import { Highlight } from '@animate-ui/react/primitives/effects/highlight';
+import { SlidingNumber } from '@animate-ui/react/primitives/texts/sliding-number';
 import { api } from './professor/api';
 import Logo from './componentes/Logo';
+import { Confirmacao } from './componentes/ui';
 import Inicio from './paginas/Inicio';
 import Estante from './paginas/Estante';
 import Sacola from './paginas/Sacola';
@@ -73,8 +78,11 @@ function App() {
 
   // Mostra o popup de confirmação; a ação só roda se o usuário clicar em Confirmar
   function confirmar(mensagem, acao) {
-    setConfirmacao({ mensagem, acao });
+    setConfirmacao({ mensagem, acao, aberta: true });
   }
+
+  // mantém a mensagem enquanto o popup sai da tela
+  const fecharConfirmacao = () => setConfirmacao((atual) => atual && { ...atual, aberta: false });
 
   function alternarSacola(id) {
     setSacola((atual) => (atual.includes(id) ? atual.filter((item) => item !== id) : [...atual, id]));
@@ -85,75 +93,72 @@ function App() {
   }
 
   return (
-    <>
-      {/* na página inicial o hero traz o próprio menu */}
-      {rota !== 'inicio' && rota !== 'admin' && (
-        <header className="topo">
-          <div className="topo-conteudo">
-            <a className="marca" href="#/">
-              <Logo className="logo-marca" />
-              <span className="marca-nome">Biblioteca Universitária</span>
-            </a>
-            <nav className="menu">
-              {MENU.map(([id, rotulo]) => (
-                <a key={id} href={'#/' + (id === 'inicio' ? '' : id)} aria-current={rota === id ? 'page' : undefined}>
-                  {rotulo}
-                  {id === 'sacola' && sacola.length > 0 && <span className="menu-contagem">{sacola.length}</span>}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </header>
-      )}
-
-      <ToastContainer position="top-right" autoClose={3000} />
-
-      {confirmacao && (
-        <div className="modal-fundo">
-          <div className="modal">
-            <p>{confirmacao.mensagem}</p>
-            <div className="acoes">
-              <button
-                type="button"
-                onClick={() => {
-                  confirmacao.acao();
-                  setConfirmacao(null);
-                }}
-              >
-                Confirmar
-              </button>
-              <button type="button" className="secundario" onClick={() => setConfirmacao(null)}>
-                Voltar
-              </button>
+    <AnimateUIProvider>
+      <TooltipProvider openDelay={400} closeDelay={0}>
+        {/* na página inicial o hero traz o próprio menu */}
+        {rota !== 'inicio' && rota !== 'admin' && (
+          <header className="topo">
+            <div className="topo-conteudo">
+              <a className="marca" href="#/">
+                <Logo className="logo-marca" />
+                <span className="marca-nome">Biblioteca Universitária</span>
+              </a>
+              <nav aria-label="Principal">
+                {/* a pílula de fundo desliza até o link sob o cursor */}
+                <Highlight as="div" mode="parent" hover className="menu-pilula" containerClassName="menu">
+                  {MENU.map(([id, rotulo]) => (
+                    <a key={id} href={'#/' + (id === 'inicio' ? '' : id)} aria-current={rota === id ? 'page' : undefined}>
+                      {rotulo}
+                      {id === 'sacola' && sacola.length > 0 && (
+                        <span className="menu-contagem">
+                          <SlidingNumber number={sacola.length} />
+                        </span>
+                      )}
+                    </a>
+                  ))}
+                </Highlight>
+              </nav>
             </div>
-          </div>
-        </div>
-      )}
+          </header>
+        )}
 
-      {rota === 'inicio' && <Inicio livros={livros} naSacola={sacola.length} />}
-      {rota === 'estante' && <Estante livros={livros} sacola={sacola} alternarSacola={alternarSacola} />}
-      {rota === 'sacola' && (
-        <Sacola
-          livros={livros}
-          leitores={leitores}
-          sacola={sacola}
-          alternarSacola={alternarSacola}
-          tirarDaSacola={tirarDaSacola}
-          recarregar={carregarLoja}
-          confirmar={confirmar}
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar closeButton={false} />
+
+        <Confirmacao
+          aberta={Boolean(confirmacao && confirmacao.aberta)}
+          mensagem={confirmacao ? confirmacao.mensagem : ''}
+          onConfirmar={() => {
+            confirmacao.acao();
+            fecharConfirmacao();
+          }}
+          onFechar={fecharConfirmacao}
         />
-      )}
-      {rota === 'admin' && <Admin confirmar={confirmar} />}
 
-      {rota !== 'admin' && (
-        <footer className="rodape">
-          <div className="rodape-conteudo">
-            <span>Biblioteca Universitária</span>
-            <span>Empréstimo de até 3 livros por 14 dias</span>
-          </div>
-        </footer>
-      )}
-    </>
+        {rota === 'inicio' && <Inicio livros={livros} naSacola={sacola.length} />}
+        {rota === 'estante' && <Estante livros={livros} sacola={sacola} alternarSacola={alternarSacola} />}
+        {rota === 'sacola' && (
+          <Sacola
+            livros={livros}
+            leitores={leitores}
+            sacola={sacola}
+            alternarSacola={alternarSacola}
+            tirarDaSacola={tirarDaSacola}
+            recarregar={carregarLoja}
+            confirmar={confirmar}
+          />
+        )}
+        {rota === 'admin' && <Admin confirmar={confirmar} />}
+
+        {rota !== 'admin' && (
+          <footer className="rodape">
+            <div className="rodape-conteudo">
+              <span>Biblioteca Universitária</span>
+              <span>Empréstimo de até 3 livros por 14 dias</span>
+            </div>
+          </footer>
+        )}
+      </TooltipProvider>
+    </AnimateUIProvider>
   );
 }
 

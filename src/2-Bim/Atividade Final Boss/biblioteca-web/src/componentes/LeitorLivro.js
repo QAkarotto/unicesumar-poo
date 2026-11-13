@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { Root as Dialog, DialogPortal, DialogOverlay, DialogContent, DialogTitle } from '@animate-ui/react/primitives/radix-ui/dialog';
 import Livro3D from './Livro3D';
 import { Capa } from './Livro';
+import { Botao } from './ui';
 
 const ALTURA = 360;
 
@@ -16,7 +18,7 @@ async function renderizar(pdf, numero, larguraPx) {
   canvas.width = Math.floor(viewport.width);
   canvas.height = Math.floor(viewport.height);
   await pagina.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-  return canvas.toDataURL('image/jpeg', 0.85);
+  return canvas.toDataURL('image/jpeg', 0.92);
 }
 
 function tamanhoDaTela() {
@@ -96,7 +98,8 @@ function LeitorLivro({ livro, onFechar }) {
     const faltam = precisa.filter((n) => n <= pdf.numPages && !pedidas.current.has(n));
     if (faltam.length === 0) return;
     faltam.forEach((n) => pedidas.current.add(n));
-    const larguraPx = Math.min(1800, largura * escala * (window.devicePixelRatio || 1));
+    // resolução do tamanho com zoom (as páginas só são renderizadas uma vez) e 1.5x extra por causa da transformação 3D
+    const larguraPx = Math.min(2400, largura * Math.max(1, cabe) * Math.max(1.5, window.devicePixelRatio || 1));
     (async () => {
       for (const n of faltam) {
         try {
@@ -107,21 +110,17 @@ function LeitorLivro({ livro, onFechar }) {
         }
       }
     })();
-  }, [pdf, indice, totalFolhas, largura, escala]);
+  }, [pdf, indice, totalFolhas, largura, cabe]);
 
   useEffect(() => {
     const aoRedimensionar = () => setTela(tamanhoDaTela());
     window.addEventListener('resize', aoRedimensionar);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      window.removeEventListener('resize', aoRedimensionar);
-      document.body.style.overflow = '';
-    };
+    return () => window.removeEventListener('resize', aoRedimensionar);
   }, []);
 
   useEffect(() => {
+    // Esc fecha pelo próprio Dialog
     function teclas(e) {
-      if (e.key === 'Escape') onFechar();
       if (e.key === 'ArrowRight') proxima();
       if (e.key === 'ArrowLeft') anterior();
     }
@@ -163,25 +162,28 @@ function LeitorLivro({ livro, onFechar }) {
   const capa = pdf && imagens[1] ? <img src={imagens[1]} alt={'Capa de ' + livro.titulo} draggable="false" /> : <Capa livro={livro} />;
 
   return (
-    <div className="leitor" role="dialog" aria-modal="true" aria-label={livro.titulo}>
+    <Dialog open onOpenChange={(abre) => !abre && onFechar()}>
+      <DialogPortal>
+        <DialogOverlay className="leitor-fundo" />
+        <DialogContent className="leitor" aria-describedby={undefined}>
       <div className="leitor-topo">
         <div>
-          <h2>{livro.titulo}</h2>
+          <DialogTitle asChild>
+            <h2>{livro.titulo}</h2>
+          </DialogTitle>
           <p>{livro.autor}</p>
         </div>
         <div className="acoes">
           {zoom ? (
-            <button type="button" className="secundario" onClick={() => setZoom(false)}>
+            <Botao className="secundario" onClick={() => setZoom(false)}>
               Reduzir
-            </button>
+            </Botao>
           ) : (
-            <button type="button" onClick={ler}>
-              Ler o livro
-            </button>
+            <Botao onClick={ler}>Ler o livro</Botao>
           )}
-          <button type="button" className="secundario" onClick={onFechar}>
+          <Botao className="secundario" onClick={onFechar}>
             Fechar
-          </button>
+          </Botao>
         </div>
       </div>
 
@@ -214,18 +216,20 @@ function LeitorLivro({ livro, onFechar }) {
         )}
         {estado === 'pronto' && zoom && (
           <>
-            <button type="button" className="secundario pequeno" onClick={anterior} disabled={!aberto}>
+            <Botao className="secundario pequeno" onClick={anterior} disabled={!aberto}>
               Anterior
-            </button>
+            </Botao>
             <p className="leitor-paginas">{rotulo}</p>
-            <button type="button" className="secundario pequeno" onClick={proxima} disabled={aberto && indice >= totalFolhas}>
+            <Botao className="secundario pequeno" onClick={proxima} disabled={aberto && indice >= totalFolhas}>
               Próxima
-            </button>
+            </Botao>
           </>
         )}
         {!zoom && estado !== 'carregando' && estado !== 'sem-pdf' && <p>Clique na capa para abrir e nas páginas para folhear.</p>}
       </div>
-    </div>
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
   );
 }
 
